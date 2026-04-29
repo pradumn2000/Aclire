@@ -15,6 +15,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Protected route (only logged in users)
 Route::middleware('auth')->group(function () {
+    Route::get('/', function () {
+    return view('welcome');
+});
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
