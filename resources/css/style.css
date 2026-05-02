@@ -1,0 +1,352 @@
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+a {
+  text-decoration: none !important;
+  outline: none !important;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+p:last-of-type,
+p:last-child {
+  margin-bottom: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Inter", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #eee;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border: none;
+  border-radius: 20px;
+}
+
+:root {
+  --primary-color: #355fab;
+  --lbl-color: #3f69b1;
+  --primary-light-color: #5882c147;
+  --secondary-color: #ffffff1f;
+  --text-light-color: #606060;
+  --white: #fff;
+  --black: #000;
+  --orange-medium: #ee7725;
+  --orange-light: #fef2ea;
+  --border-clr: #5882c17d;
+  --bg-color: #355fab0d;
+  --bg-light-color: #ee77250d;
+}
+
+.primary-cta {
+  color: var(--white);
+  background-color: var(--orange-medium);
+  padding: 0 2.4rem;
+  height: 45px;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  display: inline-flex;
+  border: 1px solid var(--orange-medium);
+  transition: 0.2s ease-in-out;
+  align-items: center;
+  justify-content: center;
+
+  &:hover,
+  &.active {
+    background-color: var(--white);
+    color: var(--primary-color);
+    transition: 0.2s ease-in-out;
+  }
+
+  &.active:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--white);
+    transition: 0.2s ease-in-out;
+  }
+}
+
+.non-active-cta {
+  color: var(--black);
+  background-color: var(--white);
+  padding: 0 2.4rem;
+  height: 45px;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  display: inline-block;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    color: var(--primary-color);
+    transition: 0.2s ease-in-out;
+  }
+}
+/*LOGIN-FLOW-CSS*/
+.log-in {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+}
+
+.login-wrp {
+  background-color: var(--primary-light-color);
+  width: 60%;
+  margin: auto;
+  border-radius: 20px;
+  border: 1px solid var(--border-clr);
+  padding: 0;
+}
+
+.log-in {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-wrp h2,
+h4,
+p {
+  text-align: center;
+  color: var(--white);
+}
+
+.login-wrp h2,
+h4 {
+  font-weight: 600;
+}
+
+.login-wrp h2 {
+  font-size: 34px;
+  text-transform: uppercase;
+}
+
+.login-wrp h4 {
+  font-size: 30px;
+}
+
+.login-wrp p {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.input-grp input[type="text"] {
+  width: 100%;
+  height: 50px;
+  border-radius: 20px;
+  outline: none;
+}
+
+.input-grp input[type="text"] {
+  width: 100%;
+  height: 50px;
+  border-radius: 15px;
+  outline: none;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  padding: 15px;
+  padding-left: 24px;
+  font-weight: 400;
+}
+
+.input-grp input::placeholder {
+  color: var(--white);
+  font-size: 16px;
+}
+
+.input-grp input.password {
+  width: 100%;
+  height: 50px;
+  border-radius: 15px;
+  outline: none;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  padding: 15px;
+  padding-left: 24px;
+  font-weight: 400;
+}
+
+.login-wrp input.primary-cta {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.login-wlc img {
+  width: 25px;
+  height: 25px;
+  margin-right: 15px;
+}
+
+.login-wlc {
+  padding: 10px;
+  background-color: var(--white);
+  border-radius: 10px;
+  margin-top: 30px;
+}
+
+.login-wlc span {
+  color: var(--orange-medium);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.login-wlc p {
+  color: var(--black);
+  text-align: left;
+  font-size: 16px;
+}
+
+.login-pst {
+  position: relative;
+  margin-top: 20px;
+}
+
+.login-pst label {
+  position: absolute;
+  top: -15px;
+  left: 25px;
+  background: var(--lbl-color);
+  padding: 4px;
+  border-radius: 5px;
+  color: var(--white);
+  font-size: 12px;
+}
+.input-grp input[type="email"] {
+    width: 100%;
+    height: 50px;
+    border-radius: 15px;
+    outline: none;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+    padding: 15px;
+    padding-left: 24px;
+    font-weight: 400;
+}
+.log-in-inner-wrp {
+  padding: 40px 80px 40px 80px;
+}
+.forgot-pass {
+    text-align: right;
+}
+.log-in-inner-wrp form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.ac-switch {
+    margin-top: 25px;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--black);
+    text-align: center;
+}
+.ac-switch {
+    a {
+        color: var(--white);
+    }
+}
+
+.pass-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.pass-box img {
+  width: 20px;
+  cursor: pointer;
+}
+.pass-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 70px;
+}
+
+.password-eye {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  top: auto;
+  right: 15px;
+  border: none;
+  align-items: center;
+  background: none;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.password-eye .eye-close {
+  background-image: url("/images/login/eye-open.svg");
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px;
+}
+.password-eye .eye-open {
+    background-image: url("/images/login/eye-close.svg");
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px;
+}
+.input-grp.pass {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+.forgot-pass a {
+    color: #fff;
+}
+#sucessModal .modal-dialog {
+    width: 350px;
+}
+.login-succ-in h3 {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+}
+.modal-content.all-pop-bg {
+    background-color: var(--primary-color);
+    border-radius: 20px;
+}
+.login-succ-in form {
+    text-align: center;
+}
+.login-succ-in {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+/*LOGIN-FLOW-CSS*/
