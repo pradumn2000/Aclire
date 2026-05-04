@@ -70,7 +70,7 @@ export default function Signup() {
         <div className="login-wrp">
 
           <div className="log-in-logo">
-            <img src="/images/logo.svg" alt="logo" />
+            <img src="/images/login/logo.png" alt="logo" />
           </div>
 
           <div className="log-in-inner-wrp">

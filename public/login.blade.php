@@ -27,7 +27,7 @@
             </label>
         </div>
 
-        <button type="submit">Sign In</button>
+        <button type="submit">Sign In</button> 
 
         <a href="{{ route('password.request') }}">Forgot your password?</a>
     </form>

@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Forgetpassword from "./pages/Forgetpassword";
+import verifyaccount from "./pages/Verifyaccount";
 import Dashboard from "./pages/Dashboard";
 
 // simple auth check
@@ -20,6 +22,8 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/Forgetpassword" element={<Forgetpassword />} />
+        <Route path="/Verifyaccount" element={<verifyaccount />} />
         <Route
           path="/dashboard"
           element={

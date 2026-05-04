@@ -1,6 +1,5 @@
- 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../css/style.css";
 
 export default function Login() {
@@ -34,13 +33,21 @@ export default function Login() {
         return;
       }
 
+      // Save token
       localStorage.setItem("token", data.token);
 
-      setSuccess("Welcome! Redirecting...");
+      setSuccess("Login Successful ✅");
 
+      // Open Bootstrap Modal
+      const modal = new window.bootstrap.Modal(
+        document.getElementById("sucessModal")
+      );
+      modal.show();
+
+      // Redirect after delay
       setTimeout(() => {
         navigate("/dashboard");
-      }, 1000);
+      }, 1500);
 
     } catch (err) {
       setError("Server error ❌");
@@ -51,24 +58,25 @@ export default function Login() {
     <section className="log-in">
       <div className="container">
         <div className="row">
-        <div className="col-lg-6">
-    <div className="login-left-img">
-      <img src="/images/login/login-left.png" alt="logo" />
-    </div>
-        </div>
-          <div className="col-lg-6">
+          <div className="col-lg-12">
             <div className="login-wrp">
 
+              {/* Logo */}
               <div className="log-in-logo">
                 <img src="/images/login/logo.png" alt="logo" />
               </div>
 
               <div className="log-in-inner-wrp">
                 <h2>Styapan</h2>
-                <p>Varification Management System</p>
+                <p>Verification Management System</p>
 
+                {/* Messages */}
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                {success && <p style={{ color: "green" }}>{success}</p>}
+
+                {/* Form */}
                 <form onSubmit={handleSubmit}>
-                  
+
                   {/* Email */}
                   <div className="login-pst">
                     <label>Email</label>
@@ -112,22 +120,20 @@ export default function Login() {
 
                   {/* Forgot Password */}
                   <div className="forgot-pass">
-                    <a href="/Forgetpassword">Forgot Password?</a>
+                    <Link to="/Forgetpassword">Forgot Password?</Link>
                   </div>
 
                   {/* Submit */}
                   <input
-                    type="button" data-bs-toggle="modal" data-bs-target="#sucessModal"
+                    type="submit"
                     value="Login"
                     className="primary-cta"
                   />
                 </form>
 
-    
-
-                {/* Signup Link */}
+                {/* Signup */}
                 <div className="ac-switch">
-                  New here? <a href="/signup"><u>Create an Account</u></a>
+                  New here? <Link to="/signup"><u>Create an Account</u></Link>
                 </div>
 
               </div>
@@ -135,30 +141,34 @@ export default function Login() {
           </div>
         </div>
       </div>
-{/* <!-- Modal --> */}
-<div className="modal fade" id="sucessModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div className="modal-dialog modal-dialog-centered">
-    <div className="modal-content all-pop-bg">
-      {/* <div className="modal-header">
-        <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div> */}
-      <div className="modal-body">
-        <div className="login-succ-in">
-            {/* <img src="images/happy-icon.png" alt="Happy Icon"> */}
-            <h3>Login Successful</h3>
-            <p>Welcome to <span>Styapan</span></p>
-            <form>
-              <button type="submit" className="primary-cta" data-bs-dismiss="modal" aria-label="Close">Get Started
-            
-          </button></form></div>
+
+      {/* Modal */}
+      <div
+        className="modal fade"
+        id="sucessModal"
+        tabIndex="-1"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content all-pop-bg">
+            <div className="modal-body">
+              <div className="login-succ-in">
+                <h3>Login Successful</h3>
+                <p>Welcome to <span>Styapan</span></p>
+
+                <button
+                  className="primary-cta"
+                  data-bs-dismiss="modal"
+                >
+                  Get Started
+                </button>
+
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      
-    </div>
-  </div>
-</div>
-  
+
     </section>
   );
 }
-
