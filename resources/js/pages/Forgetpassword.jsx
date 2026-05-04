@@ -47,7 +47,7 @@ export default function ForgotPassword() {
                     </div>
                   </div>
 
-                 <a href="/verifyaccount"> <input
+                 <a href="/Verifyaccount"> <input
                     type="submit"
                     value="Send Code"
                     className="primary-cta"
@@ -57,7 +57,7 @@ export default function ForgotPassword() {
                 {/* Switch */}
                 <div className="ac-switch">
                   Remembered your password?{" "}
-                  <Link to="/verifyaccount">
+                  <Link to="/">
                     <u>Log In</u>
                   </Link>
                 </div>

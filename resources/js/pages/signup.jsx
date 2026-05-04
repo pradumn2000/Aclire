@@ -53,14 +53,14 @@ export default function Signup() {
         return;
       }
 
-      setSuccess("Account created successfully ✅");
+      setSuccess("Account created successfully ");
 
       setTimeout(() => {
         navigate("/");
       }, 1000);
 
     } catch (err) {
-      setError("Server error ❌");
+      setError("Server error ");
     }
   };
 
