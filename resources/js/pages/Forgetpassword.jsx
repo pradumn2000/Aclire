@@ -1,14 +1,45 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom"; 
 import "../../css/style.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Send code to:", email);
-  };
+const navigate = useNavigate();
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch("http://localhost:8000/api/send-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Failed to send OTP ");
+      return;
+    }
+
+    // store email for next step
+    localStorage.setItem("reset_email", email);
+
+    alert("OTP sent ");
+
+    // redirect to verify page
+    navigate("/Verifyaccount");
+
+  } catch (err) {
+    alert("Server error ");
+  }
+};
 
   return (
     <section className="log-in">
@@ -47,11 +78,11 @@ export default function ForgotPassword() {
                     </div>
                   </div>
 
-                 <a href="/Verifyaccount"> <input
+                 <input
                     type="submit"
                     value="Send Code"
                     className="primary-cta"
-                  /></a>
+                  />
                 </form>
 
                 {/* Switch */}
