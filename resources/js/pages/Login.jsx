@@ -134,7 +134,7 @@ const handleSubmit = async (e) => {
               </div>
 
               <div className="log-in-inner-wrp">
-                <h2>Styapan</h2>
+                <h2>Login</h2>
                 <p>Varification Management System</p>
 
                 <form onSubmit={handleSubmit}>

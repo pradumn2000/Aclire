@@ -67,7 +67,14 @@ export default function Signup() {
   return (
     <section className="log-in">
       <div className="container">
-        <div className="login-wrp">
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="login-left-img">
+      <img src="/images/login/login-left.png" alt="logo" />
+    </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="login-wrp">
 
           <div className="log-in-logo">
             <img src="/images/login/logo.png" alt="logo" />
@@ -177,6 +184,8 @@ export default function Signup() {
               </a>
             </div>
 
+          </div>
+        </div>
           </div>
         </div>
       </div>

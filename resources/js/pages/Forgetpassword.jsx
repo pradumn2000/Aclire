@@ -1,51 +1,25 @@
 import { useState } from "react";
-import { Link } from "react-router-dom"; 
-import { useNavigate } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 import "../../css/style.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
 
-const navigate = useNavigate();
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const res = await fetch("http://localhost:8000/api/send-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Failed to send OTP ");
-      return;
-    }
-
-    // store email for next step
-    localStorage.setItem("reset_email", email);
-
-    alert("OTP sent ");
-
-    // redirect to verify page
-    navigate("/Verifyaccount");
-
-  } catch (err) {
-    alert("Server error ");
-  }
-};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Send code to:", email);
+  };
 
   return (
     <section className="log-in">
       <div className="container">
         <div className="row">
-          <div className="col-lg-12">
+         <div className="col-lg-6">
+    <div className="login-left-img">
+      <img src="/images/login/login-left.png" alt="logo" />
+    </div>
+        </div>
+          <div className="col-lg-6">
 
             <div className="login-wrp">
 
@@ -57,11 +31,11 @@ const handleSubmit = async (e) => {
               <div className="log-in-inner-wrp">
 
                 {/* Back Button */}
-                <Link to="/login" className="back-icon">
-                  ←
-                </Link>
-
+                
+                <div className="password-icon">
+                  <a href="/"><img src="/images/login/left-icon.svg"></img></a>
                 <h2>Forgot Password?</h2>
+                </div>
                 <p>Please enter your Email to get a verification code</p>
 
                 {/* Form */}
@@ -77,12 +51,14 @@ const handleSubmit = async (e) => {
                       />
                     </div>
                   </div>
-
-                 <input
+                  <Link to="/Verifyaccount">
+   <input
                     type="submit"
                     value="Send Code"
                     className="primary-cta"
                   />
+</Link>
+                
                 </form>
 
                 {/* Switch */}
