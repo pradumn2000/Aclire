@@ -12,40 +12,110 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError("");
+//     setSuccess("");
+//     {error && <p style={{ color: "red" }}>{error}</p>}
 
-    try {
-      const res = await fetch("http://localhost:8000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+//     try {
+//     //   const res = await fetch("http://localhost:8000/api/login", {
+//     //     method: "POST",
+//     //     headers: {
+//     //       "Content-Type": "application/json",
+//     //       Accept: "application/json",
+//     //     },
+//     //     body: JSON.stringify({ email, password }),
+//     //   });
 
-      const data = await res.json();
+//     //   const data = await res.json();
 
-      if (!res.ok) {
-        setError(data.message || "Login failed ");
-        return;
-      }
+//     //   if (!res.ok) {
+//     //     setError(data.message || "Login failed ");
+//     //     return;
+//     //   }
+//     const res = await fetch("http://localhost:8000/api/login", {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//     Accept: "application/json",
+//   },
+//   body: JSON.stringify({
+//     email: email.trim(),
+//     password: password.trim(),
+//   }),
+// });
 
-      localStorage.setItem("token", data.token);
+// let data;
+// // const data = await res.json();
 
-      setSuccess("Welcome! Redirecting...");
+// // console.log("LOGIN RESPONSE:", data); // 🔥 ADD THIS
+// try {
+//   data = await res.json();
+// } catch (err) {
+//   setError("Server error (invalid response)");
+//   return;
+// }
 
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
+// if (!res.ok) {
+//   setError(data.message || "Login failed ❌");
+//   return;
+// }
+    
 
-    } catch (err) {
-      setError("Server error ");
+//       localStorage.setItem("token", data.token);
+
+//       setSuccess("Welcome! Redirecting...");
+
+//       setTimeout(() => {
+//         navigate("/dashboard");
+//       }, 1000);
+
+//     } catch (err) {
+//       setError("Server error ");
+//     }
+//   };
+const [loading, setLoading] = useState(false);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (loading) return; // 🔥 prevent duplicate
+  setLoading(true);
+
+  try {
+    const res = await fetch("http://localhost:8000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        email: email.trim(),
+        password: password.trim(),
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log("LOGIN RESPONSE:", data);
+
+    if (!res.ok) {
+      setError(data.message || "Login failed");
+      setLoading(false);
+      return;
     }
-  };
+
+    localStorage.setItem("token", data.token);
+
+    navigate("/dashboard");
+
+  } catch (err) {
+    setError("Server error");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="log-in">
@@ -117,7 +187,7 @@ export default function Login() {
 
                   {/* Submit */}
                   <input
-                    type="button" data-bs-toggle="modal" data-bs-target="#sucessModal"
+                    type="submit"
                     value="Login"
                     className="primary-cta"
                   />

@@ -5,14 +5,30 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 
-Route::post('/register', function (Request $request) {
+Route::post('/login', function (Request $request) {
 
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
+
+    // if (!Auth::attempt($request->only('email', 'password'))) {
+    //     return response()->json([
+    //         'message' => 'Invalid credentials'
+    //     ], 401);
+    // }
     if (!Auth::attempt($request->only('email', 'password'))) {
-        return response()->json(['message' => 'Invalid credentials'], 401);
-    }
+    return response()->json([
+        'message' => 'Invalid credentials',
+        'debug_email' => $request->email,
+        'debug_password' => $request->password,
+    ], 401);
+}
 
     $user = Auth::user();
+
     $token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
@@ -20,6 +36,8 @@ Route::post('/register', function (Request $request) {
         'token' => $token
     ]);
 });
+
+
 Route::post('/register', function (Request $request) {
 
     $data = [
@@ -100,6 +118,33 @@ Route::post('/verify-otp', function (Request $request) {
     return response()->json(['message' => 'OTP verified']);
 });
 
+// Route::post('/reset-password', function (Request $request) {
+
+//     $request->validate([
+//         'email' => 'required|email',
+//         'password' => 'required|min:6|confirmed',
+//     ]);
+
+//     $user = \App\Models\User::where('email', $request->email)->first();
+
+//     if (!$user) {
+//         return response()->json(['message' => 'User not found'], 404);
+//     }
+
+//     // update password
+//     $user->update([
+//         'password' => $request->password
+//     ]);
+
+//     // delete OTP after success
+//     DB::table('password_resets')
+//         ->where('email', $request->email)
+//         ->delete();
+
+//     return response()->json([
+//         'message' => 'Password reset successful'
+//     ]);
+// });
 Route::post('/reset-password', function (Request $request) {
 
     $request->validate([
@@ -113,12 +158,11 @@ Route::post('/reset-password', function (Request $request) {
         return response()->json(['message' => 'User not found'], 404);
     }
 
-    // update password
+    // ✅ DO NOT HASH HERE
     $user->update([
-        'password' => Hash::make($request->password)
+        'password' => $request->password
     ]);
 
-    // delete OTP after success
     DB::table('password_resets')
         ->where('email', $request->email)
         ->delete();
