@@ -98,7 +98,7 @@ const handleSubmit = async (e) => {
 
     const data = await res.json();
 
-    console.log("LOGIN RESPONSE:", data);
+    // console.log("LOGIN RESPONSE:", data);
 
     if (!res.ok) {
       setError(data.message || "Login failed");
