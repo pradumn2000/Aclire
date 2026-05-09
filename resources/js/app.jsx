@@ -47,6 +47,7 @@ import Signup from "./pages/Signup";
 import Forgetpassword from "./pages/Forgetpassword";
 import VerifyAccount from "./pages/Verifyaccount"; // ✅ fixed
 import Resetpassword from "./pages/Resetpassword";
+import Confrimpassword from "./pages/Confrimpassword";
 import Dashboard from "./pages/Dashboard";
 
 const isAuth = () => !!localStorage.getItem("token");
@@ -65,6 +66,8 @@ function App() {
         <Route path="/Forgetpassword" element={<Forgetpassword />} />
         <Route path="/Verifyaccount" element={<VerifyAccount />} />
           <Route path="/Resetpassword" element={<Resetpassword/>}/>
+          <Route path="/Confrimpassword" element={<Confrimpassword/>}/>
+          <Route path="/Dashboard" element={<Dashboard/>}/>
       
 
         <Route

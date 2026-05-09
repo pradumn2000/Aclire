@@ -141,7 +141,7 @@ const handleSubmit = async (e) => {
                   
                   {/* Email */}
                   <div className="login-pst">
-                    <label>Email</label>
+                    {/* <label>Email</label> */}
                     <div className="input-grp">
                       <input
                         type="email"
@@ -155,7 +155,7 @@ const handleSubmit = async (e) => {
 
                   {/* Password */}
                   <div className="login-pst">
-                    <label>Password</label>
+                    {/* <label>Password</label> */}
 
                     <div className="input-grp pass">
                       <input
@@ -186,11 +186,13 @@ const handleSubmit = async (e) => {
                   </div>
 
                   {/* Submit */}
-                  <input
+              
+                    <input
                     type="submit"
                     value="Login"
                     className="primary-cta"
                   />
+                  
                 </form>
 
     

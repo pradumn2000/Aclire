@@ -65,6 +65,7 @@ export default function Signup() {
   };
 
   return (
+    
     <section className="log-in">
       <div className="container">
         <div className="row">
@@ -88,7 +89,7 @@ export default function Signup() {
 
               {/* Username */}
               <div className="login-pst">
-                <label>Username</label>
+                {/* <label>Username</label> */}
                 <div className="input-grp">
                   <input
                     type="text"
@@ -103,7 +104,7 @@ export default function Signup() {
 
               {/* Email */}
               <div className="login-pst">
-                <label>Email</label>
+                {/* <label>Email</label> */}
                 <div className="input-grp">
                   <input
                     type="email"
@@ -118,7 +119,7 @@ export default function Signup() {
 
               {/* Password */}
               <div className="login-pst">
-                <label>Password</label>
+                {/* <label>Password</label> */}
                 <div className="input-grp pass">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -141,7 +142,7 @@ export default function Signup() {
 
               {/* Confirm Password */}
               <div className="login-pst">
-                <label>Confirm Password</label>
+                {/* <label>Confirm Password</label> */}
                 <div className="input-grp pass">
                   <input
                     type={showConfirm ? "text" : "password"}

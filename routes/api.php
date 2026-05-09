@@ -72,7 +72,7 @@ Route::post('/send-otp', function (Request $request) {
         'email' => 'required|email|exists:users,email'
     ]);
 
-    $otp = rand(100000, 999999);
+    $otp = rand(1000, 9999);
 
     DB::table('password_resets')->updateOrInsert(
         ['email' => $request->email],
