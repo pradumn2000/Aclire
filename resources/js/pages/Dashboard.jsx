@@ -13,63 +13,63 @@ export default function Dashboard() {
   {/* SIDEBAR */}
   <section id="sidebar">
     <a href="javascript:void(0);" className="brand">
-      <img src="images/logo.svg" alt="" />
-      <img src="images/coll-logo.svg" alt="" className="collapsed" />
+      <img src="/images/login/logo.png" alt="logo" />
+      <img src="/images/login/side-logo.png" alt="" className="collapsed" />
     </a>
 
     <ul className="side-menu">
       <li className="active">
         <a href="dashboard.html">
-          <img src="images/menu/1.svg" alt="" />
+          {/* <img src="images/menu/1.svg" alt="" /> */}
           <span className="text">Dashboard</span>
         </a>
       </li>
 
       <li>
         <a href="leads-sales.html">
-          <img src="images/menu/2.svg" alt="" />
+          {/* <img src="images/menu/2.svg" alt="" /> */}
           <span className="text">All Cases</span>
         </a>
       </li>
 
       <li>
         <a href="ongoing-projects.html">
-          <img src="images/menu/3.svg" alt="" />
+          {/* <img src="images/menu/3.svg" alt="" /> */}
           <span className="text">WIP</span>
         </a>
       </li>
 
       <li>
         <a href="containers-list.html">
-          <img src="images/menu/4.svg" alt="" />
+          {/* <img src="images/menu/4.svg" alt="" /> */}
           <span className="text">Completed</span>
         </a>
       </li>
 
       <li>
         <a href="team-management.html">
-          <img src="images/menu/5.svg" alt="" />
+          {/* <img src="images/menu/5.svg" alt="" /> */}
           <span className="text">Clients</span>
         </a>
       </li>
 
       <li>
         <a href="ticket-management.html">
-          <img src="images/menu/6.svg" alt="" />
+          {/* <img src="images/menu/6.svg" alt="" /> */}
           <span className="text">Reports</span>
         </a>
       </li>
 
       <li>
         <a href="alerts.html">
-          <img src="images/menu/7.svg" alt="" />
+          {/* <img src="images/menu/7.svg" alt="" /> */}
           <span className="text">Trends</span>
         </a>
       </li>
 
        <li>
         <a href="alerts.html">
-          <img src="images/menu/7.svg" alt="" />
+          {/* <img src="images/menu/7.svg" alt="" /> */}
           <span className="text">Settings</span>
         </a>
       </li>
@@ -80,7 +80,7 @@ export default function Dashboard() {
           data-bs-toggle="modal"
           data-bs-target="#logout"
         >
-          <img src="images/menu/8.svg" alt="" />
+          {/* <img src="images/menu/8.svg" alt="" /> */}
           <span className="text">Logout</span>
         </a>
       </li>
@@ -98,235 +98,190 @@ export default function Dashboard() {
       </div>
 
       <div className="head-src">
-        <i className="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search..." />
+        {/* <i className="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search..." /> */}
+        <h3>ADMIN DASHBOARD  —  Full Visibility · All Clients · Trends · Export
+</h3>
       </div>
 
-      <div className="notification dropdown">
-        <button
-          className="notification-btn dropdown-toggle"
-          type="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          data-bs-auto-close="outside"
-        >
-          <img src="images/notification.svg" alt="" />
-          <span className="dot"></span>
-        </button>
-
-        <div className="dropdown-menu dropdown-menu-end">
-          <div className="notification-dropdown">
-
-            <div className="notification-dropdown-header">
-              <h4>
-                Notifications <br />
-                <span>Today</span>
-              </h4>
-
-              <button
-                type="button"
-                className="btn-close close-dropdown"
-              ></button>
-            </div>
-
-            <div className="notification-dropdown-body">
-
-              <div className="notification-dropdown-body-itm blue">
-                <div className="notification-dropdown-body-txt">
-                  <h3>New Container Arrived</h3>
-
-                  <p>
-                    CNT-DEN-005 arrived — 75.0 CBM textile goods.
-                    Assign dock Mew and upload packing sheet.
-                  </p>
-
-                  <span>2 minutes ago</span>
-                </div>
-
-                <a href="#" className="notification-dropdown-body-btn">
-                  View
-                </a>
-              </div>
-
-              <div className="notification-dropdown-body-itm red">
-                <div className="notification-dropdown-body-txt">
-                  <h3>Overdue Delivery</h3>
-
-                  <p>
-                    ORD-2026-0104 delivery date passed 8 days ago.
-                    Truck not yet assigned. Penalty: $850.
-                  </p>
-
-                  <span>3 minutes ago</span>
-                </div>
-
-                <a href="#" className="notification-dropdown-body-btn">
-                  View
-                </a>
-              </div>
-
-            </div>
-
-            <div className="notification-dropdown-footer">
-              <button
-                type="button"
-                className="close-dropdown"
-              >
-                Close
-              </button>
-
-              <a href="alerts.html" className="primary-btn">
-                View All
-              </a>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <div className="admin-icon">
-        <img src="images/profile.svg" alt="" />
-        Erik Brown
-      </div>
+      <button type="button" className="primary-cta">Admin Role</button>
     </nav>
 
     {/* MAIN */}
     <main>
 
-      {/* TOP SECTION */}
-      <div className="top-head">
+     <div className="dash-wrper">
 
-        <div className="top-head-in">
-          <h1>Dashboard</h1>
-        </div>
+          <div className="dash-upper-head">
+          <div className="left"> 
+          <button className="tab-cta">Today</button>
+          <button className="tab-cta">This Week</button>
+          <button className="tab-cta">This Month</button>
+          <button className="tab-cta active">Custom</button>
+          </div>
+          <div className="right">
+          <button className="date-wrapper"><img src="/images/dashboard/calendar-icon.svg"></img><input
+        type="text"
+        name="daterange"
+        className="selectedDate"
+        placeholder="Select Date"
+        readOnly
+      /></button>
+          <button className="primary-cta">Export CSV</button>
+          <button className="secondary-cta">Export Excel</button>
+          </div>
+          </div>
 
-        <div className="top-head-filter">
+       {/* TOP SECTION */}
+      <div className="cards-head-dash">
 
-          <select name="year" className="filter-select">
-            <option value="1">2025-26</option>
-            <option value="2">2024-25</option>
-            <option value="3">2023-24</option>
-            <option value="4">2022-23</option>
-            <option value="5">2021-22</option>
-          </select>
+       <div className="card-inner-dash bdr-total">
+        <h4>1,284</h4>
+        <p>Total Cases</p>
+       </div>
 
-          <select name="city" className="filter-select">
-            <option value="1">Denver</option>
-            <option value="2">New York</option>
-            <option value="3">Los Angeles</option>
-            <option value="4">Chicago</option>
-            <option value="5">Houston</option>
-          </select>
+       <div className="card-inner-dash bdr-progress">
+        <h4>342</h4>
+        <p>In Progress</p>
+       </div>
 
-          <a className="filter-btn" href="calendar.html">
-            <img src="images/eye.svg" alt="" />
-            Calendar View
-          </a>
+       <div className="card-inner-dash bdr-com">
+        <h4>856</h4>
+        <p>Completed</p>
+       </div>
 
-        </div>
+       <div className="card-inner-dash bdr-client">
+        <h4>50</h4>
+        <p>Clients</p>
+       </div>
+
+       <div className="card-inner-dash bdr-rate">
+        <h4>92%</h4>
+        <p>Clear Rate</p>
+       </div>
+
       </div>
 
-      {/* DASHBOARD */}
-      <div className="dashboard-innr">
+      {/* DASHBOARD Inner body */}
 
-        <h2 className="innr-heading">Overview</h2>
-
-        <div className="dashboard-card-wrap">
-
-          <div className="dashboard-card-in">
-            <div className="dashboard-card-in-top">
-
-              <div className="dashboard-card-in-text">
-                <h4>47</h4>
-                <p>Active Leads</p>
-              </div>
-
-              <img src="images/dashboard/1.svg" alt="" />
-            </div>
-
-            <div className="dashboard-card-in-info">
-              <p>
-                <span>
-                  <i className="fa-solid fa-arrow-up-long"></i> 1.20%
-                </span>
-                {" "}since last year
-              </p>
-            </div>
+      <div className="dash-inner-wrp-both">
+          <div className="dash-inner-left">
+          <div className="up-table">
+          <img src="/images/dashboard/graph-dash.png" alt="logo" />
           </div>
 
-          <div className="dashboard-card-in">
-            <div className="dashboard-card-in-top">
+          <div className="down-table">
+            <table>
+      <thead>
+        <tr>
+          <th>Case ID</th>
+          <th>Candidate</th>
+          <th>Client</th>
+          <th>Checks</th>
+          <th>Status</th>
+          <th>TAT</th>
+          <th>Action</th>
+        </tr>
+      </thead>
 
-              <div className="dashboard-card-in-text">
-                <h4>32</h4>
-                <p>Ongoing Projects</p>
-              </div>
+      <tbody>
+        <tr>
+          <td>BGV-2401</td>
+          <td>Ravi Kumar</td>
+          <td>Infosys</td>
+          <td>Emp-Edu-Addr</td>
+          <td><span className="status in-progress">In Progress</span></td>
+          <td>3d</td>
+          <td>
+            <button className="view-cta">View</button>
+          </td>
+        </tr>
 
-              <img src="images/dashboard/2.svg" alt="" />
-            </div>
+        <tr>
+          <td>BGV-2402</td>
+          <td>Anjali Mehta</td>
+          <td>TCS</td>
+          <td>Emp-Criminal</td>
+          <td><span className="status qc-review">QC Review</span></td>
+          <td>5d</td>
+          <td>
+            <button className="view-cta">View</button>
+          </td>
+        </tr>
 
-            <div className="dashboard-card-in-info">
-              <p>
-                <span>
-                  <i className="fa-solid fa-arrow-up-long"></i> 1.20%
-                </span>
-                {" "}since last year
-              </p>
-            </div>
+        <tr>
+          <td>BGV-2403</td>
+          <td>Suresh Pillai</td>
+          <td>Wipro</td>
+          <td>All 7</td>
+          <td><span className="status completed">Completed</span></td>
+          <td>4d</td>
+          <td>
+            <button className="view-cta">Report</button>
+          </td>
+        </tr>
+
+        <tr>
+          <td>BGV-2404</td>
+          <td>Neha Sharma</td>
+          <td>HCL</td>
+          <td>Edu-DB</td>
+          <td><span className="status pending">Pending</span></td>
+          <td>1d</td>
+          <td>
+            <button className="view-cta">View</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
           </div>
+      </div>
 
+      <div className="dash-inner-right">
+           <div className="quick-stats">
+
+      <div className="stats-header">
+        <h3>QUICK STATS</h3>
+      </div>
+
+      <div className="stats-body">
+
+        <div className="stats-row">
+          <span>Avg TAT</span>
+          <span>4.2 days</span>
         </div>
 
-        {/* PERFORMANCE */}
-        <h2 className="innr-heading">Performance</h2>
+        <div className="stats-row">
+          <span>Clear Rate</span>
+          <span>92%</span>
+        </div>
 
-        <div className="performance-grid-wrp">
+        <div className="stats-row">
+          <span>Discrepancy</span>
+          <span>8%</span>
+        </div>
 
-          <div className="performance-in-card">
-            <h4>
-              Leads & Sales{" "}
-              <a href="leads-sales.html">
-                <i className="fa-solid fa-arrow-up-long"></i>
-                {" "}View Details
-              </a>
-            </h4>
+        <div className="stats-row">
+          <span>Discrepancy</span>
+          <span>8%</span>
+        </div>
 
-            <ul>
-              <li>
-                New Leads <span>12</span>
-              </li>
+        <div className="stats-row">
+          <span>Discrepancy</span>
+          <span>8%</span>
+        </div>
 
-              <li>
-                Conversion Rate <span>32.5%</span>
-              </li>
-
-              <li>
-                Budget Calculation Sent (Pending) <span>08</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="performance-in-card">
-            <h4>Design</h4>
-
-            <ul>
-              <li>
-                In-progress <span>12</span>
-              </li>
-
-              <li>
-                Completed <span>08</span>
-              </li>
-
-              <li>
-                Approved <span>08</span>
-              </li>
-            </ul>
-          </div>
-
+        <div className="stats-row">
+          <span>Discrepancy</span>
+          <span>8%</span>
         </div>
 
       </div>
+    </div>
+      </div>
+      </div>
+     </div>
+      
     </main>
   </section>
 </>
