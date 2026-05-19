@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -10,15 +9,27 @@ export default function Dashboard() {
     navigate("/");
   };
 
+
   return (
     <>
-  {/* SIDEBAR */}
- <Sidebar/>
+ 
 
   {/* CONTENT */}
-  <section id="content">
+  <section id="noSidebar">
     {/* NAVBAR */}
-    <Header/>
+    <nav>
+      <div className="nav-toggle">
+        <div className="bx bx-menu">
+          <img src="images/sidebar-collapse.svg" alt="" />
+        </div>
+      </div>
+      
+      <div className="head-src">
+        <h3>CLIENT PORTAL — Case Submission · Status Traking · Reports · Export</h3>
+      </div>
+      
+      <button type="button" className="primary-cta">Client Role</button>
+    </nav>
 
 
     {/* MAIN */}
@@ -50,27 +61,24 @@ export default function Dashboard() {
       <div className="cards-head-dash">
 
        <div className="card-inner-dash bdr-total">
-        <h4>1,284</h4>
-        <p>Total Cases</p>
+        <h4>18</h4>
+        <p>Active</p>
        </div>
 
-       <div className="card-inner-dash bdr-progress">
-        <h4>342</h4>
-        <p>In Progress</p>
-       </div>
-
-       <div className="card-inner-dash bdr-com">
-        <h4>856</h4>
+        <div className="card-inner-dash bdr-com">
+        <h4>42</h4>
         <p>Completed</p>
        </div>
 
-       <div className="card-inner-dash bdr-client">
-        <h4>50</h4>
-        <p>Clients</p>
+       <div className="card-inner-dash bdr-progress">
+        <h4>3</h4>
+        <p>Pending Link</p>
        </div>
 
+
+
        <div className="card-inner-dash bdr-rate">
-        <h4>92%</h4>
+        <h4>96%</h4>
         <p>Clear Rate</p>
        </div>
 

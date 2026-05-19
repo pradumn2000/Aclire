@@ -49,6 +49,8 @@ import VerifyAccount from "./pages/Verifyaccount"; // ✅ fixed
 import Resetpassword from "./pages/Resetpassword";
 import Confrimpassword from "./pages/Confrimpassword";
 import Dashboard from "./pages/Dashboard";
+import Clientportal from "./pages/Clientportal";
+
 
 const isAuth = () => !!localStorage.getItem("token");
 
@@ -68,6 +70,7 @@ function App() {
           <Route path="/Resetpassword" element={<Resetpassword/>}/>
           <Route path="/Confrimpassword" element={<Confrimpassword/>}/>
           <Route path="/Dashboard" element={<Dashboard/>}/>
+          <Route path="/Clientportal" element={<Clientportal/>}/>
       
 
         <Route
