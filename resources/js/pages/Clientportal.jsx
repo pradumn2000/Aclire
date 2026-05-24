@@ -17,192 +17,501 @@ export default function Dashboard() {
   {/* CONTENT */}
   <section id="noSidebar">
     {/* NAVBAR */}
-    <nav>
+    <nav className="verifyer">
       <div className="nav-toggle">
         <div className="bx bx-menu">
-          <img src="images/sidebar-collapse.svg" alt="" />
+          <img src="images/inner-pages/emp-check-icon.svg" alt="" />
         </div>
       </div>
       
       <div className="head-src">
-        <h3>CLIENT PORTAL — Case Submission · Status Traking · Reports · Export</h3>
+        <h3>ONBOARDING ROLE + CANDIDATE PORTAL LINK  —  Resignation | Billing Link Gen</h3>
       </div>
       
-      <button type="button" className="primary-cta">Client Role</button>
+      <button type="button" className="primary-cta">Onboarding Role</button>
     </nav>
 
 
     {/* MAIN */}
     <main>
 
-     <div className="dash-wrper">
+     {/* Main Portal Layout Container */}
+<div className="cob-portal-container">
 
-          <div className="dash-upper-head">
-          <div className="left"> 
-          <button className="tab-cta">Today</button>
-          <button className="tab-cta">This Week</button>
-          <button className="tab-cta">This Month</button>
-          <button className="tab-cta active">Custom</button>
-          </div>
-          <div className="right">
-          <button className="date-wrapper"><img src="/images/dashboard/calendar-icon.svg"></img><input
-        type="text"
-        name="daterange"
-        className="selectedDate"
-        placeholder="Select Date"
-        readOnly
-      /></button>
-          <button className="primary-cta">Export CSV</button>
-          <button className="secondary-cta">Export Excel</button>
-          </div>
-          </div>
+  {/* Outer Flexbox Layout */}
+  <div className="cob-emplyment-check-body">
 
-       {/* TOP SECTION */}
-      <div className="cards-head-dash">
+    {/* FIRST CARD */}
+    <div className="cob-frist-card">
 
-       <div className="card-inner-dash bdr-total">
-        <h4>18</h4>
-        <p>Active</p>
-       </div>
-
-        <div className="card-inner-dash bdr-com">
-        <h4>42</h4>
-        <p>Completed</p>
-       </div>
-
-       <div className="card-inner-dash bdr-progress">
-        <h4>3</h4>
-        <p>Pending Link</p>
-       </div>
-
-
-
-       <div className="card-inner-dash bdr-rate">
-        <h4>96%</h4>
-        <p>Clear Rate</p>
-       </div>
-
+      <div className="cob-card-header cob-client-header">
+        <h2>CLIENT ONBOARDING FORM</h2>
       </div>
 
-      {/* DASHBOARD Inner body */}
+      <form
+        className="cob-client-form"
+        id="clientOnboardingForm"
+      >
 
-      <div className="dash-inner-wrp-both">
-          <div className="dash-inner-left">
-          <div className="up-table">
-          <img src="/images/dashboard/graph-dash.png" alt="logo" />
+        {/* Company Name */}
+        <div className="cob-form-group">
+
+          <label className="cob-form-label">
+            Company Name
+          </label>
+
+          <input
+            type="text"
+            className="cob-form-input"
+            defaultValue="Deloitte India Pvt Ltd"
+            placeholder="Enter company name"
+            required
+          />
+
+        </div>
+
+        {/* GSTIN */}
+        <div className="cob-form-group">
+
+          <label className="cob-form-label">
+            GSTIN
+          </label>
+
+          <input
+            type="text"
+            className="cob-form-input"
+            defaultValue="27AABCD1234F1Z5"
+            placeholder="Enter GSTIN number"
+            required
+          />
+
+        </div>
+
+        {/* Primary Contact */}
+        <div className="cob-form-group">
+
+          <label className="cob-form-label">
+            Primary Contact
+          </label>
+
+          <input
+            type="text"
+            className="cob-form-input"
+            defaultValue="Ramesh Joshi — +91-98765-43210"
+            placeholder="Contact Name — Phone Number"
+            required
+          />
+
+        </div>
+
+        {/* Billing Mode */}
+        <div className="cob-form-group">
+
+          <label className="cob-form-label">
+            Billing Mode
+          </label>
+
+          <div className="cob-billing-toggle-group">
+
+            <button
+              type="button"
+              className="cob-toggle-btn"
+            >
+              Prepaid — Client
+            </button>
+
+            <button
+              type="button"
+              className="cob-toggle-btn"
+            >
+              Prepaid — Candidate
+            </button>
+
+            <button
+              type="button"
+              className="cob-toggle-btn active-teal"
+            >
+              Postpaid — Client
+            </button>
+
           </div>
 
-          <div className="down-table">
-            <table>
-      <thead>
-        <tr>
-          <th>Case ID</th>
-          <th>Candidate</th>
-          <th>Client</th>
-          <th>Checks</th>
-          <th>Status</th>
-          <th>TAT</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+        </div>
 
-      <tbody>
-        <tr>
-          <td>BGV-2401</td>
-          <td>Ravi Kumar</td>
-          <td>Infosys</td>
-          <td>Emp-Edu-Addr</td>
-          <td><span className="status in-progress">In Progress</span></td>
-          <td>3d</td>
-          <td>
-            <button className="view-cta">View</button>
-          </td>
-        </tr>
+        {/* Check Types */}
+        <div className="cob-form-group">
 
-        <tr>
-          <td>BGV-2402</td>
-          <td>Anjali Mehta</td>
-          <td>TCS</td>
-          <td>Emp-Criminal</td>
-          <td><span className="status qc-review">QC Review</span></td>
-          <td>5d</td>
-          <td>
-            <button className="view-cta">View</button>
-          </td>
-        </tr>
+          <label className="cob-form-label">
+            Agreed Check Types
+          </label>
 
-        <tr>
-          <td>BGV-2403</td>
-          <td>Suresh Pillai</td>
-          <td>Wipro</td>
-          <td>All 7</td>
-          <td><span className="status completed">Completed</span></td>
-          <td>4d</td>
-          <td>
-            <button className="view-cta">Report</button>
-          </td>
-        </tr>
+          <div className="cob-check-tags-group">
 
-        <tr>
-          <td>BGV-2404</td>
-          <td>Neha Sharma</td>
-          <td>HCL</td>
-          <td>Edu-DB</td>
-          <td><span className="status pending">Pending</span></td>
-          <td>1d</td>
-          <td>
-            <button className="view-cta">View</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <span className="cob-check-tag active-navy">
+              Emp
+            </span>
+
+            <span className="cob-check-tag active-navy">
+              Edu
+            </span>
+
+            <span className="cob-check-tag active-navy">
+              Addr
+            </span>
+
+            <span className="cob-check-tag active-navy">
+              DB
+            </span>
+
+            <span className="cob-check-tag">
+              Criminal
+            </span>
+
+            <span className="cob-check-tag">
+              Drug
+            </span>
+
+            <span className="cob-check-tag">
+              Court
+            </span>
+
           </div>
+
+        </div>
+
+        {/* Rate Card */}
+        <div className="cob-form-group">
+
+          <label className="cob-form-label">
+            Rate Card
+          </label>
+
+          <div className="cob-rate-cards-container">
+
+            <div
+              className="cob-rate-card-item"
+              id="rate-emp"
+            >
+              <span className="cob-rate-label">
+                Employment
+              </span>
+
+              <span className="cob-rate-value">
+                ₹350
+              </span>
+            </div>
+
+            <div
+              className="cob-rate-card-item"
+              id="rate-edu"
+            >
+              <span className="cob-rate-label">
+                Education
+              </span>
+
+              <span className="cob-rate-value">
+                ₹280
+              </span>
+            </div>
+
+            <div
+              className="cob-rate-card-item"
+              id="rate-addr"
+            >
+              <span className="cob-rate-label">
+                Address
+              </span>
+
+              <span className="cob-rate-value">
+                ₹180
+              </span>
+            </div>
+
+            <div
+              className="cob-rate-card-item"
+              id="rate-db"
+            >
+              <span className="cob-rate-label">
+                Database
+              </span>
+
+              <span className="cob-rate-value">
+                ₹120
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Button */}
+        <div className="cob-form-actions">
+
+          <button
+            type="submit"
+            className="cob-btn-create-account"
+          >
+            CREATE CLIENT ACCOUNT
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+
+    {/* SECOND CARD */}
+    <div className="cob-second-card">
+
+      <div className="cob-card-header cob-portal-header">
+        <h2>
+          CANDIDATE PORTAL — LINK GENERATOR
+        </h2>
       </div>
 
-      <div className="dash-inner-right">
-           <div className="quick-stats">
+      <div className="cob-portal-generator-content">
 
-      <div className="stats-header">
-        <h3>QUICK STATS</h3>
-      </div>
+        <p className="cob-section-description">
+          Generate a unique onboarding link per candidate.
+        </p>
 
-      <div className="stats-body">
+        <form
+          className="cob-generator-form"
+          id="linkGeneratorForm"
+        >
 
-        <div className="stats-row">
-          <span>Avg TAT</span>
-          <span>4.2 days</span>
-        </div>
+          {/* Candidate Name */}
+          <div className="cob-form-group">
 
-        <div className="stats-row">
-          <span>Clear Rate</span>
-          <span>92%</span>
-        </div>
+            <label className="cob-form-label">
+              Candidate Name
+            </label>
 
-        <div className="stats-row">
-          <span>Discrepancy</span>
-          <span>8%</span>
-        </div>
+            <input
+              type="text"
+              className="cob-form-input"
+              id="candidateNameInput"
+              placeholder="Enter candidate name"
+              required
+            />
 
-        <div className="stats-row">
-          <span>Discrepancy</span>
-          <span>8%</span>
-        </div>
+          </div>
 
-        <div className="stats-row">
-          <span>Discrepancy</span>
-          <span>8%</span>
-        </div>
+          {/* Email */}
+          <div className="cob-form-group">
 
-        <div className="stats-row">
-          <span>Discrepancy</span>
-          <span>8%</span>
-        </div>
+            <label className="cob-form-label">
+              Email
+            </label>
+
+            <input
+              type="email"
+              className="cob-form-input"
+              id="candidateEmailInput"
+              placeholder="Enter candidate email address"
+              required
+            />
+
+          </div>
+
+          {/* Mobile */}
+          <div className="cob-form-group">
+
+            <label className="cob-form-label">
+              Mobile
+            </label>
+
+            <input
+              type="tel"
+              className="cob-form-input"
+              id="candidateMobileInput"
+              placeholder="Enter mobile number"
+              required
+            />
+
+          </div>
+
+          {/* Position */}
+          <div className="cob-form-group">
+
+            <label className="cob-form-label">
+              Position Applied
+            </label>
+
+            <input
+              type="text"
+              className="cob-form-input"
+              id="candidatePosInput"
+              placeholder="Enter position name"
+              required
+            />
+
+          </div>
+
+          {/* Checkboxes */}
+          <div className="cob-form-group">
+
+            <label className="cob-form-label">
+              Check Types
+            </label>
+
+            <div className="cob-checkboxes-row">
+
+              <label className="cob-checkbox-item">
+
+                <input
+                  type="checkbox"
+                  className="cob-checkbox-native"
+                  value="emp"
+                  defaultChecked
+                />
+
+                <span className="cob-checkbox-custom">
+                  ✔
+                </span>
+
+                <span className="cob-checkbox-label">
+                  Emp
+                </span>
+
+              </label>
+
+              <label className="cob-checkbox-item">
+
+                <input
+                  type="checkbox"
+                  className="cob-checkbox-native"
+                  value="edu"
+                  defaultChecked
+                />
+
+                <span className="cob-checkbox-custom">
+                  ✔
+                </span>
+
+                <span className="cob-checkbox-label">
+                  Edu
+                </span>
+
+              </label>
+
+            </div>
+
+          </div>
+
+          {/* Expiry */}
+          <div className="cob-form-group">
+
+            <label className="cob-form-label">
+              Link Expiry
+            </label>
+
+            <div className="cob-expiry-toggle-group">
+
+              <button
+                type="button"
+                className="cob-toggle-btn"
+              >
+                24h
+              </button>
+
+              <button
+                type="button"
+                className="cob-toggle-btn"
+              >
+                48h
+              </button>
+
+              <button
+                type="button"
+                className="cob-toggle-btn active-teal"
+              >
+                72h
+              </button>
+
+              <button
+                type="button"
+                className="cob-toggle-btn"
+              >
+                7 days
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* Generated Link */}
+          <div
+            className="cob-generated-link-wrapper"
+            id="linkDisplayWrapper"
+            style={{ display: "flex" }}
+          >
+
+            <span
+              className="cob-generated-url-text"
+              id="generatedUrlText"
+            >
+              https://bgv.portal/candidate/link/7f3a9c2e...
+            </span>
+
+          </div>
+
+          {/* Buttons */}
+          <div className="cob-action-buttons-row">
+
+            <button
+              type="submit"
+              className="cob-action-btn cob-btn-generate"
+            >
+              GENERATE LINK
+            </button>
+
+            <button
+              type="button"
+              className="cob-action-btn cob-btn-copy"
+              id="btnCopyLink"
+            >
+              COPY LINK 📋
+            </button>
+
+            <button
+              type="button"
+              className="cob-action-btn cob-btn-sms"
+              id="btnSendSms"
+            >
+              SEND SMS
+            </button>
+
+            <button
+              type="button"
+              className="cob-action-btn cob-btn-email"
+              id="btnSendEmail"
+            >
+              EMAIL
+            </button>
+
+          </div>
+
+        </form>
 
       </div>
     </div>
-      </div>
-      </div>
-     </div>
+
+  </div>
+
+  {/* Footer */}
+  <footer className="cob-portal-footer">
+
+    <div className="cob-footer-left">
+      BGV Portal — Developer Design Reference v2.0
+    </div>
+
+    <div className="cob-footer-right">
+      Product Team Confidential
+    </div>
+
+  </footer>
+
+</div>
       
     </main>
   </section>

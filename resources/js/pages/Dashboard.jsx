@@ -41,8 +41,8 @@ export default function Dashboard() {
         placeholder="Select Date"
         readOnly
       /></button>
-          <button className="primary-cta">Export CSV</button>
-          <button className="secondary-cta">Export Excel</button>
+          <button className="primary-cta export"><img src="images/dashboard/export-icon.svg" alt="" /> Export CSV</button>
+          <button className="secondary-cta import"><img src="images/dashboard/export-excel.svg" alt="" />Export Excel</button>
           </div>
           </div>
 

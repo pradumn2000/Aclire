@@ -50,7 +50,7 @@ import Resetpassword from "./pages/Resetpassword";
 import Confrimpassword from "./pages/Confrimpassword";
 import Dashboard from "./pages/Dashboard";
 import Clientportal from "./pages/Clientportal";
-
+// import Empolymentcheck from "./pages/Employmentcheck";
 
 const isAuth = () => !!localStorage.getItem("token");
 
@@ -67,10 +67,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/Forgetpassword" element={<Forgetpassword />} />
         <Route path="/Verifyaccount" element={<VerifyAccount />} />
-          <Route path="/Resetpassword" element={<Resetpassword/>}/>
-          <Route path="/Confrimpassword" element={<Confrimpassword/>}/>
-          <Route path="/Dashboard" element={<Dashboard/>}/>
-          <Route path="/Clientportal" element={<Clientportal/>}/>
+        <Route path="/Resetpassword" element={<Resetpassword/>}/>
+        <Route path="/Confrimpassword" element={<Confrimpassword/>}/>
+        <Route path="/Dashboard" element={<Dashboard/>}/>
+        <Route path="/Clientportal" element={<Clientportal/>}/>
+          {/* <Route path="/Employmentcheck" element={<Employmentcheck/>}/> */}
       
 
         <Route

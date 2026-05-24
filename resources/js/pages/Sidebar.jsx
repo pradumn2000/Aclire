@@ -11,7 +11,7 @@ export default function Sidebar() {
     <ul className="side-menu">
       <li className="active">
         <a href="dashboard.html">
-          {/* <img src="images/sidebar/dash-icon.png" alt="" /> */}
+          <img src="images/sidebar/home-icon.svg" alt="" />
           <i class="fa-solid fa-house"></i>
           <span className="text">Dashboard</span>
         </a>
@@ -19,49 +19,49 @@ export default function Sidebar() {
 
       <li>
         <a href="leads-sales.html">
-          <img src="images/menu/2.svg" alt="" />
+          <img src="images/sidebar/cases-icon.svg" alt="" />
           <span className="text">All Cases</span>
         </a>
       </li>
 
       <li>
         <a href="ongoing-projects.html">
-          <img src="images/menu/3.svg" alt="" />
+          <img src="images/sidebar/wip-icon.svg" alt="" />
           <span className="text">WIP</span>
         </a>
       </li>
 
       <li>
         <a href="containers-list.html">
-          <img src="images/menu/4.svg" alt="" />
+          <img src="images/sidebar/completed-icon.svg" alt="" />
           <span className="text">Completed</span>
         </a>
       </li>
 
       <li>
         <a href="team-management.html">
-          <img src="images/menu/5.svg" alt="" />
+          <img src="images/sidebar/clients-icon.svg" alt="" />
           <span className="text">Clients</span>
         </a>
       </li>
 
       <li>
         <a href="ticket-management.html">
-          <img src="images/menu/6.svg" alt="" />
+          <img src="images/sidebar/report-icon.svg" alt="" />
           <span className="text">Reports</span>
         </a>
       </li>
 
       <li>
         <a href="alerts.html">
-          <img src="images/menu/7.svg" alt="" />
+          <img src="images/sidebar/trend-icon.svg" alt="" />
           <span className="text">Trends</span>
         </a>
       </li>
 
        <li>
         <a href="alerts.html">
-          <img src="images/menu/7.svg" alt="" />
+          <img src="images/sidebar/setting-icon.svg" alt="" />
           <span className="text">Settings</span>
         </a>
       </li>
@@ -72,8 +72,8 @@ export default function Sidebar() {
           data-bs-toggle="modal"
           data-bs-target="#logout"
         >
-          <img src="images/menu/8.svg" alt="" />
-          <span className="text">Logout</span>
+          <img src="images/sidebar/logout-icon.svg" alt="" />
+          <span className="text logout">Logout</span>
         </a>
       </li>
     </ul>

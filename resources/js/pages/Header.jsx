@@ -5,7 +5,7 @@ export default function Header() {
     <nav>
       <div className="nav-toggle">
         <div className="bx bx-menu">
-          <img src="images/sidebar-collapse.svg" alt="" />
+          <img src="images/sidebar/sidebar-collapse.svg" alt="" />
         </div>
       </div>
       
