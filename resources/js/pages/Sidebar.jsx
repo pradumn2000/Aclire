@@ -80,3 +80,88 @@ export default function Sidebar() {
   </section>
   );
 }
+// import React from "react";
+// import { NavLink, useNavigate } from "react-router-dom";
+
+// export default function Sidebar() {
+//   const navigate = useNavigate();
+
+//   const logout = () => {
+//     localStorage.removeItem("token");
+//     navigate("/");
+//   };
+
+//   return (
+//     <section id="sidebar">
+//       <a href="javascript:void(0);" className="brand">
+//         <img src="/images/login/logo.png" alt="logo" />
+//         <img src="/images/login/side-logo.png" alt="" className="collapsed" />
+//       </a>
+
+//       <ul className="side-menu">
+//         <li>
+//           <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/home-icon.svg" alt="" />
+//             <span className="text">Dashboard</span>
+//           </NavLink>
+//         </li>
+
+//         <li>
+//           <NavLink to="/all-cases" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/cases-icon.svg" alt="" />
+//             <span className="text">All Cases</span>
+//           </NavLink>
+//         </li>
+
+//         <li>
+//           <NavLink to="/wip" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/wip-icon.svg" alt="" />
+//             <span className="text">WIP</span>
+//           </NavLink>
+//         </li>
+
+//         <li>
+//           <NavLink to="/completed" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/completed-icon.svg" alt="" />
+//             <span className="text">Completed</span>
+//           </NavLink>
+//         </li>
+
+//         <li>
+//           <NavLink to="/client" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/clients-icon.svg" alt="" />
+//             <span className="text">Clients</span>
+//           </NavLink>
+//         </li>
+
+//         <li>
+//           <NavLink to="/emploment" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/report-icon.svg" alt="" />
+//             <span className="text">Employment</span>
+//           </NavLink>
+//         </li>
+
+//         <li>
+//           <NavLink to="/clientportal" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/trend-icon.svg" alt="" />
+//             <span className="text">Client Portal</span>
+//           </NavLink>
+//         </li>
+
+//         <li>
+//           <NavLink to="/verifyer" className={({ isActive }) => isActive ? "active" : ""}>
+//             <img src="images/sidebar/setting-icon.svg" alt="" />
+//             <span className="text">Verifyer</span>
+//           </NavLink>
+//         </li>
+
+//         <li className="logout-menu">
+//           <a role="button" onClick={logout} style={{ cursor: "pointer" }}>
+//             <img src="images/sidebar/logout-icon.svg" alt="" />
+//             <span className="text logout">Logout</span>
+//           </a>
+//         </li>
+//       </ul>
+//     </section>
+//   );
+// }

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 
-export default function Dashboard() {
+export default function Clientportal() {
   const navigate = useNavigate();
 
   const logout = () => {
