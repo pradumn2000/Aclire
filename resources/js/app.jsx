@@ -11,10 +11,13 @@ import Resetpassword from "./pages/Resetpassword";
 import Confrimpassword from "./pages/Confrimpassword";
 import Dashboard from "./pages/Dashboard";
 import Emploment from "./pages/Emploment";
-import verifyer from "./pages/Verifyer";
+import Verifyer from "./pages/Verifyer";
 import Clientportal from "./pages/Clientportal";
 import Client from "./pages/Client";
 import Settings from "./pages/Settings";
+import Intake from "./pages/Intake";
+import Allocator from "./pages/Allocator";
+import Specialist from "./pages/Specialist";
 // import Empolymentcheck from "./pages/Employmentcheck";
 
 const isAuth = () => !!localStorage.getItem("token");
@@ -38,9 +41,12 @@ function App() {
 
   <Route path="/clientportal" element={<Clientportal/>} />
   <Route path="/emploment" element={<Emploment />} />
-  <Route path="/verifyer" element={<verifyer />} />
+  <Route path="/Verifyer" element={<Verifyer />} />
   <Route path ="/Client" element={<Client/>}/>
 <Route path="/Settings" element={<Settings/>}/>
+<Route path="/Intake" element={<Intake/>}/>
+<Route path="/Allocator" element={<Allocator/>}/>
+<Route path="/Specialist" element={<Specialist/>}/>
   <Route
     path="/dashboard"
     element={

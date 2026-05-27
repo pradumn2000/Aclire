@@ -44,6 +44,7 @@ export default function Client() {
           <button className="tab-cta">Completed</button>
           <button className="tab-cta">Generate Link</button>
           <button className="tab-cta">Reports & Trends</button>
+          <button className="tab-cta">Billing</button>
           
      </div>
 
