@@ -25,10 +25,10 @@ export default function Client() {
       </div>
       
       <div className="head-src">
-        <h3>CLIENT PORTAL — Case Submission · Status Traking · Reports · Export</h3>
+        <h3>PVT / QC INTAKE — Queue  · Case Detail · Comments · Trends  · Export</h3>
       </div>
       
-      <button type="button" className="primary-cta">Client Role</button>
+      <button type="button" className="primary-cta">PVT Role</button>
     </nav>
 
 

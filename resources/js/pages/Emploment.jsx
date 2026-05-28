@@ -39,8 +39,8 @@ export default function Dashboard() {
 
      <div className="header-navbar">
       
-          <button className="tab-cta">Employment</button>
-          <button className="tab-cta active">Education</button>
+          <button className="tab-cta active">Employment</button>
+          <button className="tab-cta">Education</button>
           <button className="tab-cta">Address</button>
           <button className="tab-cta">Database</button>
           <button className="tab-cta">Criminal</button>
@@ -53,8 +53,8 @@ export default function Dashboard() {
           <div className="left"> 
           <button className="tab-cta">Today</button>
           <button className="tab-cta">This Week</button>
-          <button className="tab-cta">This Month</button>
-          <button className="tab-cta active">Custom</button>
+          <button className="tab-cta active">This Month</button>
+          <button className="tab-cta">Custom</button>
           </div>
           <div className="right">
           <button className="date-wrapper"><img src="/images/dashboard/calendar-icon.svg"></img><input

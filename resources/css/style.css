@@ -2266,6 +2266,7 @@ background-color: var(--sucess-btn-color);
   display: inline-block;
   letter-spacing: 0.4px;
   text-transform: uppercase;
+  width: 90px;
 }
 .badge-responsive {
   background-color: var(--sucess-btn-color);
@@ -3680,13 +3681,13 @@ section#detail-section {
 }
 /* Headers styling */
 .cab-dashboard-container .cab-board-header {
-    background-color: var(--cab-blue-board-header);
+    background-color: var(--tab-btn-color);
     color: #ffffff;
     padding: 16px 24px;
     letter-spacing: 0.5px;
 }
 .cab-dashboard-container .cab-manager-header {
-    background-color: var(--cab-dark-manager-header);
+    background-color: var(--tab-btn-color);
     color: #ffffff;
     padding: 16px 24px;
     letter-spacing: 0.5px;
@@ -4004,10 +4005,10 @@ section#detail-section {
     gap: 10px;
 }
 section.cab-board-section{
-  width: 70%;
+  width: 65%;
 }
 aside.cab-manager-section{
-  width: 30%;
+  width: 35%;
 }
 
 /* Allocator Page */
@@ -4105,28 +4106,28 @@ aside.cab-manager-section{
     transform: scale(0.96);
 }
 .cre-dashboard-container .cre-pill-clear {
-    background-color: var(--cre-color-clear);
+    background-color: var(--sucess-btn-color);
 }
 .cre-dashboard-container .cre-pill-clear:hover {
-    background-color: var(--cre-color-clear-hover);
+    background-color: var(--sucess-btn-color);
 }
 .cre-dashboard-container .cre-pill-discrepancy {
-    background-color: var(--cre-color-discrepancy);
+    background-color: var(--alert-red);
 }
 .cre-dashboard-container .cre-pill-discrepancy:hover {
-    background-color: var(--cre-color-discrepancy-hover);
+    background-color: var(--alert-red);
 }
 .cre-dashboard-container .cre-pill-pending {
-    background-color: var(--cre-color-pending);
+    background-color: var(--yellow-color);
 }
 .cre-dashboard-container .cre-pill-pending:hover {
-    background-color: var(--cre-color-pending-hover);
+    background-color: var(--yellow-color);
 }
 .cre-dashboard-container .cre-pill-na {
-    background-color: var(--cre-color-na);
+    background-color: var(--blue-gray);
 }
 .cre-dashboard-container .cre-pill-na:hover {
-    background-color: var(--cre-color-na-hover);
+    background-color: var(--blue-gray);
 }
 /* Left Bottom Discrepancy Banner */
 .cre-dashboard-container .cre-alert-banner {
@@ -4135,7 +4136,7 @@ aside.cab-manager-section{
     align-items: center;
     justify-content: flex-start;
     gap: 10px;
-    background-color: var(--cre-alert-orange);
+    background-color: var(--orange-medium);
     color: #ffffff;
     padding: 16px 20px;
     font-weight: 700;
@@ -4225,22 +4226,22 @@ aside.cab-manager-section{
     transform: translateY(1px);
 }
 .cre-dashboard-container .cre-btn-success {
-    background-color: var(--cre-color-clear);
+    background-color: var(--sucess-btn-color);
 }
 .cre-dashboard-container .cre-btn-success:hover {
-    background-color: var(--cre-color-clear-hover);
+    background-color: var(--sucess-btn-color);
 }
 .cre-dashboard-container .cre-btn-purple {
-    background-color: var(--cre-color-purple-btn);
+    background-color: var(--purple-color);
 }
 .cre-dashboard-container .cre-btn-purple:hover {
-    background-color: var(--cre-color-purple-hover);
+    background-color: var(--purple-color);
 }
 .cre-dashboard-container .cre-btn-navy {
-    background-color: var(--cre-color-navy);
+    background-color: var(--primary-color);
 }
 .cre-dashboard-container .cre-btn-navy:hover {
-    background-color: var(--cre-color-navy-hover);
+    background-color: var(--primary-color);
 }
 /* --- Right Column: Comments feed --- */
 .cre-dashboard-container .cre-comments-content {
@@ -4273,7 +4274,7 @@ aside.cab-manager-section{
     flex-shrink: 0;
 }
 .cre-dashboard-container .cre-avatar-purple {
-    background-color: var(--cre-color-purple-btn);
+    background-color: var(--purple-color);
 }
 .cre-dashboard-container .cre-avatar-teal {
     background-color: #0d8390;
@@ -4332,7 +4333,7 @@ aside.cab-manager-section{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--cre-purple-header);
+    background-color: var(--purple-color);
     color: #ffffff;
     border: none;
     border-radius: var(--cre-radius-sm);
@@ -4342,7 +4343,7 @@ aside.cab-manager-section{
     transition: var(--cre-transition-fast);
 }
 .cre-dashboard-container .cre-btn-send:hover {
-    background-color: var(--cre-color-purple-hover);
+    background-color: var(--purple-color);
     transform: scale(1.05);
 }
 .cre-dashboard-container .cre-btn-send:active {
@@ -4350,7 +4351,7 @@ aside.cab-manager-section{
 }
 /* Middle Stats Banner */
 .cre-dashboard-container .cre-monthly-banner {
-    background-color: var(--cre-color-navy);
+    background-color: var(--primary-color);
     color: #ffffff;
     padding: 12px 20px;
     font-weight: 700;
