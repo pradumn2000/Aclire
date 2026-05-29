@@ -43,6 +43,20 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # Build frontend assets
 RUN npm ci --ignore-scripts && npm run build
 
+
+# Create SQLite database file if it doesn't exist
+RUN touch /var/www/html/database/database.sqlite \
+    && chown www-data:www-data /var/www/html/database/database.sqlite
+
+# Laravel optimizations
+RUN php artisan config:clear \
+    && php artisan cache:clear \
+    && php artisan migrate --force \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache \
+    && php artisan storage:link
+
 # Laravel optimizations
 RUN php artisan config:cache \
     && php artisan route:cache \
