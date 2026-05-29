@@ -12,18 +12,31 @@ ENV COMPOSER_MEMORY_LIMIT=-1
 # Copy project files
 COPY . /var/www/html
 
-# Install Node.js + required dev packages for PHP extensions
-RUN apk add --no-cache npm \
+# Install system dependencies + Node.js
+RUN apk add --no-cache \
+    npm \
     libzip-dev \
-    sqlite-dev
+    sqlite-dev \
+    curl \
+    git \
+    libpng-dev \
+    libxml2-dev \
+    oniguruma-dev
 
-# Install PHP extensions
-RUN docker-php-ext-install zip pdo pdo_sqlite
+# Install PHP extensions required by Laravel
+RUN docker-php-ext-install \
+    zip \
+    pdo \
+    pdo_sqlite \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath
 
-# Composer install
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# Composer install with more output
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --verbose
 
-# Build React/Vite frontend
+# Build React frontend
 RUN npm ci --ignore-scripts && npm run build
 
 # Laravel optimizations
