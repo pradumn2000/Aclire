@@ -4,7 +4,8 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+// import Signup from "./pages/Signup";
+import Signup from "./pages/signup";
 import Forgetpassword from "./pages/Forgetpassword";
 import VerifyAccount from "./pages/Verifyaccount"; // 
 import Resetpassword from "./pages/Resetpassword";
