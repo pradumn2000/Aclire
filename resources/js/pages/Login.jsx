@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/style.css";
+import { API_URL } from "../src/config"
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ export default function Login() {
   const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
-  import { API_URL } from "../src/config"
+ 
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();

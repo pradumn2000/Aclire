@@ -81,6 +81,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/style.css";
+import { API_URL } from "../src/config"
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -92,7 +93,8 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/forgot-password", {
+      // const res = await fetch("http://localhost:8000/api/forgot-password",
+      const res = await fetch(`${API_URL}/forget-password`,  {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
