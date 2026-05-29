@@ -124,6 +124,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../auth/custom.js";
+import { API_URL } from "../src/config.js";
 
 export default function VerifyAccount() {
   const [otp, setOtp] = useState(["", "", "", ""]);  // 4 digits ✅
@@ -169,7 +170,8 @@ export default function VerifyAccount() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/verify-otp", {
+      // const res = await fetch("http://localhost:8000/api/verify-otp", {
+      const res = await fetch(`${API_URL}/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

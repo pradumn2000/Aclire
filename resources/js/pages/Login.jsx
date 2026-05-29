@@ -11,6 +11,7 @@ export default function Login() {
   const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
+  import { API_URL } from "../src/config"
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
@@ -84,7 +85,8 @@ const handleSubmit = async (e) => {
   setLoading(true);
 
   try {
-    const res = await fetch("http://localhost:8000/api/login", {
+    // const res = await fetch("http://localhost:8000/api/login", {
+    const res = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

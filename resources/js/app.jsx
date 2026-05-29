@@ -19,6 +19,7 @@ import Settings from "./pages/Settings";
 import Intake from "./pages/Intake";
 import Allocator from "./pages/Allocator";
 import Specialist from "./pages/Specialist";
+import AllCases from "./pages/AllCases";
 // import Empolymentcheck from "./pages/Employmentcheck";
 
 const isAuth = () => !!localStorage.getItem("token");
@@ -43,6 +44,7 @@ function App() {
   <Route path="/clientportal" element={<Clientportal/>} />
   <Route path="/emploment" element={<Emploment />} />
   <Route path="/Verifyer" element={<Verifyer />} />
+    <Route path="/AllCases" element={<AllCases />} />
   <Route path ="/Client" element={<Client/>}/>
 <Route path="/Settings" element={<Settings/>}/>
 <Route path="/Intake" element={<Intake/>}/>

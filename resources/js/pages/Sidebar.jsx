@@ -107,7 +107,7 @@ export default function Sidebar() {
         </li>
 
         <li>
-          <NavLink to="/all-cases" className={({ isActive }) => isActive ? "active" : ""}>
+          <NavLink to="/AllCases" className={({ isActive }) => isActive ? "active" : ""}>
             <img src="images/sidebar/cases-icon.svg" alt="" />
             <span className="text">All Cases</span>
           </NavLink>
