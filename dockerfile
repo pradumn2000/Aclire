@@ -242,6 +242,8 @@ RUN composer install \
 # Install Node dependencies and build Vite assets
 RUN npm ci
 RUN npm run build
+RUN cp public/build/.vite/manifest.json public/build/manifest.json
+RUN test -f public/build/manifest.json
 
 # Debug build output
 RUN echo "===== VITE BUILD OUTPUT =====" \
