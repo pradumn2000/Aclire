@@ -171,7 +171,7 @@ export default function VerifyAccount() {
 
     try {
       // const res = await fetch("http://localhost:8000/api/verify-otp", {
-      const res = await fetch(`${API_URL}/verify-otp`, {
+      const res = await fetch(`${API_URL}/api/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

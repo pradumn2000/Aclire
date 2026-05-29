@@ -241,6 +241,7 @@ RUN composer install \
 
 # Install Node dependencies and build Vite assets
 RUN npm ci
+RUN echo "VITE_API_URL=$VITE_API_URL"
 RUN npm run build
 RUN test -f public/build/manifest.json
 

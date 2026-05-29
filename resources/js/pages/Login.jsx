@@ -88,7 +88,7 @@ const handleSubmit = async (e) => {
 
   try {
     // const res = await fetch("http://localhost:8000/api/login", {
-    const res = await fetch(`${API_URL}/login`, {
+    const res = await fetch(`${API_URL}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

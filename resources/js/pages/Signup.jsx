@@ -39,7 +39,7 @@ export default function Signup() {
 
     try {
       // const res = await fetch("http://localhost:8000/api/register", {
-      const res = await fetch(`${API_URL}/register`, {
+      const res = await fetch(`${API_URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
