@@ -37,18 +37,38 @@
 
 # echo "Laravel setup complete"
 #!/bin/sh
+# set -e
+
+# echo "🚀 Starting Laravel setup..."
+
+# cd /var/www/html
+
+# # Ensure SQLite database exists
+# touch database/database.sqlite
+# chown -R www-data:www-data database/
+
+# # Run migrations and optimizations
+# php artisan migrate --force
+# php artisan optimize:clear
+
+# echo "✅ Laravel setup complete"
+
+
+#!/bin/sh
 set -e
 
 echo "🚀 Starting Laravel setup..."
 
 cd /var/www/html
 
-# Ensure SQLite database exists
-touch database/database.sqlite
-chown -R www-data:www-data database/
+if [ ! -f public/build/manifest.json ]; then
+    echo "❌ Vite manifest missing!"
+    ls -la public/build || true
+    exit 1
+fi
 
-# Run migrations and optimizations
+touch database/database.sqlite
+
 php artisan migrate --force
-php artisan optimize:clear
 
 echo "✅ Laravel setup complete"
