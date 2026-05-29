@@ -30,7 +30,7 @@ export default defineConfig({
     ],
     build: {
         outDir: 'public/build',
-        manifest: true,
+        manifest: true,     // Important
     },
-    base: '/',   // Important for production
+    base: '/',              // Important
 });
