@@ -5,6 +5,9 @@ ENV APP_DEBUG=false
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
 
+# Switch to root for system-level setup
+USER root
+
 # Copy project files
 COPY --chown=www-data:www-data . /var/www/html
 
@@ -32,6 +35,8 @@ RUN install-php-extensions \
     gd \
     intl
 
+WORKDIR /var/www/html
+
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
@@ -47,3 +52,6 @@ RUN php artisan config:cache \
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Switch back to non-root user for runtime
+USER www-data
