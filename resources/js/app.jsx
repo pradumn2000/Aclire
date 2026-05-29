@@ -4,15 +4,15 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
-// import Signup from "./pages/Signup";
-import Signup from "./pages/signup";
+import Signup from "./pages/Signup";
 import Forgetpassword from "./pages/Forgetpassword";
 import VerifyAccount from "./pages/Verifyaccount"; // 
 import Resetpassword from "./pages/Resetpassword";
 import Confrimpassword from "./pages/Confrimpassword";
 import Dashboard from "./pages/Dashboard";
 import Emploment from "./pages/Emploment";
-import Verifyer from "./pages/Verifyer";
+// import Verifyer from "./pages/Verifyer";
+import Verifyer from "./pages/verifyer";
 import Clientportal from "./pages/Clientportal";
 import Client from "./pages/Client";
 import Settings from "./pages/Settings";
