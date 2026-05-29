@@ -166,6 +166,41 @@
 # RUN chmod +x /etc/entrypoint.d/99-laravel-setup.sh
 
 # # Do NOT override CMD — let the image's /init handle nginx
+# FROM serversideup/php:8.4-fpm-nginx-alpine
+
+# ENV APP_ENV=production
+# ENV APP_DEBUG=false
+# ENV COMPOSER_ALLOW_SUPERUSER=1
+# ENV COMPOSER_MEMORY_LIMIT=-1
+
+# USER root
+
+# COPY --chown=www-data:www-data . /var/www/html
+
+# WORKDIR /var/www/html
+
+# RUN apk add --no-cache npm
+
+# RUN install-php-extensions \
+#     zip pdo pdo_sqlite mbstring exif pcntl bcmath gd intl
+
+# # Composer + Frontend Build
+# RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# RUN npm ci --ignore-scripts && npm run build
+
+# # Laravel cache
+# RUN php artisan config:cache \
+#     && php artisan route:cache \
+#     && php artisan view:cache \
+#     && php artisan storage:link
+
+# # Permissions
+# RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+#     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# # Startup script
+# COPY start.sh /etc/entrypoint.d/99-laravel-setup.sh
+# RUN chmod +x /etc/entrypoint.d/99-laravel-setup.sh
 FROM serversideup/php:8.4-fpm-nginx-alpine
 
 ENV APP_ENV=production
@@ -181,23 +216,21 @@ WORKDIR /var/www/html
 
 RUN apk add --no-cache npm
 
-RUN install-php-extensions \
-    zip pdo pdo_sqlite mbstring exif pcntl bcmath gd intl
+RUN install-php-extensions zip pdo pdo_sqlite mbstring exif pcntl bcmath gd intl
 
-# Composer + Frontend Build
+# Install dependencies and build frontend
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 RUN npm ci --ignore-scripts && npm run build
 
-# Laravel cache
+# Laravel optimizations
 RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache \
     && php artisan storage:link
 
 # Permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-# Startup script
 COPY start.sh /etc/entrypoint.d/99-laravel-setup.sh
 RUN chmod +x /etc/entrypoint.d/99-laravel-setup.sh
