@@ -24,7 +24,7 @@ import Specialist from "./pages/Specialist";
 const isAuth = () => !!localStorage.getItem("token");
 
 function PrivateRoute({ children }) {
-  return isAuth() ? children : <Navigate to="/login" />;
+  return isAuth() ? children : <Navigate to="/" />;
 }
 
 function App() {
