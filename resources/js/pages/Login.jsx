@@ -84,6 +84,7 @@ const handleSubmit = async (e) => {
 
   if (loading) return; // 🔥 prevent duplicate
   setLoading(true);
+  console.log("API URL:", import.meta.env.VITE_API_URL);
 
   try {
     // const res = await fetch("http://localhost:8000/api/login", {
