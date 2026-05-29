@@ -55,20 +55,19 @@
 
 
 #!/bin/sh
+#!/bin/sh
 set -e
 
-echo "🚀 Starting Laravel setup..."
-
 cd /var/www/html
-
-if [ ! -f public/build/manifest.json ]; then
-    echo "❌ Vite manifest missing!"
-    ls -la public/build || true
-    exit 1
-fi
 
 touch database/database.sqlite
 
 php artisan migrate --force
 
-echo "✅ Laravel setup complete"
+php artisan optimize:clear || true
+
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+echo "Laravel startup complete"

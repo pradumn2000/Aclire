@@ -259,10 +259,10 @@ RUN mkdir -p database \
     && chown -R www-data:www-data database
 
 # Laravel optimization
-RUN php artisan optimize:clear \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# RUN php artisan optimize:clear \
+#     && php artisan config:cache \
+#     && php artisan route:cache \
+#     && php artisan view:cache
 
 # Storage link (ignore if already exists)
 RUN php artisan storage:link || true
