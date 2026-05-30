@@ -4395,5 +4395,590 @@ aside.cab-manager-section{
 /* Spacialist Page */
 
 
+/* Trends Page */
+.apg-dash-wrapper {
+  box-sizing: border-box;
+  font-family: var(--apg-dash-font-family);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.apg-dash-wrapper *, 
+.apg-dash-wrapper *::before, 
+.apg-dash-wrapper *::after {
+  box-sizing: border-box;
+}
+/* Flex layout for the 4 top cards */
+.apg-dash-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+/* Basic Card Component */
+.apg-dash-card {
+  flex: 1 1 calc(25% - 12px);
+  min-width: 260px;
+  background-color: var(--apg-dash-card-bg);
+  border: 1px solid var(--apg-dash-card-border);
+  border-radius: 6px; /* Matching the slight rounding in the screenshot */
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.apg-dash-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  border-color: #2b395a;
+}
+/* Colored top accent bars */
+.apg-dash-card-header {
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+.apg-dash-card-teal .apg-dash-card-header {
+  background-color: var(--apg-dash-teal-dark);
+}
+.apg-dash-card-red .apg-dash-card-header {
+  background-color: var(--apg-dash-red-dark);
+}
+.apg-dash-card-orange .apg-dash-card-header {
+  background-color: var(--apg-dash-orange-dark);
+}
+.apg-dash-card-green .apg-dash-card-header {
+  background-color: var(--apg-dash-green-dark);
+}
+/* Card Body containing values and charts */
+.apg-dash-card-body {
+  padding: 20px 16px 24px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100%;
+  min-height: 140px;
+}
+.apg-dash-card-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+/* Large metric values */
+.apg-dash-card-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.85rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+/* Value colors */
+.apg-dash-card-value.text-teal { color: var(--apg-dash-teal); }
+.apg-dash-card-value.text-red { color: var(--apg-dash-red); }
+.apg-dash-card-value.text-orange { color: var(--apg-dash-orange); }
+.apg-dash-card-value.text-green { color: var(--apg-dash-green); }
+.apg-dash-card-sub {
+  font-size: 0.8rem;
+  color: var(--apg-dash-text-muted);
+  margin-bottom: 12px;
+}
+/* Trend text colors and styling */
+.apg-dash-card-trend {
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.apg-dash-card-trend.trend-up {
+  color: var(--apg-dash-green-dark);
+}
+.apg-dash-card-trend.trend-down {
+  color: var(--apg-dash-red-dark);
+}
+.apg-dash-card-trend.trend-orange {
+  color: var(--apg-dash-orange);
+}
+.apg-dash-card-trend .trend-icon {
+  font-size: 0.65rem;
+}
+.apg-dash-card-right {
+  display: flex;
+  align-items: flex-end;
+}
+/* Mini Bar Chart styling */
+.apg-dash-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 60px;
+  background-color: #0b0e16; /* Clean dark chart pocket exactly like the image */
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+.apg-dash-chart-bar {
+  width: 8px;
+  height: var(--bar-height);
+  background-color: #1a2538; /* Base color for bars - dark grey/blue */
+  border-radius: 1px 1px 0 0;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+/* Glow/highlight the bar matching the card color on hover */
+.apg-dash-card-teal .apg-dash-chart-bar:hover { background-color: var(--apg-dash-teal); transform: scaleY(1.05); }
+.apg-dash-card-red .apg-dash-chart-bar:hover { background-color: var(--apg-dash-red); transform: scaleY(1.05); }
+.apg-dash-card-orange .apg-dash-chart-bar:hover { background-color: var(--apg-dash-orange); transform: scaleY(1.05); }
+.apg-dash-card-green .apg-dash-chart-bar:hover { background-color: var(--apg-dash-green); transform: scaleY(1.05); }
+/* Simple elegant CSS tooltip using attribute data-value */
+.apg-dash-chart-bar::after {
+  content: attr(data-value);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background-color: #1e293b;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+.apg-dash-chart-bar:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
+/* Bottom Section: Date-Wise Case Log */
+.apg-dash-table-section {
+  border: 1px solid var(--apg-dash-card-border);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background-color: var(--apg-dash-card-bg);
+  width: 100%;
+}
+/* Section Header Bar styling */
+.apg-dash-table-header {
+  background-color: var(--bg-light-blue); 
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.apg-dash-table-title {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.apg-dash-table-actions {
+  display: flex;
+  gap: 10px;
+}
+/* Buttons style */
+.apg-dash-btn {
+  font-family: var(--apg-dash-font-family);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 24px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  min-width: 100px;
+}
+.apg-dash-btn:active {
+  transform: translateY(1px);
+}
+.apg-dash-btn-csv {
+  background-color: var(--apg-dash-table-btn-success);
+  color: #ffffff;
+}
+.apg-dash-btn-csv:hover {
+  background-color: #0fa770;
+  box-shadow: 0 0 10px rgba(18, 192, 130, 0.3);
+}
+.apg-dash-btn-excel {
+  background-color: var(--apg-dash-table-btn-primary);
+  color: #ffffff;
+}
+.apg-dash-btn-excel:hover {
+  background-color: #172049;
+  box-shadow: 0 0 10px rgba(30, 41, 93, 0.4);
+}
+/* Responsive Table Container */
+.apg-dash-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+/* Scrollbar customization for webkit browsers to match dark premium design */
+.apg-dash-table-container::-webkit-scrollbar {
+  height: 6px;
+  background-color: var(--apg-dash-bg);
+}
+.apg-dash-table-container::-webkit-scrollbar-thumb {
+  background-color: var(--apg-dash-card-border);
+  border-radius: 3px;
+}
+.apg-dash-table-container::-webkit-scrollbar-thumb:hover {
+  background-color: #2b395a;
+}
+/* Data Table Styling */
+.apg-dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--apg-dash-text-main);
+  min-width: 800px; 
+}
+/* Table head styles */
+.apg-dash-table th {
+  background-color: var(--primary-color);
+  color: var(--apg-dash-text-muted);
+  font-weight: 600;
+  color: var(--white);
+  padding: 14px 16px;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  border-bottom: 1px solid var(--primary-dark);
+}
+/* Table body cell styles */
+.apg-dash-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--bg-light-blue);
+  font-weight: 500;
+  color: var(--white);
+  background-color: var(--primary-dark);
+}
+/* Row hover highlight */
+.apg-dash-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+.apg-dash-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+/* Last row does not need a bottom border */
+.apg-dash-table tbody tr:last-child td {
+  border-bottom: none;
+}
+/* Specific styling for Date column */
+.apg-dash-td-date {
+  color: var(--apg-dash-text-muted);
+}
+/* Utilities inside our namespace */
+.apg-dash-table .text-red {
+  color: var(--alert-red);
+}
+.apg-dash-table .text-gray {
+  color: var(--white);
+}
+.apg-dash-table .font-medium {
+  font-weight: 600;
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .apg-dash-table-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .apg-dash-table-actions {
+    width: 100%;
+  }
+  
+  .apg-dash-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
 
 
+/* Trends Page */
+
+
+/* API Intreration Page */
+.apg-flow-body-bg {
+  background-color: var(--apg-flow-bg);
+  margin: 0;
+  padding: 24px;
+  font-family: var(--apg-flow-font-family);
+  color: var(--apg-flow-text-main);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+/* Master Wrapper scoping all dashboard layout */
+.apg-flow-wrapper {
+  box-sizing: border-box;
+  font-family: var(--apg-flow-font-family);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.apg-flow-wrapper *, 
+.apg-flow-wrapper *::before, 
+.apg-flow-wrapper *::after {
+  box-sizing: border-box;
+}
+/* -------------------------------------------------------------
+   API Cards Row (Top Row)
+   Uses Flexbox wrapping for responsive scaling
+------------------------------------------------------------- */
+.apg-flow-api-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+.apg-flow-api-card {
+  flex: 1 1 calc(33.333% - 11px);
+  min-width: 280px;
+  background-color: var(--apg-flow-card-bg);
+  border: 1px solid var(--apg-flow-card-border);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.apg-flow-api-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  border-color: #2b395a;
+}
+/* Card Header Strip */
+.apg-flow-api-card .apg-flow-card-header {
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* Card header background highlights */
+.apg-flow-card-teal .apg-flow-card-header {
+  background-color: var(--apg-flow-teal-dark);
+}
+.apg-flow-card-blue .apg-flow-card-header {
+  background-color: var(--apg-flow-blue-dark);
+}
+.apg-flow-card-orange .apg-flow-card-header {
+  background-color: var(--apg-flow-orange-dark);
+}
+.apg-flow-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+/* Live Green Badge */
+.apg-flow-badge-live {
+  background-color: var(--apg-flow-badge-green);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 2px;
+  text-transform: capitalize;
+  box-shadow: 0 2px 6px rgba(0, 200, 83, 0.3);
+}
+/* Card Content styling */
+.apg-flow-api-card .apg-flow-card-body {
+  padding: 24px 16px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #c5d3ec;
+  font-weight: 500;
+  flex-grow: 1;
+}
+/* -------------------------------------------------------------
+   Database Cards Row (Middle Row)
+   Uses Flexbox wrapping for responsive scaling
+------------------------------------------------------------- */
+.apg-flow-db-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+.apg-flow-db-card {
+  flex: 1 1 calc(50% - 8px);
+  min-width: 320px;
+  background-color: var(--apg-flow-card-bg);
+  border: 1px solid var(--apg-flow-card-border);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.apg-flow-db-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  border-color: #2b395a;
+}
+/* Db Header Strip */
+.apg-flow-db-card .apg-flow-card-header {
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+.apg-flow-db-card .apg-flow-card-body {
+  padding: 20px 24px;
+  flex-grow: 1;
+}
+/* Bullet list custom stylings */
+.apg-flow-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.apg-flow-list li {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #c5d3ec;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.apg-flow-list-icon {
+  color: var(--apg-flow-teal);
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 700;
+}
+/* -------------------------------------------------------------
+   System Flow Section (Bottom Row)
+   Flexible diagram layout with scroll protection
+------------------------------------------------------------- */
+.apg-flow-system-container {
+  background-color: var(--apg-flow-card-bg);
+  border: 1px solid var(--apg-flow-card-border);
+  border-radius: 6px;
+  padding: 16px 20px 24px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+}
+.apg-flow-system-title {
+  color: var(--apg-flow-teal);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+/* Outer Scroll Wrapper to keep flow horizontal on mobile without breaking grid */
+.apg-flow-diagram-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+/* Custom Scrollbar for the Flow Diagram container */
+.apg-flow-diagram-wrapper::-webkit-scrollbar {
+  height: 6px;
+  background-color: var(--apg-flow-bg);
+}
+.apg-flow-diagram-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--apg-flow-card-border);
+  border-radius: 3px;
+}
+.apg-flow-diagram-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #2b395a;
+}
+/* Horizontal Flow Container using Flexbox */
+.apg-flow-diagram-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 1000px; 
+  padding: 4px 0;
+}
+/* Flex item block style for the flow steps */
+.apg-flow-step-block {
+  flex: 1;
+  text-align: center;
+  padding: 14px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  cursor: default;
+}
+.apg-flow-step-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+/* Action arrows */
+.apg-flow-arrow {
+  flex: 0 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b4d75;
+}
+.apg-flow-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+/* Colors matching the system flow diagram */
+.apg-flow-bg-teal-light {
+  background-color: #00828a;
+}
+.apg-flow-bg-purple {
+  background-color: #7e57c2;
+}
+.apg-flow-bg-orange {
+  background-color: #ff9800;
+}
+.apg-flow-bg-blue {
+  background-color: #2c3e8c;
+}
+.apg-flow-bg-green {
+  background-color: #10b981;
+}
+.apg-flow-bg-dark-purple {
+  background-color: #673ab7;
+}
+.apg-flow-bg-teal-dark {
+  background-color: #00695c;
+}
+/* Media query responsiveness for mobile stack adjustments */
+@media (max-width: 480px) {
+  .apg-flow-body-bg {
+    padding: 16px;
+  }
+}
+
+
+/* API Integretion Page */

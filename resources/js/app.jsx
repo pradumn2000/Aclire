@@ -20,6 +20,8 @@ import Intake from "./pages/Intake";
 import Allocator from "./pages/Allocator";
 import Specialist from "./pages/Specialist";
 import AllCases from "./pages/AllCases";
+import Trends from "./pages/Trends";
+import Apiintegretion from "./pages/Apiintegretion";
 // import Empolymentcheck from "./pages/Employmentcheck";
 
 const isAuth = () => !!localStorage.getItem("token");
@@ -50,6 +52,8 @@ function App() {
 <Route path="/Intake" element={<Intake/>}/>
 <Route path="/Allocator" element={<Allocator/>}/>
 <Route path="/Specialist" element={<Specialist/>}/>
+<Route path="/Trends" element={<Trends/>}/>
+<Route path="/Apiintegretion" element={<Apiintegretion/>}/>
   <Route
     path="/dashboard"
     element={
