@@ -75,11 +75,22 @@ export default function ResetPassword() {
   const email = localStorage.getItem("reset_email");
 
   // ✅ Guard — if no email in localStorage, send back to forgot password
-  if (!email) {
-    navigate("/Forgetpassword");
-    return null;
-  }
+//   if (!email) {
+//     navigate("/Forgetpassword");
+//     return null;
+//   }
+// Replace this:
+if (!email) {
+  navigate("/forgetpassword");
+  return null;
+}
 
+// With this:
+useEffect(() => {
+  if (!email) navigate("/forgetpassword");
+}, []);
+
+if (!email) return null;
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");

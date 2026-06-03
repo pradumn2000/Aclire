@@ -18,10 +18,11 @@ return [
     'paths' => ['*'],
 
     'allowed_methods' => ['*'],
+    'allowed_origins'=>['*'],
 
     // 'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
     'allowed_origins' => [
-    'http://localhost:3000',
+    'http://localhost:8000',
     'https://authbridge-10.onrender.com',
 ],
 
