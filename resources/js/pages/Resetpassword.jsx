@@ -57,7 +57,7 @@
 //     </form>
 //   );
 // }
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/style.css";
 import { API_URL } from "../src/config";
