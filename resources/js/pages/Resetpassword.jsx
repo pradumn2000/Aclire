@@ -135,6 +135,7 @@ if (!email) return null;
 
       // ✅ Clean up localStorage after successful reset
       localStorage.removeItem("reset_email");
+      localStorage.removeItem("token"); 
 
       setTimeout(() => {
         navigate("/");

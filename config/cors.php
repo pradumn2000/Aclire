@@ -22,6 +22,9 @@ return [
 
     // 'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
     'allowed_origins' => [
+    env('FRONTEND_URL', 'http://localhost:5173'),
+        'http://localhost:5173',
+        'http://localhost:3000',
     'http://localhost:8000',
     'https://authbridge-10.onrender.com',
 ],
