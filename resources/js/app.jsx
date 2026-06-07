@@ -96,7 +96,7 @@ import Apiintegretion from "./pages/Apiintegretion";
 import StatusEmploment from "./pages/StatusEmploment";
 import UserManagement from "./pages/UserManagement";
 import AddCase from "./pages/AddCase";
-
+import ClientCases from "./pages/ClientCases";
 // ─────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────
@@ -270,7 +270,13 @@ function App() {
     <AddCase />
   </PrivateRoute>
 } />
+import ClientCases from "./pages/ClientCases";
 
+<Route path="/ClientCases" element={
+  <PrivateRoute role="client">
+    <ClientCases />
+  </PrivateRoute>
+} />
 
         {/* ── Catch all — redirect to login ── */}
         <Route path="*" element={<Navigate to="/" replace />} />

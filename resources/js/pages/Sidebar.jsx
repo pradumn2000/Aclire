@@ -219,6 +219,8 @@ const ROLE_MENUS = {
   client: [
     { to: "/Client",         icon: "home-icon.svg",      label: "My Cases" },
     { to: "/Settings",       icon: "setting-icon.svg",   label: "Settings" },
+      { to: "/ClientCases", icon: "cases-icon.svg", label: "All Cases" },
+  { to: "/AddCase",     icon: "wip-icon.svg",   label: "Add Case"  },
   ],
 
   onboarding: [
