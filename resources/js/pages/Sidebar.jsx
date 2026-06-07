@@ -182,12 +182,14 @@ const ROLE_MENUS = {
     { to: "/UserManagement", icon: "clients-icon.svg",   label: "User Management" },
     { to: "/Apiintegretion", icon: "setting-icon.svg",   label: "API Integration" },
     { to: "/Settings",       icon: "setting-icon.svg",   label: "Settings" },
+    { to: "/AddCase", icon: "wip-icon.svg", label: "Add Case" },
   ],
 
   allocator: [
     { to: "/Allocator",      icon: "cases-icon.svg",     label: "Allocate Cases" },
     { to: "/AllCases",       icon: "wip-icon.svg",       label: "All Cases" },
     { to: "/Settings",       icon: "setting-icon.svg",   label: "Settings" },
+    { to: "/AddCase", icon: "wip-icon.svg", label: "Add Case" },
   ],
 
   verifier: [
