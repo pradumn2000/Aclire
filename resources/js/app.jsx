@@ -94,6 +94,7 @@ import AllCases from "./pages/AllCases";
 import Trends from "./pages/Trends";
 import Apiintegretion from "./pages/Apiintegretion";
 import StatusEmploment from "./pages/StatusEmploment";
+import UserManagement from "./pages/UserManagement";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -256,6 +257,13 @@ function App() {
             <Settings />
           </PrivateRoute>
         } />
+
+        {/* ── admin create login and roles ── */}
+        <Route path="/UserManagement" element={
+  <PrivateRoute role="admin">
+    <UserManagement />
+  </PrivateRoute>
+} />
 
         {/* ── Catch all — redirect to login ── */}
         <Route path="*" element={<Navigate to="/" replace />} />
