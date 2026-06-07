@@ -8,39 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 
 // ─────────────────────────────────────────
-// REGISTER
-// ─────────────────────────────────────────
-Route::post('/register', function (Request $request) {
-
-    $data = [
-        'name'                  => $request->username,
-        'email'                 => $request->email,
-        'password'              => $request->password,
-        'password_confirmation' => $request->confirmPassword,
-    ];
-
-    validator($data, [
-        'name'     => 'required|string|max:255',
-        'email'    => 'required|email|unique:users,email',
-        'password' => 'required|min:6|confirmed',
-    ])->validate();
-
-    $user = \App\Models\User::create([
-        'name'     => $data['name'],
-        'email'    => $data['email'],
-        'password' => Hash::make($data['password']),
-    ]);
-
-    $token = $user->createToken('authToken')->plainTextToken;
-
-    return response()->json([
-        'user'  => $user,
-        'token' => $token,
-    ]);
-});
-
-// ─────────────────────────────────────────
-// LOGIN
+// LOGIN — returns role so frontend can redirect
 // ─────────────────────────────────────────
 Route::post('/login', function (Request $request) {
 
@@ -57,9 +25,113 @@ Route::post('/login', function (Request $request) {
     $token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
-        'user'  => $user,
         'token' => $token,
+        'user'  => [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'role'  => $user->role,
+        ],
     ]);
+});
+
+// ─────────────────────────────────────────
+// CREATE USER — admin only (requires Bearer token + admin role)
+// ─────────────────────────────────────────
+Route::middleware('auth:sanctum')->post('/users/create', function (Request $request) {
+
+    // Only admin can create users
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $request->validate([
+        'name'     => 'required|string|max:255',
+        'email'    => 'required|email|unique:users,email',
+        'password' => 'required|min:6',
+        'role'     => 'required|in:admin,allocator,verifier,check_manager,report_writing,pvt_qc,client,onboarding',
+    ]);
+
+    $user = \App\Models\User::create([
+        'name'     => $request->name,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+        'role'     => $request->role,
+    ]);
+
+    return response()->json([
+        'message' => 'User created successfully',
+        'user'    => [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'role'  => $user->role,
+        ],
+    ], 201);
+});
+
+// ─────────────────────────────────────────
+// GET ALL USERS — admin only
+// ─────────────────────────────────────────
+Route::middleware('auth:sanctum')->get('/users', function (Request $request) {
+
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $users = \App\Models\User::select('id', 'name', 'email', 'role', 'created_at')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return response()->json(['users' => $users]);
+});
+
+// ─────────────────────────────────────────
+// DELETE USER — admin only
+// ─────────────────────────────────────────
+Route::middleware('auth:sanctum')->delete('/users/{id}', function (Request $request, $id) {
+
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $user = \App\Models\User::find($id);
+
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    // Prevent admin from deleting themselves
+    if ($user->id === $request->user()->id) {
+        return response()->json(['message' => 'You cannot delete your own account'], 400);
+    }
+
+    $user->delete();
+
+    return response()->json(['message' => 'User deleted successfully']);
+});
+
+// ─────────────────────────────────────────
+// GET LOGGED IN USER — any authenticated user
+// ─────────────────────────────────────────
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    $user = $request->user();
+    return response()->json([
+        'user' => [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'role'  => $user->role,
+        ],
+    ]);
+});
+
+// ─────────────────────────────────────────
+// LOGOUT
+// ─────────────────────────────────────────
+Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
+    $request->user()->currentAccessToken()->delete();
+    return response()->json(['message' => 'Logged out successfully']);
 });
 
 // ─────────────────────────────────────────
@@ -73,7 +145,7 @@ Route::post('/forgot-password', function (Request $request) {
         'email' => 'required|email|exists:users,email',
     ]);
 
-    $otp = rand(1000, 9999); // 4-digit OTP
+    $otp = rand(1000, 9999);
 
     DB::table('password_resets')->updateOrInsert(
         ['email' => $request->email],
@@ -89,9 +161,7 @@ Route::post('/forgot-password', function (Request $request) {
                 ->subject('Password Reset OTP');
     });
 
-    return response()->json([
-        'message' => 'OTP sent successfully',
-    ]);
+    return response()->json(['message' => 'OTP sent successfully']);
 });
 
 // ─────────────────────────────────────────
@@ -114,7 +184,6 @@ Route::post('/verify-otp', function (Request $request) {
         return response()->json(['message' => 'OTP not found. Please request a new one.'], 400);
     }
 
-    // Check expiry — 10 minutes
     if (now()->diffInMinutes($record->created_at) > 10) {
         DB::table('password_resets')->where('email', $request->email)->delete();
         return response()->json(['message' => 'OTP has expired. Please request a new one.'], 400);
@@ -124,7 +193,6 @@ Route::post('/verify-otp', function (Request $request) {
         return response()->json(['message' => 'Invalid OTP. Please try again.'], 400);
     }
 
-    // ✅ Mark OTP as verified
     DB::table('password_resets')
         ->where('email', $request->email)
         ->update(['verified' => true]);
@@ -145,7 +213,6 @@ Route::post('/reset-password', function (Request $request) {
         'password_confirmation' => 'required',
     ]);
 
-    // ✅ Only allow reset if OTP was verified
     $record = DB::table('password_resets')
         ->where('email', $request->email)
         ->where('verified', true)
@@ -163,12 +230,10 @@ Route::post('/reset-password', function (Request $request) {
         return response()->json(['message' => 'User not found.'], 404);
     }
 
-    // ✅ Hash password before saving
     $user->update([
         'password' => Hash::make($request->password),
     ]);
 
-    // ✅ Delete OTP record after successful reset
     DB::table('password_resets')
         ->where('email', $request->email)
         ->delete();
