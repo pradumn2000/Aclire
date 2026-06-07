@@ -22,6 +22,7 @@ import Specialist from "./pages/Specialist";
 import AllCases from "./pages/AllCases";
 import Trends from "./pages/Trends";
 import Apiintegretion from "./pages/Apiintegretion";
+import StatusEmploment from "./pages/StatusEmploment";
 // import Empolymentcheck from "./pages/Employmentcheck";
 
 const isAuth = () => !!localStorage.getItem("token");
@@ -54,6 +55,7 @@ function App() {
 <Route path="/Specialist" element={<Specialist/>}/>
 <Route path="/Trends" element={<Trends/>}/>
 <Route path="/Apiintegretion" element={<Apiintegretion/>}/>
+<Route path="/StatusEmploment" element={<StatusEmploment/>}/>
   <Route
     path="/dashboard"
     element={

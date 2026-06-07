@@ -432,8 +432,8 @@ h4 {
    overflow: hidden;
     border-radius: 15px;
      box-shadow: 
-    0 8px 25px rgba(53, 95, 171, 0.2),   /* blue shadow */
-    0 2px 10px rgba(238, 119, 37, 0.15); /* orange touch */
+    0 8px 25px rgba(53, 95, 171, 0.2),   
+    0 2px 10px rgba(238, 119, 37, 0.15); 
 }
 .login-left-img  img {
     width: 100%;
@@ -1479,9 +1479,9 @@ span.primary-cta.bdr-color{
   flex-grow: 1;
   width: 100%;
   padding: 24px;
-  padding-bottom: 60px; /* footer offset */
+  padding-bottom: 60px; 
 }
-/* Main Flexbox container - row on desktop, columns on tablet/mobile */
+
 .emplyment-check-body {
   display: flex;
   flex-direction: row;
@@ -1521,10 +1521,10 @@ span.primary-cta.bdr-color{
 .emplyment-check-body .thrid-card {
   flex: 1.3 1 360px;
   max-width: 460px;
-  background-color: transparent; /* allow stacked child blocks */
+  background-color: transparent; 
   border: none;
   box-shadow: none;
-  gap: 20px; /* space between Charges block and Comments block */
+  gap: 20px; 
 }
 .emplyment-check-body .thrid-card:hover {
   box-shadow: none;
@@ -1886,13 +1886,13 @@ span.primary-cta.bdr-color{
   flex-shrink: 0;
 }
 .avatar-p {
-  background-color: #7c3aed; /* Priya Purple */
+  background-color: #7c3aed; 
 }
 .avatar-r {
-  background-color: #0d9488; /* Rahul Teal */
+  background-color: #0d9488; 
 }
 .avatar-u {
-  background-color: #ea580c; /* User Orange */
+  background-color: #ea580c; 
 }
 .comment-body {
   display: flex;
@@ -2004,7 +2004,7 @@ span.primary-cta.bdr-color{
   .emplyment-check-body .thrid-card {
     flex: 1.2 1 100%;
     max-width: 100%;
-    flex-direction: row; /* Stack blocks side-by-side on wide tablet view */
+    flex-direction: row; 
   }
   
   .charges-block,
@@ -2118,7 +2118,7 @@ background-color: var(--sucess-btn-color);
   background-color: transparent;
   border: none;
   box-shadow: none;
-  gap: 20px; /* space between Activity block and Comments block */
+  gap: 20px; 
 }
 .sas-thrid-card:hover {
   box-shadow: none;
@@ -2493,7 +2493,7 @@ background-color: var(--sucess-btn-color);
   content: '';
   position: absolute;
   top: 8px;
-  left: 55px; /* Aligned relative to timestamp spacing */
+  left: 55px; 
   bottom: 8px;
   width: 2px;
   background-color: #cbd5e1;
@@ -2539,7 +2539,7 @@ background-color: var(--sucess-btn-color);
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  margin-right: 1px; /* offset alignment spacing difference */
+  margin-right: 1px;
 }
 .sas-timeline-right {
   padding-left: 16px;
@@ -2720,7 +2720,7 @@ background-color: var(--sucess-btn-color);
   .sas-thrid-card {
     flex: 1.2 1 100%;
     max-width: 100%;
-    flex-direction: row; /* Stack timelines and comments side-by-side */
+    flex-direction: row; 
   }
   
   .sas-activity-block,
@@ -2777,7 +2777,7 @@ background-color: var(--sucess-btn-color);
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
-  padding-bottom: 60px; /* footer alignment offset */
+  padding-bottom: 60px;
 }
 /* Main outer flex layout - 2 equal columns */
 .cob-emplyment-check-body {
@@ -2798,7 +2798,7 @@ background-color: var(--sucess-btn-color);
   display: flex;
   flex-direction: column;
   transition: var(--cob-transition);
-  flex: 1 1 500px; /* 2 equal flex columns */
+  flex: 1 1 500px;
 }
 .cob-frist-card:hover,
 .cob-second-card:hover {
@@ -2957,7 +2957,7 @@ background-color: var(--sucess-btn-color);
 .cob-rate-value {
   font-size: 13.5px;
   font-weight: 800;
-  color: #1e3a8a; /* deep blue for rate rates */
+  color: #1e3a8a; 
 }
 /* Bottom Create Client account button */
 .cob-btn-create-account {
@@ -2992,7 +2992,7 @@ background-color: var(--sucess-btn-color);
   font-weight: 500;
   text-align: left;
 }
-/* Custom Checkbox Design matching screenshot (Teal filled box with label) */
+
 .cob-checkboxes-row {
   display: flex;
   flex-direction: row;
@@ -3007,7 +3007,7 @@ background-color: var(--sucess-btn-color);
   justify-content: center;
   gap: 8px;
   padding: 10px;
-  background-color: var(--cob-accent-teal); /* Teal button-like box */
+  background-color: var(--cob-accent-teal); 
   color: #ffffff;
   border-radius: 4px;
   cursor: pointer;
@@ -3073,7 +3073,7 @@ background-color: var(--sucess-btn-color);
   font-weight: 700;
   color: var(--cob-accent-teal);
 }
-/* Bottom Action Sharing Buttons row */
+
 .cob-action-buttons-row {
   display: flex;
   flex-direction: row;
@@ -3136,7 +3136,7 @@ background-color: var(--sucess-btn-color);
   color: #e2e8f0;
   opacity: 0.7;
 }
-/* Responsive Rules (Pure Flexbox alignment updates) */
+/* Responsive Rules  */
 @media (max-width: 1024px) {
   .cob-emplyment-check-body {
     flex-direction: column;
@@ -4982,3 +4982,205 @@ aside.cab-manager-section{
 
 
 /* API Integretion Page */
+
+
+/* Staus Emploment */
+.emp-chk-wrapper {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f0f4f9;
+  padding: 40px 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.emp-chk-wrapper * {
+  box-sizing: border-box;
+}
+
+/* Card Container */
+.emp-chk-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 35px;
+}
+
+/* Header styling */
+.emp-chk-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.emp-chk-title {
+  color: #1e3a8a;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.emp-chk-chevron {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.emp-chk-subtitle {
+  color: #475569;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.emp-chk-divider-thick {
+  height: 3px;
+  background-color: #3b82f6;
+  margin-bottom: 25px;
+  border-radius: 2px;
+}
+
+.emp-chk-divider-thin {
+  height: 2px;
+  background-color: #3b82f6;
+  opacity: 0.8;
+  margin: 25px 0;
+  border-radius: 1px;
+}
+
+/* Metadata Grid */
+.emp-chk-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
+  width:100%;
+}
+
+.emp-chk-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.emp-chk-meta-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+/* Inputs styling */
+.emp-chk-meta-input,
+.emp-chk-claim-input,
+.emp-chk-feedback-text {
+  height: 38px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width:100%
+}
+
+.emp-chk-readonly {
+  background-color: #e9ecef;
+  border: 1px solid transparent;
+  color: #495057;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Table Section styling */
+.emp-chk-table {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.emp-chk-table-header-row {
+  display: grid;
+  grid-template-columns: 2fr 4fr 5fr;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.emp-chk-header-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.emp-chk-table-row {
+  display: grid;
+  grid-template-columns: 2fr 4fr 5fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.emp-chk-row-label {
+  font-size: 0.875rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.emp-chk-claim-input {
+  width: 100%;
+}
+
+.emp-chk-col-feedback {
+  width: 100%;
+}
+
+.emp-chk-feedback-text {
+  width: 100%;
+  border: 1px solid #ced4da;
+  color: #212529;
+  background-color: #ffffff;
+}
+
+.emp-chk-feedback-text:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .emp-chk-meta-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .emp-chk-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .emp-chk-table-header-row {
+    display: none; /* Mobile screen पर table header को hide किया गया है */
+  }
+
+  .emp-chk-table-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .emp-chk-row-label {
+    font-weight: 700;
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .emp-chk-meta-grid {
+    grid-template-columns: 1fr;
+  }
+  .emp-chk-card {
+    padding: 15px;
+  }
+}
+
+/* Staus Emploment */
