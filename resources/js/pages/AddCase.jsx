@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { useCases } from "../hooks/useCases";
 
+// Inside AddCase(), add this line near the other hooks:
+const { addCase } = useCases();
 // ── Mock data (swap with API calls when ready) ──────────────
 const MOCK_CLIENTS = [
   { id: 1, name: "Gaurav Technologies Pvt Ltd",  billingDefault: "postpaid_client" },
@@ -119,16 +122,60 @@ export default function AddCase() {
   };
 
   // ── Submit ───────────────────────────────────────────────
-  const handleSubmit = async () => {
-    const err = validate();
-    if (err) { alert(err); return; }
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 900));
-    const fakeCaseId = `BGV-${Math.floor(2500 + Math.random() * 500)}`;
-    setCaseId(fakeCaseId);
-    setLoading(false);
-    setSubmitted(true);
-  };
+//   const handleSubmit = async () => {
+//     const err = validate();
+//     if (err) { alert(err); return; }
+//     setLoading(true);
+//     await new Promise(r => setTimeout(r, 900));
+//     const fakeCaseId = `BGV-${Math.floor(2500 + Math.random() * 500)}`;
+//     setCaseId(fakeCaseId);
+//     setLoading(false);
+//     setSubmitted(true);
+//   };
+// At the top of AddCase.jsx, add this import:
+
+
+// Replace the existing handleSubmit with this:
+const handleSubmit = async () => {
+  const err = validate();
+  if (err) { alert(err); return; }
+  setLoading(true);
+  await new Promise(r => setTimeout(r, 900));
+
+  const fakeCaseId = `BGV-${Math.floor(2500 + Math.random() * 500)}`;
+
+  const selectedClient = MOCK_CLIENTS.find(c => String(c.id) === String(form.clientId));
+  const checksLabel = form.checks
+    .map(k => CHECK_TYPES.find(t => t.key === k)?.label?.slice(0, 3))
+    .join("·");
+
+  // Build the case object that AllCases + Dashboard expect
+  addCase({
+    id:        fakeCaseId,
+    candidate: form.candidateName,
+    email:     form.candidateEmail,
+    mobile:    form.candidateMobile,
+    position:  form.position,
+    client:    selectedClient?.name || "—",
+    clientId:  form.clientId,
+    checks:    checksLabel,
+    checkKeys: form.checks,
+    status:    "pending",
+    label:     "Pending",
+    billingMode: form.billingMode,
+    invoiceCycle: form.invoiceCycle,
+    poNumber:  form.poNumber,
+    amount:    totalAmount,
+    notes:     form.notes,
+    priority:  form.priority,
+    tat:       "0d",
+    createdAt: new Date().toISOString(),
+  });
+
+  setCaseId(fakeCaseId);
+  setLoading(false);
+  setSubmitted(true);
+};
 
   const handleReset = () => {
     setForm(EMPTY_FORM);
