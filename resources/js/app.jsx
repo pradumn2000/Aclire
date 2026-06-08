@@ -270,7 +270,7 @@ function App() {
     <AddCase />
   </PrivateRoute>
 } />
-import ClientCases from "./pages/ClientCases";
+
 
 <Route path="/ClientCases" element={
   <PrivateRoute role="client">
