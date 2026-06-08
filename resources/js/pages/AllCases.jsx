@@ -92,7 +92,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { useCases } from "../hooks/useCases";
+import { useCases } from "../src/hooks/useCases";
 
 const STATUS_FILTERS = ["All", "In Progress", "QC Review", "Pending", "Completed"];
 
