@@ -4,8 +4,7 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useCases } from "../src/hooks/useCases";
 
-// Inside AddCase(), add this line near the other hooks:
-const { addCase } = useCases();
+
 // ── Mock data (swap with API calls when ready) ──────────────
 const MOCK_CLIENTS = [
   { id: 1, name: "Gaurav Technologies Pvt Ltd",  billingDefault: "postpaid_client" },
@@ -71,6 +70,8 @@ const EMPTY_FORM = {
 
 export default function AddCase() {
   const navigate = useNavigate();
+  // Inside AddCase(), add this line near the other hooks:
+  const { addCase } = useCases();
   const [form, setForm]         = useState(EMPTY_FORM);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading]   = useState(false);
