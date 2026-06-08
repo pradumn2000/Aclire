@@ -227,9 +227,9 @@
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { useCases } from "../hooks/useCases";
-import { useCaseFilters } from "../hooks/useCaseFilters";
-import DateRangePicker from "../components/DateRangePicker";
+import { useCases } from "../src/hooks/useCases";
+import { useCaseFilters } from "../src/hooks/useCaseFilters";
+import DateRangePicker from "../src/components/DateRangePicker";
 
 const STATUS_TABS   = ["All", "In Progress", "QC Review", "Pending", "Completed"];
 const STATUS_MAP    = {
