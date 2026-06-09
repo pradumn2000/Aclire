@@ -69,6 +69,32 @@ Route::middleware('auth:sanctum')->post('/users/create', function (Request $requ
         ],
     ], 201);
 });
+// ─────────────────────────────────────────
+// REGISTER
+// ─────────────────────────────────────────
+Route::post('/register', function (Request $request) {
+
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:8',
+        'role' => 'required'
+    ]);
+
+    $user = \App\Models\User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => $request->role,
+    ]);
+
+    $token = $user->createToken('authToken')->plainTextToken;
+
+    return response()->json([
+        'token' => $token,
+        'user' => $user
+    ], 201);
+});
 
 // ─────────────────────────────────────────
 // GET ALL USERS — admin only
