@@ -172,7 +172,6 @@ function App() {
         <Route path="/verifyaccount"     element={<VerifyAccount />} />
         <Route path="/resetpassword"     element={<Resetpassword />} />
         <Route path="/confirmpassword"   element={<Confrimpassword />} />
-        <Route path="/createonboarding"  element={<CreateOnboarding />} />
         {/* ── Admin only ── */}
         <Route path="/dashboard" element={
           <PrivateRoute role="admin">
