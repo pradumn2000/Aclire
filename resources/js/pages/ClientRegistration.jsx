@@ -14,7 +14,7 @@ const ROLES = [
   { value: "client",         label: "Client" },
 ];
 
-export default function Signup() {
+export default function ClientRegistration() {
   const [form, setForm]                 = useState({ name: "", email: "", password: "", confirm: "", role: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]               = useState("");
