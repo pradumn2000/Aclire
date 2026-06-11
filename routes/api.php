@@ -306,3 +306,19 @@ Route::post('/reset-password', function (Request $request) {
         'message' => 'Password reset successful. You can now log in.',
     ]);
 });
+Route::get('/create-admin', function () {
+
+    $user = \App\Models\User::updateOrCreate(
+        ['email' => 'admin@satyapan.com'],
+        [
+            'name' => 'Admin',
+            'password' => Hash::make('Admin@123'),
+            'role' => 'admin',
+        ]
+    );
+
+    return response()->json([
+        'message' => 'Admin created',
+        'user' => $user
+    ]);
+});
