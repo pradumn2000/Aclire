@@ -10,7 +10,8 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { useInstitutions } from "./institutionStore";
+import { useInstitutions } from "../src/store/institutionStore";
+
 
 const TYPES = [
   { key: "university", label: "University / College",  icon: "🎓" },
