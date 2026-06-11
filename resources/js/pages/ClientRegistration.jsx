@@ -564,7 +564,7 @@
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { API_URL } from "./config";
+import { API_URL } from "../src/config";
 import { registerClient } from "../src/store/clientStore";
 
 const CHECK_OPTIONS = [
