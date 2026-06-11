@@ -5275,3 +5275,78 @@ aside.cab-manager-section{
             background-color: #357abd;
         }
 /* FOrm */
+
+/* Client Onboarding Form */
+.form-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 650px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-container h2 {
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        /* Form Row Layout using Flexbox (No Grid) */
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Label Styling */
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        /* Input Fields Styling (Text and Email) */
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+            color: #333;
+            background-color: #fff;
+            transition: border-color 0.2s ease;
+        }
+
+        /* Focus State styling */
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #357abd;
+        }
+
+        /* Client  Onboarding Form*/
