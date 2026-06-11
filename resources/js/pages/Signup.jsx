@@ -413,7 +413,7 @@
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { API_URL } from "./config";
+import { API_URL } from "../src/config";
 
 export default function Signup() {
   const navigate = useNavigate();
