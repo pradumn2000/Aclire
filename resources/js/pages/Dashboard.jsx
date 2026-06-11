@@ -634,7 +634,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { getAllCases, getCaseStats } from "./caseStore";
+import { getAllCases, getCaseStats } from "../src/store/caseStore";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function formatCurrency(n) {
