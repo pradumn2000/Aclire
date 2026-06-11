@@ -1188,7 +1188,7 @@ import {
   addComment,
   SOURCES,
   CHECK_TYPES,
-} from "./caseStore";
+} from "../src/store/caseStore";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
