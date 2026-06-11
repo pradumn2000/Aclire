@@ -23,8 +23,11 @@
 //   return { cases, addCase, refresh };
 // }
 import { useState, useEffect, useCallback } from "react";
-import { getCases, saveCase as storeSaveCase, updateCase as storeUpdateCase } from "../store/caseStore";
-
+// import { getCases, saveCase as storeSaveCase, updateCase as storeUpdateCase } from "../store/caseStore";
+import {
+  getAllCases,
+  updateCase as storeUpdateCase
+} from "../store/caseStore";
 /**
  * useCases — subscribe to and mutate the global case list.
  *
@@ -35,9 +38,10 @@ import { getCases, saveCase as storeSaveCase, updateCase as storeUpdateCase } fr
  *   refresh()    - re-read from localStorage
  */
 export function useCases() {
-  const [cases, setCases] = useState(() => getCases());
+  const [cases, setCases] = useState(() =>
+getAllCases());
 
-  const refresh = useCallback(() => setCases(getCases()), []);
+  const refresh = useCallback(() => setCases(getAllCases()), []);
 
   // Keep in sync when another tab writes
   useEffect(() => {
@@ -47,12 +51,12 @@ export function useCases() {
 
   const addCase = useCallback((newCase) => {
     storeSaveCase(newCase);
-    setCases(getCases());
+    setCases(getAllCases());
   }, []);
 
   const updateCase = useCallback((id, patch) => {
     storeUpdateCase(id, patch);
-    setCases(getCases());
+    setCases(getAllCases());
   }, []);
 
   return { cases, addCase, updateCase, refresh };
