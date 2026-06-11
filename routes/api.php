@@ -322,3 +322,11 @@ Route::get('/create-admin', function () {
         'user' => $user
     ]);
 });
+Route::get('/test-password', function () {
+    $user = \App\Models\User::where('email', 'admin@satyapan.com')->first();
+
+    return [
+        'exists' => !!$user,
+        'password_match' => Hash::check('Admin@123', $user->password),
+    ];
+});
