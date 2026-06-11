@@ -78,14 +78,13 @@ Route::post('/register', function (Request $request) {
         'name' => 'required',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|min:8',
-        'role' => 'required'
     ]);
 
     $user = \App\Models\User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
-        'role' => $request->role,
+        'role' => 'client',
     ]);
 
     $token = $user->createToken('authToken')->plainTextToken;
