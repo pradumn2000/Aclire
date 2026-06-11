@@ -330,3 +330,18 @@ Route::get('/test-password', function () {
         'password_match' => Hash::check('Admin@123', $user->password),
     ];
 });
+Route::get('/test-password', function () {
+    $user = \App\Models\User::where('email', 'admin@satyapan.com')->first();
+
+    if (!$user) {
+        return response()->json([
+            'message' => 'Admin user not found'
+        ]);
+    }
+
+    return response()->json([
+        'exists' => true,
+        'email' => $user->email,
+        'password_match' => Hash::check('Admin@123', $user->password),
+    ]);
+});
