@@ -94,7 +94,46 @@ Route::post('/register', function (Request $request) {
         'user' => $user
     ], 201);
 });
+// ─────────────────────────────────────────
+// CLIENT COMPANY REGISTER
+// ─────────────────────────────────────────
+Route::post('/clients/register', function (Request $request) {
 
+    $request->validate([
+        'companyName'    => 'required|string|max:255',
+        'gstin'          => 'required|string|max:15',
+        'primaryContact' => 'required|string|max:255',
+        'contactEmail'   => 'required|email|unique:users,email',
+        'password'       => 'required|min:8',
+    ]);
+
+    $user = \App\Models\User::create([
+        'name'     => $request->companyName,
+        'email'    => $request->contactEmail,
+        'password' => Hash::make($request->password),
+        'role'     => 'client',
+    ]);
+
+    // Optional: Save client details in a clients table
+    // Client::create([
+    //     'user_id' => $user->id,
+    //     'gstin' => $request->gstin,
+    //     'primary_contact' => $request->primaryContact,
+    // ]);
+
+    $token = $user->createToken('authToken')->plainTextToken;
+
+    return response()->json([
+        'message' => 'Client registered successfully',
+        'token' => $token,
+        'user' => [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'role'  => $user->role,
+        ],
+    ], 201);
+});
 // ─────────────────────────────────────────
 // GET ALL USERS — admin only
 // ─────────────────────────────────────────
