@@ -25,12 +25,14 @@ class BGVCase extends Model
         'total_amount',
         'payment_link',
         'status',
+        'check_results',
         'notes',
         'created_by',
     ];
 
     protected $casts = [
-        'checks' => 'array',
+        'checks'        => 'array',
+        'check_results' => 'array',
     ];
 
     public function creator()
@@ -38,10 +40,13 @@ class BGVCase extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Auto-generate BGV case ID
+    /**
+     * Auto-generate next BGV case ID.
+     * Locks the row to prevent race conditions in concurrent requests.
+     */
     public static function generateCaseId(): string
     {
-        $last = static::orderByDesc('id')->value('case_id');
+        $last = static::orderByDesc('id')->lockForUpdate()->value('case_id');
         if (!$last) return 'BGV-2501';
         $num = (int) substr($last, 4);
         return 'BGV-' . ($num + 1);
