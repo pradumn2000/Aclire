@@ -307,37 +307,86 @@ import { useNavigate, useLocation } from "react-router-dom";
 function getUser() { try { return JSON.parse(localStorage.getItem("user")) || {}; } catch { return {}; } }
 
 // ─── Nav config per role ──────────────────────────────────────────────────────
+// const ROLE_NAV = {
+//   // admin: [
+//   //   { path: "/dashboard",      label: "Dashboard",         img: "images/sidebar/dashboard-icon.svg" },
+//   //   { path: "/AllCases",       label: "All Cases",         img: "images/sidebar/cases-icon.svg" },
+//   //   { path: "/AddCase",        label: "Add Case",          img: "images/sidebar/add-case-icon.svg" },
+//   //   { path: "/Trends",         label: "Trends",            img: "images/sidebar/trends-icon.svg" },
+//   //   { path: "/UserManagement", label: "User Management",   img: "images/sidebar/users-icon.svg" },
+//   //   { path: "/AddInstitution", label: "Institution DB",    img: "images/sidebar/database-icon.svg" },
+//   //   { path: "/Apiintegretion", label: "API Integration",   img: "images/sidebar/api-icon.svg" },
+//   //   { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   // ]
+//   admin: [
+//   { path:"/dashboard", label:"Dashboard" },
+//   { path:"/AllCases", label:"All Cases" },
+//   { path:"/AddCase", label:"Add Client" },
+//   { path:"/Allocator", label:"Case Allocation" },
+//   { path:"/Verifyer", label:"Verifier" },
+//   { path:"/emploment", label:"Employment" },
+//   { path:"/StatusEmploment", label:"Employment Status" },
+//   { path:"/Specialist", label:"Report Writing" },
+//   { path:"/Intake", label:"QC Intake" },
+//   { path:"/clientportal", label:"Client Portal" },
+//   { path:"/UserManagement", label:"User Management" },
+//   { path:"/AddInstitution", label:"Institution DB" },
+//   { path:"/AddCompany", label:"Add Company" },
+//   { path:"/Apiintegretion", label:"API Integration" },
+//   { path:"/Settings", label:"Settings" }
+// ],
+//   allocator: [
+//     { path: "/Allocator",      label: "Case Allocation",   img: "images/sidebar/cases-icon.svg" },
+//     { path: "/AddCase",        label: "Add Client Case",          img: "images/sidebar/add-case-icon.svg" },
+//     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   ],
+//   verifier: [
+//     { path: "/Verifyer",       label: "Verification",      img: "images/inner-pages/emp-check-icon.svg" },
+//     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   ],
+//   check_manager: [
+//     { path: "/AllCases",       label: "All Cases",         img: "images/sidebar/cases-icon.svg" },
+//     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   ],
+//   report_writing: [
+//     { path: "/Specialist",     label: "Report Writing",    img: "images/sidebar/cases-icon.svg" },
+//     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   ],
+//   pvt_qc: [
+//     { path: "/Intake",         label: "Intake / QC",       img: "images/sidebar/cases-icon.svg" },
+//     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   ],
+//   client: [
+//     { path: "/Client",         label: "Dashboard",         img: "images/sidebar/dashboard-icon.svg" },
+//     { path: "/ClientCases",    label: "My Cases",          img: "images/sidebar/cases-icon.svg" },
+//     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   ],
+//   onboarding: [
+//     { path: "/clientportal",   label: "Onboarding",        img: "images/inner-pages/client-portal-icon.svg" },
+//     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+//   ],
+// };
 const ROLE_NAV = {
-  // admin: [
-  //   { path: "/dashboard",      label: "Dashboard",         img: "images/sidebar/dashboard-icon.svg" },
-  //   { path: "/AllCases",       label: "All Cases",         img: "images/sidebar/cases-icon.svg" },
-  //   { path: "/AddCase",        label: "Add Case",          img: "images/sidebar/add-case-icon.svg" },
-  //   { path: "/Trends",         label: "Trends",            img: "images/sidebar/trends-icon.svg" },
-  //   { path: "/UserManagement", label: "User Management",   img: "images/sidebar/users-icon.svg" },
-  //   { path: "/AddInstitution", label: "Institution DB",    img: "images/sidebar/database-icon.svg" },
-  //   { path: "/Apiintegretion", label: "API Integration",   img: "images/sidebar/api-icon.svg" },
-  //   { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
-  // ]
   admin: [
-  { path:"/dashboard", label:"Dashboard" },
-  { path:"/AllCases", label:"All Cases" },
-  { path:"/AddCase", label:"Add Client" },
-  { path:"/Allocator", label:"Case Allocation" },
-  { path:"/Verifyer", label:"Verifier" },
-  { path:"/emploment", label:"Employment" },
-  { path:"/StatusEmploment", label:"Employment Status" },
-  { path:"/Specialist", label:"Report Writing" },
-  { path:"/Intake", label:"QC Intake" },
-  { path:"/clientportal", label:"Client Portal" },
-  { path:"/UserManagement", label:"User Management" },
-  { path:"/AddInstitution", label:"Institution DB" },
-  { path:"/AddCompany", label:"Add Company" },
-  { path:"/Apiintegretion", label:"API Integration" },
-  { path:"/Settings", label:"Settings" }
-],
+    { path:"/dashboard", label:"Dashboard" },
+    { path:"/AllCases", label:"All Cases" },
+    { path:"/AddCase", label:"Add Client" },
+    { path:"/Allocator", label:"Case Allocation" },
+    { path:"/Verifyer", label:"Verifier" },
+    { path:"/emploment", label:"Employment" },
+    { path:"/StatusEmploment", label:"Employment Status" },
+    { path:"/Specialist", label:"Report Writing" },
+    { path:"/Intake", label:"QC Intake" },
+    { path:"/clientportal", label:"Candidate Portal — Link Generator" },
+    { path:"/UserManagement", label:"User Management" },
+    { path:"/AddInstitution", label:"Institution DB" },
+    { path:"/AddCompany", label:"Add Company" },
+    { path:"/Apiintegretion", label:"API Integration" },
+    { path:"/Settings", label:"Settings" }
+  ],
   allocator: [
     { path: "/Allocator",      label: "Case Allocation",   img: "images/sidebar/cases-icon.svg" },
-    { path: "/AddCase",        label: "Add Client Case",          img: "images/sidebar/add-case-icon.svg" },
+    { path: "/AddCase",        label: "Add Client Case",   img: "images/sidebar/add-case-icon.svg" },
     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
   ],
   verifier: [
@@ -357,12 +406,17 @@ const ROLE_NAV = {
     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
   ],
   client: [
-    { path: "/Client",         label: "Dashboard",         img: "images/sidebar/dashboard-icon.svg" },
-    { path: "/ClientCases",    label: "My Cases",          img: "images/sidebar/cases-icon.svg" },
-    { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+    { path: "/Client",         label: "Dashboard",                       img: "images/sidebar/dashboard-icon.svg" },
+    { path: "/ClientCases",    label: "My Cases",                        img: "images/sidebar/cases-icon.svg" },
+    { path: "/AddCase",        label: "Add Case",                        img: "images/sidebar/add-case-icon.svg" },
+    { path: "/clientportal",   label: "Candidate Portal — Link Generator", img: "images/inner-pages/client-portal-icon.svg" },
+    { path: "/ClientCases?status=pending",   label: "Pending Cases",   img: "images/sidebar/cases-icon.svg" },
+    { path: "/ClientCases?status=completed", label: "Completed Cases", img: "images/sidebar/cases-icon.svg" },
+    { path: "/ClientBilling",  label: "Billing",                         img: "images/sidebar/settings-icon.svg" },
+    { path: "/Settings",       label: "Settings",                        img: "images/sidebar/settings-icon.svg" },
   ],
   onboarding: [
-    { path: "/clientportal",   label: "Onboarding",        img: "images/inner-pages/client-portal-icon.svg" },
+    { path: "/clientportal",   label: "Candidate Portal — Link Generator", img: "images/inner-pages/client-portal-icon.svg" },
     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
   ],
 };
@@ -391,11 +445,17 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <ul className="side-menu">
-        {navItems.map((item) => {
+        {/* {navItems.map((item) => {
           const isActive = location.pathname === item.path ||
             (item.path !== "/" && location.pathname.startsWith(item.path));
           return (
-            <li key={item.path} className={isActive ? "active" : ""}>
+            <li key={item.path} className={isActive ? "active" : ""}> */}
+        {navItems.map((item) => {
+            const itemPath = item.path.split("?")[0];
+            const isActive = location.pathname === itemPath ||
+              (itemPath !== "/" && location.pathname.startsWith(itemPath));
+            return (
+              <li key={item.path} className={isActive ? "active" : ""}>
               <a
                 href="#"
                 onClick={(e) => { e.preventDefault(); navigate(item.path); }}

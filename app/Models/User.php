@@ -15,7 +15,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',        // ← added
+        'role',
+        'gstin',
+        'primary_contact',
+        'contact_phone',
+        'billing_mode',
+        'agreed_checks',
+        'check_rates',
     ];
 
     protected $hidden = [
@@ -26,5 +32,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
+        'agreed_checks'     => 'array',
+        'check_rates'       => 'array',
     ];
 }

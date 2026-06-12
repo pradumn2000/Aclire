@@ -465,3 +465,216 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 });
+// ─────────────────────────────────────────
+// CLIENT COMPANY REGISTER
+// ─────────────────────────────────────────
+Route::post('/clients/register', function (Request $request) {
+
+    $request->validate([
+        'companyName'    => 'required|string|max:255',
+        'gstin'          => 'required|string|max:15',
+        'primaryContact' => 'required|string|max:255',
+        'contactPhone'   => 'nullable|string|max:20',
+        'contactEmail'   => 'required|email|unique:users,email',
+        'password'       => 'required|min:8',
+        'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+        'agreedChecks'   => 'required|array|min:1',
+        'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug_test,courtroom',
+        'checkRates'     => 'nullable|array',
+        'checkRates.*'   => 'numeric|min:0',
+    ]);
+
+    $user = \App\Models\User::create([
+        'name'            => $request->companyName,
+        'email'           => $request->contactEmail,
+        'password'        => Hash::make($request->password),
+        'role'            => 'client',
+        'gstin'           => $request->gstin,
+        'primary_contact' => $request->primaryContact,
+        'contact_phone'   => $request->contactPhone,
+        'billing_mode'    => $request->billingMode,
+        'agreed_checks'   => $request->agreedChecks,
+        'check_rates'     => $request->checkRates ?? [],
+    ]);
+
+    $token = $user->createToken('authToken')->plainTextToken;
+
+    return response()->json([
+        'message' => 'Client registered successfully',
+        'token'   => $token,
+        'user'    => [
+            'id'             => $user->id,
+            'name'           => $user->name,
+            'email'          => $user->email,
+            'role'           => $user->role,
+            'gstin'          => $user->gstin,
+            'primaryContact' => $user->primary_contact,
+            'contactPhone'   => $user->contact_phone,
+            'billingMode'    => $user->billing_mode,
+            'agreedChecks'   => $user->agreed_checks,
+            'checkRates'     => $user->check_rates,
+        ],
+    ], 201);
+});
+// ═════════════════════════════════════════════════════════
+    // CANDIDATE LINKS (Candidate Portal — Link Generator)
+    // ═════════════════════════════════════════════════════════
+
+    // ── LIST LINKS (client sees only their own; admin sees all) ──
+    Route::get('/candidate-links', function (Request $request) {
+        $user  = $request->user();
+        $query = \App\Models\CandidateLink::orderByDesc('created_at');
+
+        if ($user->role !== 'admin') {
+            $query->where('client_id', $user->id);
+        }
+
+        $links = $query->get()->map(function ($l) {
+            return [
+                'id'            => $l->id,
+                'candidateName' => $l->candidate_name,
+                'email'         => $l->email,
+                'mobile'        => $l->mobile,
+                'position'      => $l->position,
+                'checks'        => $l->checks,
+                'expiry'        => $l->expiry,
+                'status'        => $l->status,
+                'link'          => url("/candidate/{$l->token}"),
+                'createdAt'     => $l->created_at->format('Y-m-d'),
+            ];
+        });
+
+        return response()->json(['links' => $links]);
+    });
+
+    // ── CREATE SINGLE LINK ────────────────────────────────────
+    Route::post('/candidate-links', function (Request $request) {
+        $request->validate([
+            'candidateName' => 'required|string|max:255',
+            'email'         => 'required|email',
+            'mobile'        => 'nullable|string|max:20',
+            'position'      => 'nullable|string|max:255',
+            'checks'        => 'required|array|min:1',
+            'checks.*'      => 'in:emp,edu,addr,db,criminal,drug,court',
+            'expiry'        => 'required|in:24h,48h,72h,7 days',
+        ]);
+
+        $token = \App\Models\CandidateLink::generateToken();
+
+        $link = \App\Models\CandidateLink::create([
+            'token'          => $token,
+            'candidate_name' => $request->candidateName,
+            'email'          => $request->email,
+            'mobile'         => $request->mobile,
+            'position'       => $request->position,
+            'checks'         => $request->checks,
+            'expiry'         => $request->expiry,
+            'status'         => 'pending',
+            'client_id'      => $request->user()->id,
+            'expires_at'     => \App\Models\CandidateLink::expiryToCarbon($request->expiry),
+        ]);
+
+        return response()->json([
+            'message' => 'Candidate link generated',
+            'link'    => [
+                'id'            => $link->id,
+                'candidateName' => $link->candidate_name,
+                'email'         => $link->email,
+                'mobile'        => $link->mobile,
+                'position'      => $link->position,
+                'checks'        => $link->checks,
+                'expiry'        => $link->expiry,
+                'status'        => $link->status,
+                'link'          => url("/candidate/{$token}"),
+                'createdAt'     => $link->created_at->format('Y-m-d'),
+            ],
+        ], 201);
+    });
+
+    // ── CREATE BULK LINKS (CSV upload) ────────────────────────
+    Route::post('/candidate-links/bulk', function (Request $request) {
+        $request->validate([
+            'rows'              => 'required|array|min:1',
+            'rows.*.candidateName' => 'required|string|max:255',
+            'rows.*.email'         => 'required|email',
+            'rows.*.mobile'        => 'nullable|string|max:20',
+            'rows.*.position'      => 'nullable|string|max:255',
+            'rows.*.checks'        => 'required|array|min:1',
+            'rows.*.checks.*'      => 'in:emp,edu,addr,db,criminal,drug,court',
+        ]);
+
+        $clientId = $request->user()->id;
+        $created  = [];
+
+        foreach ($request->rows as $row) {
+            $token = \App\Models\CandidateLink::generateToken();
+
+            $link = \App\Models\CandidateLink::create([
+                'token'          => $token,
+                'candidate_name' => $row['candidateName'],
+                'email'          => $row['email'],
+                'mobile'         => $row['mobile'] ?? null,
+                'position'       => $row['position'] ?? null,
+                'checks'         => $row['checks'],
+                'expiry'         => '72h',
+                'status'         => 'pending',
+                'client_id'      => $clientId,
+                'expires_at'     => \App\Models\CandidateLink::expiryToCarbon('72h'),
+            ]);
+
+            $created[] = [
+                'id'            => $link->id,
+                'candidateName' => $link->candidate_name,
+                'email'         => $link->email,
+                'mobile'        => $link->mobile,
+                'position'      => $link->position,
+                'checks'        => $link->checks,
+                'expiry'        => $link->expiry,
+                'status'        => $link->status,
+                'link'          => url("/candidate/{$token}"),
+                'createdAt'     => $link->created_at->format('Y-m-d'),
+            ];
+        }
+
+        return response()->json([
+            'message' => count($created) . ' candidate link(s) generated',
+            'links'   => $created,
+        ], 201);
+    });
+
+    // ── SEND LINK (SMS/Email — stub) ──────────────────────────
+    Route::post('/candidate-links/{id}/send', function (Request $request, $id) {
+        $request->validate(['method' => 'required|in:SMS,Email']);
+
+        $link = \App\Models\CandidateLink::find($id);
+        if (!$link) return response()->json(['message' => 'Link not found'], 404);
+
+        if ($request->user()->role !== 'admin' && $link->client_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // TODO: actually send via SendGrid (email) or SMS gateway
+        if ($request->method === 'Email') {
+            Mail::raw(
+                "Hi {$link->candidate_name},\n\nPlease complete your verification here: " . url("/candidate/{$link->token}"),
+                function ($message) use ($link) {
+                    $message->to($link->email)->subject('Complete Your Background Verification');
+                }
+            );
+        }
+
+        return response()->json(['message' => "{$request->method} sent to " . ($request->method === 'SMS' ? $link->mobile : $link->email)]);
+    });
+
+    // ── REVOKE / DELETE LINK ───────────────────────────────────
+    Route::delete('/candidate-links/{id}', function (Request $request, $id) {
+        $link = \App\Models\CandidateLink::find($id);
+        if (!$link) return response()->json(['message' => 'Link not found'], 404);
+
+        if ($request->user()->role !== 'admin' && $link->client_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $link->delete();
+        return response()->json(['message' => 'Link revoked']);
+    });

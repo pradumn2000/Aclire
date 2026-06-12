@@ -27,7 +27,7 @@ import ClientCases from "./pages/ClientCases";
 import ClientRegistration from "./pages/ClientRegistration";
 import AddInstitution from "./pages/AddInstitution";
 import CompanyManagement from "./pages/AddCompany";
-
+import ClientBilling from "./pages/ClientBilling";
 // ─────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────
@@ -170,6 +170,21 @@ function App() {
         <Route path="/AddCompany" element={
           <PrivateRoute><CompanyManagement /></PrivateRoute>
         } />
+        <Route path="/AddCase" element={
+  <PrivateRoute role={["admin", "allocator", "client"]}><AddCase /></PrivateRoute>
+} />
+
+// ...
+
+<Route path="/clientportal" element={
+  <PrivateRoute role={["onboarding", "client"]}><Clientportal /></PrivateRoute>
+} />
+
+// ...
+
+<Route path="/ClientBilling" element={
+  <PrivateRoute role="client"><ClientBilling /></PrivateRoute>
+} />
 
         {/* ── Catch all ── */}
         <Route path="*" element={<Navigate to="/" replace />} />
