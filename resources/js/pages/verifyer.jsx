@@ -2882,9 +2882,14 @@ const labelStyle = {
   color: "#475569", marginBottom: "5px", textTransform: "uppercase", letterSpacing: "0.3px"
 };
 const inputStyle = {
-  width: "100%", padding: "9px 12px", border: "1.5px solid #e2e8f0",
-  borderRadius: "8px", fontSize: "13px", color: "#1e293b", background: "#f8fafc",
-  outline: "none", fontFamily: "inherit", resize: "vertical"
-};
-  outline: "none", fontFamily: "inherit", resize: "vertical"
+  width: "100%",
+  padding: "9px 12px",
+  border: "1.5px solid #e2e8f0",
+  borderRadius: "8px",
+  fontSize: "13px",
+  color: "#1e293b",
+  background: "#f8fafc",
+  outline: "none",
+  fontFamily: "inherit",
+  resize: "vertical",
 };
