@@ -20,13 +20,14 @@ return new class extends Migration
             $table->json('checks');                        // ["employment","education"]
             $table->enum('priority', ['normal','high','urgent'])->default('normal');
             $table->enum('billing_mode', ['prepaid_client','prepaid_candidate','postpaid_client']);
-            $table->string('payment_timing')->nullable();  // prepaid_candidate: before/after
-            $table->string('invoice_cycle')->nullable();   // postpaid: monthly/per_case
+            $table->string('payment_timing')->nullable();
+            $table->string('invoice_cycle')->nullable();
             $table->string('po_number')->nullable();
             $table->integer('total_amount')->default(0);
             $table->string('payment_link')->nullable();
             $table->enum('status', ['pending','in-progress','qc-review','completed','on-hold'])
                   ->default('pending');
+            $table->json('check_results')->nullable();     // verifier results per check type
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
