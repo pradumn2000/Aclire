@@ -1050,6 +1050,317 @@
 //   const base = map[s] || { background: "#e9ecef", color: "#495057" };
 //   return { ...base, padding: "3px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, whiteSpace: "nowrap" };
 // }
+// import { useState, useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import Header from "./Header";
+// import Sidebar from "./Sidebar";
+// import { API_URL } from "../src/config";
+
+// export default function Dashboard() {
+//   const navigate = useNavigate();
+
+//   // ── State ──────────────────────────────────────────────────
+//   const [stats, setStats]       = useState({ total: 0, in_progress: 0, completed: 0, clients: 0, clear_rate: "0%", avg_tat: "0 days", pending: 0 });
+//   const [cases, setCases]       = useState([]);
+//   const [clients, setClients]   = useState([]);           // all users with role=client
+//   const [activeTab, setActiveTab] = useState("cases");    // "cases" | "clients"
+//   const [loading, setLoading]   = useState(true);
+//   const [search, setSearch]     = useState("");
+
+//   const token = localStorage.getItem("token");
+
+//   // ── Fetch stats + recent cases + client list ───────────────
+//   useEffect(() => {
+//     const headers = { Authorization: `Bearer ${token}`, Accept: "application/json" };
+
+//     Promise.all([
+//       fetch(`${API_URL}/api/dashboard-stats`, { headers }).then(r => r.json()),
+//       fetch(`${API_URL}/api/cases`, { headers }).then(r => r.json()),
+//       fetch(`${API_URL}/api/users`, { headers }).then(r => r.json()),
+//     ]).then(([statsData, casesData, usersData]) => {
+//       setStats(statsData);
+//       setCases(casesData.cases || []);
+//       const clientList = (usersData.users || []).filter(u => u.role === "client");
+//       setClients(clientList);
+//     }).catch(console.error).finally(() => setLoading(false));
+//   }, []);
+
+//   // ── Filtered cases ─────────────────────────────────────────
+//   const filteredCases = cases.filter(c => {
+//     if (!search) return true;
+//     const s = search.toLowerCase();
+//     return (
+//       c.case_id?.toLowerCase().includes(s) ||
+//       c.candidate?.toLowerCase().includes(s) ||
+//       c.client?.toLowerCase().includes(s)
+//     );
+//   });
+
+//   // Cases per client (for client tab)
+//   const casesForClient = (clientName) =>
+//     cases.filter(c => c.client?.toLowerCase() === clientName?.toLowerCase());
+
+//   return (
+//     <>
+//       <Sidebar />
+//       <section id="content">
+//         <Header />
+//         <main>
+//           <div className="dash-wrper">
+
+//             {/* ── Top filter bar ── */}
+//             <div className="dash-upper-head">
+//               <div className="left">
+//                 <button className="tab-cta active">All Time</button>
+//               </div>
+//               <div className="right">
+//                 <div style={{ position: "relative" }}>
+//                   <input
+//                     type="text"
+//                     placeholder="Search case ID, candidate..."
+//                     value={search}
+//                     onChange={e => setSearch(e.target.value)}
+//                     style={{
+//                       height: "45px", padding: "0 14px", borderRadius: "10px",
+//                       border: "1px solid #ccc", fontSize: "14px", minWidth: "240px", outline: "none"
+//                     }}
+//                   />
+//                 </div>
+//                 <button className="primary-cta export">
+//                   <img src="images/dashboard/export-icon.svg" alt="" /> Export CSV
+//                 </button>
+//                 <button className="secondary-cta import">
+//                   <img src="images/dashboard/export-excel.svg" alt="" /> Export Excel
+//                 </button>
+//               </div>
+//             </div>
+
+//             {/* ── Stat cards (original layout) ── */}
+//             <div className="cards-head-dash">
+//               <div className="card-inner-dash bdr-total">
+//                 <h4>{loading ? "—" : stats.total?.toLocaleString()}</h4>
+//                 <p>Total Cases</p>
+//               </div>
+//               <div className="card-inner-dash bdr-progress">
+//                 <h4>{loading ? "—" : stats.in_progress}</h4>
+//                 <p>In Progress</p>
+//               </div>
+//               <div className="card-inner-dash bdr-com">
+//                 <h4>{loading ? "—" : stats.completed}</h4>
+//                 <p>Completed</p>
+//               </div>
+//               <div className="card-inner-dash bdr-client">
+//                 <h4>{loading ? "—" : clients.length}</h4>
+//                 <p>Clients</p>
+//               </div>
+//               <div className="card-inner-dash bdr-rate">
+//                 <h4>{loading ? "—" : stats.clear_rate}</h4>
+//                 <p>Clear Rate</p>
+//               </div>
+//             </div>
+
+//             {/* ── Tab switcher: Cases | Clients ── */}
+//             <div className="header-navbar">
+//               <button
+//                 className={`tab-cta ${activeTab === "cases" ? "active" : ""}`}
+//                 onClick={() => setActiveTab("cases")}
+//               >
+//                 Recent Cases
+//               </button>
+//               <button
+//                 className={`tab-cta ${activeTab === "clients" ? "active" : ""}`}
+//                 onClick={() => setActiveTab("clients")}
+//               >
+//                 All Clients ({clients.length})
+//               </button>
+//             </div>
+
+//             {/* ── Dashboard body ── */}
+//             <div className="dash-inner-wrp-both">
+
+//               {/* ── LEFT: table ── */}
+//               <div className="dash-inner-left">
+//                 <div className="up-table">
+//                   <img src="/images/dashboard/graph-dash.png" alt="graph" />
+//                 </div>
+
+//                 <div className="down-table">
+//                   {loading ? (
+//                     <p style={{ padding: "20px", color: "#888", fontSize: "14px" }}>Loading cases...</p>
+//                   ) : activeTab === "cases" ? (
+//                     /* ── Cases table ── */
+//                     <table>
+//                       <thead>
+//                         <tr>
+//                           <th>Case ID</th>
+//                           <th>Candidate</th>
+//                           <th>Client</th>
+//                           <th>Checks</th>
+//                           <th>Status</th>
+//                           <th>TAT</th>
+//                           <th>Action</th>
+//                         </tr>
+//                       </thead>
+//                       <tbody>
+//                         {filteredCases.length === 0 ? (
+//                           <tr>
+//                             <td colSpan="7" style={{ textAlign: "center", padding: "30px", color: "#888" }}>
+//                               {cases.length === 0
+//                                 ? <>No cases yet. <button onClick={() => navigate("/AddCase")} style={{ color: "#2b3b8c", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>Add your first case →</button></>
+//                                 : "No cases match your search."
+//                               }
+//                             </td>
+//                           </tr>
+//                         ) : (
+//                           filteredCases.slice(0, 10).map(row => (
+//                             <tr key={row.case_id}>
+//                               <td style={{ fontWeight: 700, color: "#2b3b8c" }}>{row.case_id}</td>
+//                               <td>{row.candidate}</td>
+//                               <td>{row.client}</td>
+//                               <td style={{ fontSize: "13px" }}>{row.checks}</td>
+//                               <td>
+//                                 <span className={`status ${row.status}`}>
+//                                   {statusLabel(row.status)}
+//                                 </span>
+//                               </td>
+//                               <td>{row.tat}</td>
+//                               <td>
+//                                 <button className="view-cta" onClick={() => navigate("/AllCases")}>
+//                                   View
+//                                 </button>
+//                               </td>
+//                             </tr>
+//                           ))
+//                         )}
+//                       </tbody>
+//                     </table>
+//                   ) : (
+//                     /* ── Clients table ── */
+//                     <table>
+//                       <thead>
+//                         <tr>
+//                           <th>#</th>
+//                           <th>Client Name</th>
+//                           <th>Email</th>
+//                           <th>Cases</th>
+//                           <th>Joined</th>
+//                           <th>Action</th>
+//                         </tr>
+//                       </thead>
+//                       <tbody>
+//                         {clients.length === 0 ? (
+//                           <tr>
+//                             <td colSpan="6" style={{ textAlign: "center", padding: "30px", color: "#888" }}>
+//                               No client accounts yet.
+//                             </td>
+//                           </tr>
+//                         ) : (
+//                           clients.map((client, i) => {
+//                             const cCount = casesForClient(client.name).length;
+//                             return (
+//                               <tr key={client.id}>
+//                                 <td>{i + 1}</td>
+//                                 <td style={{ fontWeight: 600 }}>{client.name}</td>
+//                                 <td style={{ fontSize: "13px", color: "#64748b" }}>{client.email}</td>
+//                                 <td>
+//                                   <span style={{
+//                                     background: cCount > 0 ? "#eef1fb" : "#f1f5f9",
+//                                     color: cCount > 0 ? "#2b3b8c" : "#94a3b8",
+//                                     padding: "3px 10px", borderRadius: "10px",
+//                                     fontSize: "13px", fontWeight: 700
+//                                   }}>
+//                                     {cCount} case{cCount !== 1 ? "s" : ""}
+//                                   </span>
+//                                 </td>
+//                                 <td style={{ fontSize: "13px", color: "#94a3b8" }}>
+//                                   {client.created_at
+//                                     ? new Date(client.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+//                                     : "—"}
+//                                 </td>
+//                                 <td>
+//                                   <button
+//                                     className="view-cta"
+//                                     style={{ fontSize: "12px", width: "auto", padding: "0 14px" }}
+//                                     onClick={() => navigate("/AllCases")}
+//                                   >
+//                                     Cases
+//                                   </button>
+//                                 </td>
+//                               </tr>
+//                             );
+//                           })
+//                         )}
+//                       </tbody>
+//                     </table>
+//                   )}
+//                 </div>
+//               </div>
+
+//               {/* ── RIGHT: Quick Stats ── */}
+//               <div className="dash-inner-right">
+//                 <div className="quick-stats">
+//                   <div className="stats-header">
+//                     <h3>QUICK STATS</h3>
+//                   </div>
+//                   <div className="stats-body">
+//                     <div className="stats-row">
+//                       <span>Total Cases</span>
+//                       <span>{stats.total}</span>
+//                     </div>
+//                     <div className="stats-row">
+//                       <span>In Progress</span>
+//                       <span>{stats.in_progress}</span>
+//                     </div>
+//                     <div className="stats-row">
+//                       <span>Completed</span>
+//                       <span>{stats.completed}</span>
+//                     </div>
+//                     <div className="stats-row">
+//                       <span>Pending</span>
+//                       <span>{stats.pending}</span>
+//                     </div>
+//                     <div className="stats-row">
+//                       <span>Clear Rate</span>
+//                       <span>{stats.clear_rate}</span>
+//                     </div>
+//                     <div className="stats-row">
+//                       <span>Avg TAT</span>
+//                       <span>{stats.avg_tat}</span>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* ── Quick links ── */}
+//                 <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+//                   <button className="primary-cta" style={{ width: "100%" }} onClick={() => navigate("/AddCase")}>
+//                     + Add New Case
+//                   </button>
+//                   <button className="secondary-cta" style={{ width: "100%" }} onClick={() => navigate("/UserManagement")}>
+//                     Manage Users
+//                   </button>
+//                   <button className="secondary-cta" style={{ width: "100%" }} onClick={() => navigate("/AllCases")}>
+//                     View All Cases
+//                   </button>
+//                 </div>
+//               </div>
+
+//             </div>
+//           </div>
+//         </main>
+//       </section>
+//     </>
+//   );
+// }
+
+// function statusLabel(s) {
+//   return {
+//     pending:       "Pending",
+//     "in-progress": "In Progress",
+//     completed:     "Completed",
+//     "qc-review":   "QC Review",
+//     "on-hold":     "On Hold",
+//   }[s] || s;
+// }
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
