@@ -321,7 +321,7 @@ const ROLE_NAV = {
   admin: [
   { path:"/dashboard", label:"Dashboard" },
   { path:"/AllCases", label:"All Cases" },
-  { path:"/AddCase", label:"Add Case" },
+  { path:"/AddCase", label:"Add Client" },
   { path:"/Allocator", label:"Case Allocation" },
   { path:"/Verifyer", label:"Verifier" },
   { path:"/emploment", label:"Employment" },
