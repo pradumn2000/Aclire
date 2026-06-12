@@ -308,19 +308,35 @@ function getUser() { try { return JSON.parse(localStorage.getItem("user")) || {}
 
 // ─── Nav config per role ──────────────────────────────────────────────────────
 const ROLE_NAV = {
+  // admin: [
+  //   { path: "/dashboard",      label: "Dashboard",         img: "images/sidebar/dashboard-icon.svg" },
+  //   { path: "/AllCases",       label: "All Cases",         img: "images/sidebar/cases-icon.svg" },
+  //   { path: "/AddCase",        label: "Add Case",          img: "images/sidebar/add-case-icon.svg" },
+  //   { path: "/Trends",         label: "Trends",            img: "images/sidebar/trends-icon.svg" },
+  //   { path: "/UserManagement", label: "User Management",   img: "images/sidebar/users-icon.svg" },
+  //   { path: "/AddInstitution", label: "Institution DB",    img: "images/sidebar/database-icon.svg" },
+  //   { path: "/Apiintegretion", label: "API Integration",   img: "images/sidebar/api-icon.svg" },
+  //   { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
+  // ]
   admin: [
-    { path: "/dashboard",      label: "Dashboard",         img: "images/sidebar/dashboard-icon.svg" },
-    { path: "/AllCases",       label: "All Cases",         img: "images/sidebar/cases-icon.svg" },
-    { path: "/AddCase",        label: "Add Case",          img: "images/sidebar/add-case-icon.svg" },
-    { path: "/Trends",         label: "Trends",            img: "images/sidebar/trends-icon.svg" },
-    { path: "/UserManagement", label: "User Management",   img: "images/sidebar/users-icon.svg" },
-    { path: "/AddInstitution", label: "Institution DB",    img: "images/sidebar/database-icon.svg" },
-    { path: "/Apiintegretion", label: "API Integration",   img: "images/sidebar/api-icon.svg" },
-    { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
-  ],
+  { path:"/dashboard", label:"Dashboard" },
+  { path:"/AllCases", label:"All Cases" },
+  { path:"/AddCase", label:"Add Case" },
+  { path:"/Allocator", label:"Case Allocation" },
+  { path:"/Verifyer", label:"Verifier" },
+  { path:"/emploment", label:"Employment" },
+  { path:"/StatusEmploment", label:"Employment Status" },
+  { path:"/Specialist", label:"Report Writing" },
+  { path:"/Intake", label:"QC Intake" },
+  { path:"/clientportal", label:"Client Portal" },
+  { path:"/UserManagement", label:"User Management" },
+  { path:"/AddInstitution", label:"Institution DB" },
+  { path:"/Apiintegretion", label:"API Integration" },
+  { path:"/Settings", label:"Settings" }
+],
   allocator: [
     { path: "/Allocator",      label: "Case Allocation",   img: "images/sidebar/cases-icon.svg" },
-    { path: "/AddCase",        label: "Add Case",          img: "images/sidebar/add-case-icon.svg" },
+    { path: "/AddCase",        label: "Add Client Case",          img: "images/sidebar/add-case-icon.svg" },
     { path: "/Settings",       label: "Settings",          img: "images/sidebar/settings-icon.svg" },
   ],
   verifier: [
