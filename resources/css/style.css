@@ -5350,3 +5350,172 @@ aside.cab-manager-section{
         }
 
         /* Client  Onboarding Form*/
+.dash-title-flex {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dash-title-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e2761;
+  margin: 0;
+}
+
+.dash-search-input {
+  padding: 8px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  width: 200px;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.dash-inner-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.form-container-box {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.form-header-bar {
+  background: #27348B;
+  color: #fff;
+  padding: 12px 18px;
+  font-weight: 700;
+  border-radius: 6px 6px 0 0;
+  margin: -20px -20px 20px -20px;
+}
+
+.form-grid-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-field-group label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.form-theme-input {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #f8fafc;
+  outline: none;
+}
+
+.form-actions-flex {
+  display: flex;
+  gap: 8px;
+}
+
+.pad-btn {
+  padding: 8px 16px;
+}
+
+.empty-table-cell {
+  text-align: center;
+  padding: 25px;
+}
+
+.company-name-cell {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.code-cell {
+  font-family: monospace;
+}
+
+.table-link-anchor {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.remove-btn-theme {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.utility-box-inner {
+  padding: 4px 0;
+}
+
+.utility-desc-text {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.full-width-center-btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.modal-overlay-blur {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-card-wrapper {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title-heading {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.modal-body-text {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.modal-actions-right {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.delete-confirm-bg {
+  background: #dc2626;
+  border: none;
+}
