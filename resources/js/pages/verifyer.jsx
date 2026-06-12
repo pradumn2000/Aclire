@@ -1966,6 +1966,465 @@
 //   );
 // }
 
+// import { useState, useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import Sidebar from "./Sidebar";
+// import Header from "./Header";
+// import { API_URL } from "../src/config";
+
+// // ── Check tab definitions ─────────────────────────────────────
+// const CHECK_TABS = [
+//   { key: "employment", label: "Employment" },
+//   { key: "education",  label: "Education"  },
+//   { key: "address",    label: "Address"    },
+//   { key: "database",   label: "Database"   },
+//   { key: "criminal",   label: "Criminal"   },
+//   { key: "drug",       label: "Drug Test"  },
+//   { key: "court",      label: "Courtroom"  },
+// ];
+
+// // ── Field definitions per check type ─────────────────────────
+// const CHECK_FIELDS = {
+//   employment: [
+//     { key: "company_name",      label: "Company Name",        type: "text" },
+//     { key: "designation",       label: "Designation",         type: "text" },
+//     { key: "employee_id",       label: "Employee ID",         type: "text" },
+//     { key: "date_of_joining",   label: "Date of Joining",     type: "date" },
+//     { key: "date_of_leaving",   label: "Date of Leaving",     type: "date" },
+//     { key: "last_salary",       label: "Last Salary (₹)",     type: "text" },
+//     { key: "reason_for_leaving",label: "Reason for Leaving",  type: "text" },
+//     { key: "reporting_manager", label: "Reporting Manager",   type: "text" },
+//     { key: "hr_contact",        label: "HR Contact Email",    type: "text" },
+//     { key: "hr_phone",          label: "HR Phone",            type: "text" },
+//     { key: "verification_mode", label: "Verification Mode",   type: "select", options: ["Email", "Phone", "Email + Phone", "Portal", "Visit"] },
+//     { key: "remarks",           label: "Remarks",             type: "textarea" },
+//   ],
+//   education: [
+//     { key: "institution_name",  label: "Institution Name",    type: "text" },
+//     { key: "degree",            label: "Degree / Certificate",type: "text" },
+//     { key: "course",            label: "Course / Specialization", type: "text" },
+//     { key: "roll_number",       label: "Roll / Reg. Number",  type: "text" },
+//     { key: "year_of_passing",   label: "Year of Passing",     type: "text" },
+//     { key: "percentage",        label: "Percentage / CGPA",   type: "text" },
+//     { key: "verification_mode", label: "Verification Mode",   type: "select", options: ["University Portal", "Email", "Phone", "Visit", "Result Link"] },
+//     { key: "result_link",       label: "Result Link (URL)",   type: "text" },
+//     { key: "remarks",           label: "Remarks",             type: "textarea" },
+//   ],
+//   address: [
+//     { key: "address_line",      label: "Address",             type: "text" },
+//     { key: "city",              label: "City",                type: "text" },
+//     { key: "state",             label: "State",               type: "text" },
+//     { key: "pincode",           label: "Pincode",             type: "text" },
+//     { key: "residency_type",    label: "Residency Type",      type: "select", options: ["Owned", "Rented", "PG / Hostel", "Family Home"] },
+//     { key: "years_at_address",  label: "Years at Address",    type: "text" },
+//     { key: "neighbour_name",    label: "Neighbour / Ref Name",type: "text" },
+//     { key: "neighbour_phone",   label: "Neighbour Phone",     type: "text" },
+//     { key: "verification_mode", label: "Verification Mode",   type: "select", options: ["Physical Visit", "Digital", "Phone"] },
+//     { key: "remarks",           label: "Remarks",             type: "textarea" },
+//   ],
+//   database: [
+//     { key: "db_checked",        label: "Databases Checked",   type: "text" },
+//     { key: "match_found",       label: "Match Found?",        type: "select", options: ["No Match", "Potential Match", "Confirmed Match"] },
+//     { key: "match_details",     label: "Match Details",       type: "textarea" },
+//     { key: "pan_verified",      label: "PAN Verified?",       type: "select", options: ["Yes", "No", "Not Applicable"] },
+//     { key: "aadhar_verified",   label: "Aadhaar Verified?",   type: "select", options: ["Yes", "No", "Not Applicable"] },
+//     { key: "remarks",           label: "Remarks",             type: "textarea" },
+//   ],
+//   criminal: [
+//     { key: "court_checked",     label: "Courts Checked",      type: "text" },
+//     { key: "police_verified",   label: "Police Record Check", type: "select", options: ["Clear", "Record Found", "Not Accessible"] },
+//     { key: "case_details",      label: "Case Details (if any)", type: "textarea" },
+//     { key: "state_checked",     label: "State",               type: "text" },
+//     { key: "district_checked",  label: "District",            type: "text" },
+//     { key: "verification_mode", label: "Verification Mode",   type: "select", options: ["Online Portal", "Physical", "Phone"] },
+//     { key: "remarks",           label: "Remarks",             type: "textarea" },
+//   ],
+//   drug: [
+//     { key: "test_type",         label: "Test Type",           type: "select", options: ["Urine Test", "Blood Test", "Hair Follicle", "Saliva Test"] },
+//     { key: "lab_name",          label: "Lab Name",            type: "text" },
+//     { key: "test_date",         label: "Test Date",           type: "date" },
+//     { key: "substances_tested", label: "Substances Tested",   type: "text" },
+//     { key: "result",            label: "Test Result",         type: "select", options: ["Negative (Clear)", "Positive", "Inconclusive", "Refused"] },
+//     { key: "lab_report_ref",    label: "Lab Report Ref No.",  type: "text" },
+//     { key: "remarks",           label: "Remarks",             type: "textarea" },
+//   ],
+//   court: [
+//     { key: "court_name",        label: "Court Name",          type: "text" },
+//     { key: "case_number",       label: "Case Number",         type: "text" },
+//     { key: "case_type",         label: "Case Type",           type: "select", options: ["Civil", "Criminal", "Labour", "Consumer", "Other"] },
+//     { key: "filing_date",       label: "Filing Date",         type: "date" },
+//     { key: "current_status",    label: "Current Status",      type: "select", options: ["Active", "Disposed", "Appealed", "No Record Found"] },
+//     { key: "next_date",         label: "Next Hearing Date",   type: "date" },
+//     { key: "remarks",           label: "Remarks",             type: "textarea" },
+//   ],
+// };
+
+// // ── Mock cases for queue (will be real API later) ─────────────
+// const MOCK_QUEUE = [
+//   { id: "BGV-2501", candidate: "Ravi Kumar",    priority: "HIGH",   age: "3d", checks: ["employment","education","criminal"] },
+//   { id: "BGV-2502", candidate: "Anjali Mehta",  priority: "MED",    age: "2d", checks: ["employment","database"] },
+//   { id: "BGV-2503", candidate: "Suresh Pillai", priority: "LOW",    age: "1d", checks: ["education","address"] },
+//   { id: "BGV-2504", candidate: "Neha Sharma",   priority: "HIGH",   age: "4d", checks: ["employment","education","criminal","drug"] },
+//   { id: "BGV-2505", candidate: "Vikram Nair",   priority: "MED",    age: "1d", checks: ["court"] },
+// ];
+
+// const PRIORITY_COLOR = { HIGH: "#eb4d4b", MED: "#f59e0b", LOW: "#10b981" };
+// const OUTCOME_STYLES = {
+//   clear:       { bg: "#f0fdf4", color: "#16a34a", label: "✔ Clear" },
+//   discrepancy: { bg: "#fff5f5", color: "#dc2626", label: "✗ Discrepancy" },
+//   unable:      { bg: "#fffbeb", color: "#b45309", label: "? Unable to Verify" },
+// };
+
+// export default function Verifyer() {
+//   const navigate    = useNavigate();
+//   const user        = (() => { try { return JSON.parse(localStorage.getItem("user")) || {}; } catch { return {}; } })();
+
+//   // ── State ────────────────────────────────────────────────────
+//   const [activeCheck, setActiveCheck]   = useState("employment");
+//   const [selectedCase, setSelectedCase] = useState(MOCK_QUEUE[0]);
+//   const [form, setForm]                 = useState({});         // field values
+//   const [outcome, setOutcome]           = useState("");         // clear | discrepancy | unable
+//   const [comments, setComments]         = useState([
+//     { author: "QC Lead", time: "10:24 AM", text: "Please prioritise BGV-2501 — client deadline today." },
+//   ]);
+//   const [newComment, setNewComment]     = useState("");
+//   const [saving, setSaving]             = useState(false);
+//   const [saveMsg, setSaveMsg]           = useState("");
+
+//   // When case or check type changes, reset form
+//   useEffect(() => {
+//     setForm({});
+//     setOutcome("");
+//     setSaveMsg("");
+//   }, [selectedCase?.id, activeCheck]);
+
+//   // ── Only show tabs that are in the selected case's checks ────
+//   const availableTabs = CHECK_TABS.filter(t =>
+//     selectedCase?.checks.includes(t.key)
+//   );
+
+//   // Jump to first available tab when case changes
+//   useEffect(() => {
+//     if (selectedCase && !selectedCase.checks.includes(activeCheck)) {
+//       setActiveCheck(selectedCase.checks[0] || "employment");
+//     }
+//   }, [selectedCase]);
+
+//   const setField = (key, val) => setForm(p => ({ ...p, [key]: val }));
+
+//   // ── Save / Submit ────────────────────────────────────────────
+//   const handleSave = async (isDraft) => {
+//     setSaving(true);
+//     setSaveMsg("");
+//     // TODO: replace with real API call:
+//     // await fetch(`${API_URL}/api/cases/${selectedCase.id}/check-result`, {
+//     //   method: "POST",
+//     //   headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
+//     //   body: JSON.stringify({ check_type: activeCheck, outcome, form_data: form, is_draft: isDraft }),
+//     // });
+//     await new Promise(r => setTimeout(r, 700));
+//     setSaving(false);
+//     setSaveMsg(isDraft ? "Draft saved." : "Result submitted for QC.");
+//     setTimeout(() => setSaveMsg(""), 3000);
+//   };
+
+//   const sendComment = () => {
+//     if (!newComment.trim()) return;
+//     setComments(p => [...p, {
+//       author: user.name || "Verifier",
+//       time: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }),
+//       text: newComment.trim(),
+//     }]);
+//     setNewComment("");
+//   };
+
+//   const fields = CHECK_FIELDS[activeCheck] || [];
+
+//   return (
+//     <>
+//       <Sidebar />
+//       <section id="content">
+//         <Header />
+//         <main>
+//           <div className="dash-wrper">
+
+//             {/* ── Check Type Tabs ── */}
+//             <div className="header-navbar">
+//               {CHECK_TABS.map(tab => {
+//                 const isAvail = selectedCase?.checks.includes(tab.key);
+//                 return (
+//                   <button
+//                     key={tab.key}
+//                     className={`tab-cta ${activeCheck === tab.key ? "active" : ""}`}
+//                     style={!isAvail ? { opacity: 0.4, cursor: "not-allowed" } : {}}
+//                     onClick={() => isAvail && setActiveCheck(tab.key)}
+//                     title={!isAvail ? "Not selected for this case" : ""}
+//                   >
+//                     {tab.label}
+//                   </button>
+//                 );
+//               })}
+//             </div>
+
+//             {/* ── Body: Queue | Form | Activity ── */}
+//             <div className="emplyment-check-body">
+
+//               {/* ── LEFT: Case Queue ── */}
+//               <div className="frist-card">
+//                 <div className="card-header queue-header">
+//                   <h2>MY QUEUE <span className="case-count">({MOCK_QUEUE.length} cases)</span></h2>
+//                 </div>
+//                 <div className="queue-list">
+//                   {MOCK_QUEUE.map(c => (
+//                     <div
+//                       key={c.id}
+//                       className={`queue-item ${selectedCase?.id === c.id ? "active" : ""}`}
+//                       onClick={() => setSelectedCase(c)}
+//                     >
+//                       <div className="queue-item-row">
+//                         <span className="case-id">{c.id}</span>
+//                         <span className="badge" style={{ background: PRIORITY_COLOR[c.priority] }}>
+//                           {c.priority}
+//                         </span>
+//                       </div>
+//                       <div className="queue-item-row margin-top-sm">
+//                         <span className="candidate-name">{c.candidate}</span>
+//                         <span className="case-age">Age: {c.age}</span>
+//                       </div>
+//                       <div style={{ marginTop: "6px", display: "flex", gap: "4px", flexWrap: "wrap" }}>
+//                         {c.checks.map(ch => (
+//                           <span key={ch} style={{
+//                             fontSize: "10px", fontWeight: 700, padding: "2px 7px",
+//                             borderRadius: "4px", background: "#eef1fb", color: "#2b3b8c"
+//                           }}>
+//                             {ch.slice(0,3).toUpperCase()}
+//                           </span>
+//                         ))}
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </div>
+
+//               {/* ── MIDDLE: Result Entry Form ── */}
+//               <div className="second-card">
+//                 <div className="card-header verification-header">
+//                   <h2>
+//                     {CHECK_TABS.find(t => t.key === activeCheck)?.label.toUpperCase()} CHECK
+//                     {selectedCase ? ` — ${selectedCase.id} | ${selectedCase.candidate}` : ""}
+//                   </h2>
+//                 </div>
+
+//                 <div className="card-content-wrapper" style={{ overflowY: "auto" }}>
+
+//                   {/* Outcome toggle */}
+//                   <div style={{ marginBottom: "18px" }}>
+//                     <p style={{ fontSize: "12px", fontWeight: 700, color: "#475569", marginBottom: "8px", textTransform: "uppercase" }}>
+//                       Outcome
+//                     </p>
+//                     <div style={{ display: "flex", gap: "10px" }}>
+//                       {Object.entries(OUTCOME_STYLES).map(([key, s]) => (
+//                         <button
+//                           key={key}
+//                           onClick={() => setOutcome(key)}
+//                           style={{
+//                             flex: 1, padding: "10px", border: `2px solid ${outcome === key ? s.color : "#e2e8f0"}`,
+//                             borderRadius: "8px", background: outcome === key ? s.bg : "#f8fafc",
+//                             color: outcome === key ? s.color : "#64748b",
+//                             fontWeight: 700, fontSize: "13px", cursor: "pointer",
+//                           }}
+//                         >
+//                           {s.label}
+//                         </button>
+//                       ))}
+//                     </div>
+//                   </div>
+
+//                   {/* Dynamic fields */}
+//                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+//                     {fields.map(f => {
+//                       if (f.type === "textarea") return (
+//                         <div key={f.key} style={{ gridColumn: "1 / -1" }}>
+//                           <label style={labelStyle}>{f.label}</label>
+//                           <textarea
+//                             rows={3}
+//                             value={form[f.key] || ""}
+//                             onChange={e => setField(f.key, e.target.value)}
+//                             placeholder={`Enter ${f.label.toLowerCase()}...`}
+//                             style={inputStyle}
+//                           />
+//                         </div>
+//                       );
+//                       if (f.type === "select") return (
+//                         <div key={f.key}>
+//                           <label style={labelStyle}>{f.label}</label>
+//                           <select
+//                             value={form[f.key] || ""}
+//                             onChange={e => setField(f.key, e.target.value)}
+//                             style={{ ...inputStyle, cursor: "pointer" }}
+//                           >
+//                             <option value="">— Select —</option>
+//                             {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+//                           </select>
+//                         </div>
+//                       );
+//                       return (
+//                         <div key={f.key}>
+//                           <label style={labelStyle}>{f.label}</label>
+//                           <input
+//                             type={f.type}
+//                             value={form[f.key] || ""}
+//                             onChange={e => setField(f.key, e.target.value)}
+//                             placeholder={f.type === "date" ? "" : `Enter ${f.label.toLowerCase()}...`}
+//                             style={inputStyle}
+//                           />
+//                         </div>
+//                       );
+//                     })}
+//                   </div>
+
+//                   {/* Save message */}
+//                   {saveMsg && (
+//                     <div style={{ marginTop: "12px", padding: "10px 14px", borderRadius: "8px", background: "#f0fdf4", color: "#16a34a", fontSize: "13px", fontWeight: 600 }}>
+//                       {saveMsg}
+//                     </div>
+//                   )}
+
+//                   {/* Action buttons */}
+//                   <div style={{ display: "flex", gap: "10px", marginTop: "18px" }}>
+//                     <button
+//                       onClick={() => handleSave(false)}
+//                       disabled={saving || !outcome}
+//                       style={{
+//                         flex: 2, padding: "12px", background: saving ? "#94a3b8" : "#10b981",
+//                         color: "#fff", border: "none", borderRadius: "8px",
+//                         fontWeight: 700, fontSize: "13px", cursor: outcome ? "pointer" : "not-allowed",
+//                         letterSpacing: "0.5px"
+//                       }}
+//                     >
+//                       {saving ? "Saving..." : "✔ SAVE & MARK DONE"}
+//                     </button>
+//                     <button
+//                       onClick={() => handleSave(true)}
+//                       disabled={saving}
+//                       style={{
+//                         flex: 1, padding: "12px", background: "#1e2761",
+//                         color: "#fff", border: "none", borderRadius: "8px",
+//                         fontWeight: 700, fontSize: "13px", cursor: "pointer"
+//                       }}
+//                     >
+//                       SAVE DRAFT
+//                     </button>
+//                     <button
+//                       onClick={() => { setForm({}); setOutcome(""); }}
+//                       style={{
+//                         width: "44px", padding: "12px", background: "#ef4444",
+//                         color: "#fff", border: "none", borderRadius: "8px",
+//                         fontWeight: 700, fontSize: "16px", cursor: "pointer"
+//                       }}
+//                     >
+//                       ×
+//                     </button>
+//                   </div>
+
+//                 </div>
+//               </div>
+
+//               {/* ── RIGHT: Charges + Comments ── */}
+//               <div className="thrid-card">
+
+//                 {/* Charges */}
+//                 <div className="charges-block">
+//                   <div className="card-header charges-header">
+//                     <h2>VERIFICATION CHARGES</h2>
+//                   </div>
+//                   <div className="charges-content">
+//                     <div className="table-header-row">
+//                       <span className="th-label">Source</span>
+//                       <span className="th-value">Charge</span>
+//                     </div>
+//                     <div className="charges-list">
+//                       {selectedCase?.checks.map(ch => {
+//                         const rates = { employment: 350, education: 280, address: 180, database: 120, criminal: 220, drug: 400, court: 160 };
+//                         const label = CHECK_TABS.find(t => t.key === ch)?.label;
+//                         return (
+//                           <div className="charge-item" key={ch}>
+//                             <span className="charge-name">{label} Verification</span>
+//                             <span className="charge-amount">₹ {rates[ch]}</span>
+//                           </div>
+//                         );
+//                       })}
+//                     </div>
+//                     <div className="total-row">
+//                       <span className="total-label">TOTAL</span>
+//                       <span className="total-amount">
+//                         ₹ {(selectedCase?.checks || []).reduce((s, ch) => {
+//                           const rates = { employment: 350, education: 280, address: 180, database: 120, criminal: 220, drug: 400, court: 160 };
+//                           return s + (rates[ch] || 0);
+//                         }, 0)}
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* Comments */}
+//                 <div className="comments-block margin-top-md">
+//                   <div className="card-header comments-header">
+//                     <h2>COMMENTS & STATUS TRACK</h2>
+//                   </div>
+//                   <div className="comments-container">
+//                     <div className="comments-list">
+//                       {comments.map((c, i) => (
+//                         <div className="comment-item" key={i}>
+//                           <div className="comment-avatar avatar-p" style={{ background: i % 2 === 0 ? "#7c3aed" : "#0d9488" }}>
+//                             {c.author[0].toUpperCase()}
+//                           </div>
+//                           <div className="comment-body">
+//                             <div className="comment-header">
+//                               <span className="commenter-name">{c.author}</span>
+//                               <span className="comment-time">{c.time}</span>
+//                             </div>
+//                             <p className="comment-text">{c.text}</p>
+//                           </div>
+//                         </div>
+//                       ))}
+//                     </div>
+//                     <div className="comment-input-box">
+//                       <input
+//                         type="text"
+//                         placeholder="Type a comment..."
+//                         value={newComment}
+//                         onChange={e => setNewComment(e.target.value)}
+//                         onKeyDown={e => e.key === "Enter" && sendComment()}
+//                       />
+//                       <button className="send-comment-btn" onClick={sendComment}>
+//                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+//                           <line x1="22" y1="2" x2="11" y2="13" />
+//                           <polygon points="22 2 15 22 11 13 2 9 22 2" />
+//                         </svg>
+//                       </button>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//               </div>
+
+//             </div>
+//           </div>
+//         </main>
+//       </section>
+//     </>
+//   );
+// }
+
+// // ── Shared input styles ────────────────────────────────────────
+// const labelStyle = {
+//   display: "block", fontSize: "11px", fontWeight: 700,
+//   color: "#475569", marginBottom: "5px", textTransform: "uppercase", letterSpacing: "0.3px"
+// };
+// const inputStyle = {
+//   width: "100%", padding: "9px 12px", border: "1.5px solid #e2e8f0",
+//   borderRadius: "8px", fontSize: "13px", color: "#1e293b", background: "#f8fafc",
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -2425,5 +2884,7 @@ const labelStyle = {
 const inputStyle = {
   width: "100%", padding: "9px 12px", border: "1.5px solid #e2e8f0",
   borderRadius: "8px", fontSize: "13px", color: "#1e293b", background: "#f8fafc",
+  outline: "none", fontFamily: "inherit", resize: "vertical"
+};
   outline: "none", fontFamily: "inherit", resize: "vertical"
 };
