@@ -54,10 +54,10 @@ export default function CompanyManagement() {
 
   return (
     <>
-      <aside className="sidebar"></aside>
+      <Sidebar />
 
       <section id="content">
-        <header className="main-header"></header>
+         <Header />
 
         <main>
           <div className="dash-wrper">
