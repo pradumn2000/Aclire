@@ -331,6 +331,7 @@ const ROLE_NAV = {
   { path:"/clientportal", label:"Client Portal" },
   { path:"/UserManagement", label:"User Management" },
   { path:"/AddInstitution", label:"Institution DB" },
+  { path:"/AddCompany", label:"Add Company" },
   { path:"/Apiintegretion", label:"API Integration" },
   { path:"/Settings", label:"Settings" }
 ],

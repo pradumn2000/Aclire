@@ -26,6 +26,7 @@ import AddCase from "./pages/AddCase";
 import ClientCases from "./pages/ClientCases";
 import ClientRegistration from "./pages/ClientRegistration";
 import AddInstitution from "./pages/AddInstitution";
+import CompanyManagement from "./pages/AddCompany";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -165,6 +166,9 @@ function App() {
         {/* ── Settings — any logged-in user ── */}
         <Route path="/Settings" element={
           <PrivateRoute><Settings /></PrivateRoute>
+        } />
+        <Route path="/AddCompany" element={
+          <PrivateRoute><CompanyManagement /></PrivateRoute>
         } />
 
         {/* ── Catch all ── */}
