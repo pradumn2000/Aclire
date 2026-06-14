@@ -764,21 +764,12 @@ Route::post('/clients/register', function (Request $request) {
         return response()->json(['message' => 'Link revoked']);
     });
 
-    <?php
-// ═════════════════════════════════════════════════════════
-// INSTITUTIONS & COMPANIES — paste this block INSIDE the
-// Route::middleware('auth:sanctum')->group(function () { ... })
-// block in routes/api.php (anywhere alongside the other routes).
-//
-// These power:
-//   - AddInstitution.jsx (admin CRUD + bulk CSV import)
-//   - AddCompany.jsx     (admin CRUD + bulk CSV import)
-//   - EntitySelect.jsx   (read-only dropdown for any form,
-//                          any logged-in role)
-// ═════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════
+    // INSTITUTIONS & COMPANIES
+    // ═════════════════════════════════════════════════════════
 
-// ── LIST INSTITUTIONS (any authenticated user — for dropdowns) ──
-Route::get('/institutions', function (Request $request) {
+    // ── LIST INSTITUTIONS (any authenticated user — for dropdowns) ──
+    Route::get('/institutions', function (Request $request) {
     $query = \App\Models\Institution::query();
 
     if ($request->type && $request->type !== 'all') {
