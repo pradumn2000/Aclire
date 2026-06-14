@@ -2,28 +2,43 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CaseEvent extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'case_id', 'type', 'title', 'description', 'meta', 'actor_id', 'actor_name',
+        'case_id',
+        'type',
+        'title',
+        'description',
+        'meta',
+        'actor_id',
+        'actor_name',
     ];
 
     protected $casts = [
         'meta' => 'array',
     ];
 
-    public static function log(string $caseId, string $type, string $title, ?string $description = null, array $meta = [], $user = null): self
-    {
+    public static function log(
+        string $caseId,
+        string $type,
+        string $title,
+        ?string $description = null,
+        array $meta = [],
+        $user = null
+    ): self {
         return self::create([
-            'case_id'     => $caseId,
-            'type'        => $type,
-            'title'       => $title,
+            'case_id' => $caseId,
+            'type' => $type,
+            'title' => $title,
             'description' => $description,
-            'meta'        => $meta,
-            'actor_id'    => $user?->id,
-            'actor_name'  => $user?->name,
+            'meta' => $meta,
+            'actor_id' => $user?->id,
+            'actor_name' => $user?->name,
         ]);
     }
 }
