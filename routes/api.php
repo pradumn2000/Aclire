@@ -763,3 +763,221 @@ Route::post('/clients/register', function (Request $request) {
         $link->delete();
         return response()->json(['message' => 'Link revoked']);
     });
+
+    <?php
+// ═════════════════════════════════════════════════════════
+// INSTITUTIONS & COMPANIES — paste this block INSIDE the
+// Route::middleware('auth:sanctum')->group(function () { ... })
+// block in routes/api.php (anywhere alongside the other routes).
+//
+// These power:
+//   - AddInstitution.jsx (admin CRUD + bulk CSV import)
+//   - AddCompany.jsx     (admin CRUD + bulk CSV import)
+//   - EntitySelect.jsx   (read-only dropdown for any form,
+//                          any logged-in role)
+// ═════════════════════════════════════════════════════════
+
+// ── LIST INSTITUTIONS (any authenticated user — for dropdowns) ──
+Route::get('/institutions', function (Request $request) {
+    $query = \App\Models\Institution::query();
+
+    if ($request->type && $request->type !== 'all') {
+        $query->where('type', $request->type);
+    }
+
+    if (!$request->boolean('include_inactive')) {
+        $query->where('status', '!=', 'inactive');
+    }
+
+    if ($request->search) {
+        $s = $request->search;
+        $query->where(function ($q) use ($s) {
+            $q->where('name', 'like', "%$s%")
+              ->orWhere('code', 'like', "%$s%")
+              ->orWhere('state', 'like', "%$s%");
+        });
+    }
+
+    return response()->json([
+        'institutions' => $query->orderBy('name')->get(),
+    ]);
+});
+
+// ── CREATE INSTITUTION (admin only) ──────────────────────────
+Route::post('/institutions', function (Request $request) {
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $request->validate([
+        'type'       => 'required|in:university,lab,court',
+        'name'       => 'required|string|max:255',
+        'code'       => 'nullable|string|max:20',
+        'state'      => 'nullable|string|max:100',
+        'website'    => 'nullable|string|max:255',
+        'stature'    => 'nullable|string|max:50',
+        'aicte'      => 'nullable|string|max:50',
+        'accredited' => 'nullable|boolean',
+        'level'      => 'nullable|string|max:50',
+    ]);
+
+    $institution = \App\Models\Institution::create([
+        'type'       => $request->type,
+        'name'       => $request->name,
+        'code'       => $request->code,
+        'state'      => $request->state,
+        'website'    => $request->website,
+        'stature'    => $request->stature,
+        'aicte'      => $request->aicte,
+        'accredited' => $request->boolean('accredited'),
+        'level'      => $request->level,
+    ]);
+
+    return response()->json(['institution' => $institution], 201);
+});
+
+// ── BULK IMPORT INSTITUTIONS (admin only — CSV/Excel) ────────
+Route::post('/institutions/bulk', function (Request $request) {
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $request->validate([
+        'rows'           => 'required|array|min:1',
+        'rows.*.type'    => 'required|in:university,lab,court',
+        'rows.*.name'    => 'required|string|max:255',
+        'rows.*.code'    => 'nullable|string|max:20',
+        'rows.*.state'   => 'nullable|string|max:100',
+        'rows.*.website' => 'nullable|string|max:255',
+    ]);
+
+    $created = [];
+    foreach ($request->rows as $row) {
+        $created[] = \App\Models\Institution::create([
+            'type'       => $row['type'],
+            'name'       => $row['name'],
+            'code'       => $row['code'] ?? null,
+            'state'      => $row['state'] ?? null,
+            'website'    => $row['website'] ?? null,
+            'stature'    => $row['stature'] ?? null,
+            'aicte'      => $row['aicte'] ?? null,
+            'accredited' => filter_var($row['accredited'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'level'      => $row['level'] ?? null,
+        ]);
+    }
+
+    return response()->json([
+        'message'      => count($created) . ' institution(s) imported successfully',
+        'institutions' => $created,
+    ], 201);
+});
+
+// ── REMOVE INSTITUTION (admin only — soft delete) ────────────
+Route::delete('/institutions/{id}', function (Request $request, $id) {
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $institution = \App\Models\Institution::find($id);
+    if (!$institution) {
+        return response()->json(['message' => 'Institution not found'], 404);
+    }
+
+    $institution->update(['status' => 'inactive']);
+
+    return response()->json(['message' => 'Institution removed']);
+});
+
+
+// ═════════════════════════════════════════════════════════
+// COMPANIES
+// ═════════════════════════════════════════════════════════
+
+// ── LIST COMPANIES (any authenticated user — for dropdowns) ──
+Route::get('/companies', function (Request $request) {
+    $query = \App\Models\Company::query();
+
+    if (!$request->boolean('include_inactive')) {
+        $query->where('status', '!=', 'inactive');
+    }
+
+    if ($request->search) {
+        $s = $request->search;
+        $query->where(function ($q) use ($s) {
+            $q->where('name', 'like', "%$s%")
+              ->orWhere('code', 'like', "%$s%")
+              ->orWhere('industry', 'like', "%$s%");
+        });
+    }
+
+    return response()->json([
+        'companies' => $query->orderBy('name')->get(),
+    ]);
+});
+
+// ── CREATE COMPANY (admin only) ───────────────────────────────
+Route::post('/companies', function (Request $request) {
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $request->validate([
+        'name'     => 'required|string|max:255',
+        'code'     => 'nullable|string|max:20',
+        'industry' => 'nullable|string|max:100',
+        'state'    => 'nullable|string|max:100',
+        'website'  => 'nullable|string|max:255',
+    ]);
+
+    $company = \App\Models\Company::create($request->only(['name', 'code', 'industry', 'state', 'website']));
+
+    return response()->json(['company' => $company], 201);
+});
+
+// ── BULK IMPORT COMPANIES (admin only — CSV/Excel) ───────────
+Route::post('/companies/bulk', function (Request $request) {
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $request->validate([
+        'rows'           => 'required|array|min:1',
+        'rows.*.name'    => 'required|string|max:255',
+        'rows.*.code'    => 'nullable|string|max:20',
+        'rows.*.industry'=> 'nullable|string|max:100',
+        'rows.*.state'   => 'nullable|string|max:100',
+        'rows.*.website' => 'nullable|string|max:255',
+    ]);
+
+    $created = [];
+    foreach ($request->rows as $row) {
+        $created[] = \App\Models\Company::create([
+            'name'     => $row['name'],
+            'code'     => $row['code'] ?? null,
+            'industry' => $row['industry'] ?? null,
+            'state'    => $row['state'] ?? null,
+            'website'  => $row['website'] ?? null,
+        ]);
+    }
+
+    return response()->json([
+        'message'   => count($created) . ' company/companies imported successfully',
+        'companies' => $created,
+    ], 201);
+});
+
+// ── REMOVE COMPANY (admin only — soft delete) ─────────────────
+Route::delete('/companies/{id}', function (Request $request, $id) {
+    if ($request->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+    }
+
+    $company = \App\Models\Company::find($id);
+    if (!$company) {
+        return response()->json(['message' => 'Company not found'], 404);
+    }
+
+    $company->update(['status' => 'inactive']);
+
+    return response()->json(['message' => 'Company removed']);
+});
