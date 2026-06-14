@@ -307,7 +307,7 @@
 // All pages fetch from Laravel API. localStorage only used for comments + candidate links.
 
 import { useState, useCallback } from "react";
-import { API_URL } from "./config";
+import { API_URL } from "../config";
 
 // ─── Clear old dummy seed (run once on import) ────────────────────────────────
 localStorage.removeItem("bgv_cases_store");
