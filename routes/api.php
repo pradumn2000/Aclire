@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BGVCase;
+use App\Models\User;
 
 // ─────────────────────────────────────────
 // LOGIN — returns role so frontend can redirect
@@ -62,21 +63,70 @@ Route::post('/register', function (Request $request) {
 // ─────────────────────────────────────────
 // CLIENT COMPANY REGISTER
 // ─────────────────────────────────────────
-Route::post('/clients/register', function (Request $request) {
+// Route::post('/clients/register', function (Request $request) {
 
+//     $request->validate([
+//         'companyName'    => 'required|string|max:255',
+//         'gstin'          => 'required|string|max:15',
+//         'primaryContact' => 'required|string|max:255',
+//         'contactEmail'   => 'required|email|unique:users,email',
+//         'password'       => 'required|min:8',
+//     ]);
+
+//     $user = \App\Models\User::create([
+//         'name'     => $request->companyName,
+//         'email'    => $request->contactEmail,
+//         'password' => Hash::make($request->password),
+//         'role'     => 'client',
+//     ]);
+
+//     $token = $user->createToken('authToken')->plainTextToken;
+
+//     return response()->json([
+//         'message' => 'Client registered successfully',
+//         'token'   => $token,
+//         'user'    => [
+//             'id'    => $user->id,
+//             'name'  => $user->name,
+//             'email' => $user->email,
+//             'role'  => $user->role,
+//         ],
+//     ], 201);
+// });
+Route::post('/clients/register', function (Request $request) {
     $request->validate([
         'companyName'    => 'required|string|max:255',
         'gstin'          => 'required|string|max:15',
         'primaryContact' => 'required|string|max:255',
+        'contactPhone'   => 'nullable|string|max:20',
         'contactEmail'   => 'required|email|unique:users,email',
         'password'       => 'required|min:8',
+        'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+        'agreedChecks'   => 'required|array|min:1',
+        'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug_test,courtroom',
+        'checkRates'     => 'nullable|array',
+        'checkRates.*'   => 'numeric|min:0',
     ]);
 
-    $user = \App\Models\User::create([
-        'name'     => $request->companyName,
-        'email'    => $request->contactEmail,
-        'password' => Hash::make($request->password),
-        'role'     => 'client',
+    // Calculate total amount from selected checks
+    $totalAmount = 0;
+    foreach ($request->agreedChecks as $check) {
+        $rate = $request->checkRates[$check] ?? 1500; // fallback rate
+        $totalAmount += $rate;
+    }
+
+    $user = User::create([
+        'name'            => $request->companyName,
+        'email'           => $request->contactEmail,
+        'password'        => Hash::make($request->password),
+        'role'            => 'client',
+        'gstin'           => $request->gstin,
+        'primary_contact' => $request->primaryContact,
+        'contact_phone'   => $request->contactPhone,
+        'billing_mode'    => $request->billingMode,
+        'agreed_checks'   => $request->agreedChecks,
+        'check_rates'     => $request->checkRates ?? [],
+        'total_amount'    => $totalAmount,           // ← New field
     ]);
 
     $token = $user->createToken('authToken')->plainTextToken;
@@ -85,14 +135,17 @@ Route::post('/clients/register', function (Request $request) {
         'message' => 'Client registered successfully',
         'token'   => $token,
         'user'    => [
-            'id'    => $user->id,
-            'name'  => $user->name,
-            'email' => $user->email,
-            'role'  => $user->role,
+            'id'             => $user->id,
+            'name'           => $user->name,
+            'email'          => $user->email,
+            'role'           => $user->role,
+            'billingMode'    => $user->billing_mode,
+            'agreedChecks'   => $user->agreed_checks,
+            'checkRates'     => $user->check_rates,
+            'totalAmount'    => $totalAmount,
         ],
     ], 201);
 });
-
 // ─────────────────────────────────────────
 // FORGOT PASSWORD — Step 1: Send OTP
 // ─────────────────────────────────────────
@@ -281,6 +334,106 @@ Route::middleware('auth:sanctum')->group(function () {
     // ═════════════════════════════════════════════════════════
 
     // ── CREATE CASE ──────────────────────────────────────────
+    // Route::post('/cases', function (Request $request) {
+    //     $request->validate([
+    //         'candidate_name'  => 'required|string|max:255',
+    //         'candidate_email' => 'required|email',
+    //         'client_name'     => 'required|string|max:255',
+    //         'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+    //         'checks'          => 'required|array|min:1',
+    //         'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
+    //     ]);
+
+    //     $case = BGVCase::create([
+    //         'case_id'          => BGVCase::generateCaseId(),
+    //         'candidate_name'   => $request->candidate_name,
+    //         'candidate_email'  => $request->candidate_email,
+    //         'candidate_mobile' => $request->candidate_mobile,
+    //         'position'         => $request->position,
+    //         'client_name'      => $request->client_name,
+    //         'client_id'        => $request->client_id,
+    //         'checks'           => $request->checks,
+    //         'priority'         => $request->priority ?? 'normal',
+    //         'billing_mode'     => $request->billing_mode,
+    //         'payment_timing'   => $request->payment_timing,
+    //         'invoice_cycle'    => $request->invoice_cycle,
+    //         'po_number'        => $request->po_number,
+    //         'total_amount'     => $request->total_amount ?? 0,
+    //         'payment_link'     => $request->payment_link,
+    //         'status'           => 'pending',
+    //         'notes'            => $request->notes,
+    //         'created_by'       => $request->user()->id,
+    //     ]);
+
+
+    //     \App\Models\CaseEvent::log(
+    //         $case->case_id,
+    //         'created',
+    //         'Case created',
+    //         "Case opened for {$case->candidate_name}",
+    //         ['checks' => $case->checks, 'billing_mode' => $case->billing_mode],
+    //         $request->user()
+    //     );
+
+    //     return response()->json(['case' => $case], 201);
+    // });
+
+    // // ── LIST CASES (role-filtered) ───────────────────────────
+    // Route::get('/cases', function (Request $request) {
+    //     $user  = $request->user();
+    //     $query = BGVCase::orderByDesc('created_at');
+
+    //     // Client role: only sees cases they created or where their name matches
+    //     if ($user->role === 'client') {
+    //         $query->where(function ($q) use ($user) {
+    //             $q->where('created_by', $user->id)
+    //               ->orWhere('candidate_email', $user->email)
+    //               ->orWhere('client_name', 'like', "%{$user->name}%");
+    //         });
+    //     }
+
+    //     // Search
+    //     if ($request->search) {
+    //         $s = $request->search;
+    //         $query->where(function ($q) use ($s) {
+    //             $q->where('case_id', 'like', "%$s%")
+    //               ->orWhere('candidate_name', 'like', "%$s%")
+    //               ->orWhere('client_name', 'like', "%$s%");
+    //         });
+    //     }
+
+    //     // Status filter
+    //     if ($request->status && $request->status !== 'all') {
+    //         $query->where('status', $request->status);
+    //     }
+
+    //     $cases = $query->get()->map(function ($c) {
+    //         $checkLabels = collect($c->checks)->map(function ($ch) {
+    //             $map = [
+    //                 'employment' => 'EMP', 'education' => 'EDU', 'address' => 'ADDR',
+    //                 'database'   => 'DB',  'criminal'  => 'CRI', 'drug'    => 'DRUG',
+    //                 'court'      => 'CRT',
+    //             ];
+    //             return $map[$ch] ?? strtoupper(substr($ch, 0, 3));
+    //         })->implode('·');
+
+    //         return [
+    //             'id'           => $c->id,
+    //             'case_id'      => $c->case_id,
+    //             'candidate'    => $c->candidate_name,
+    //             'client'       => $c->client_name,
+    //             'checks'       => $checkLabels,
+    //             'status'       => $c->status,
+    //             'priority'     => $c->priority,
+    //             'billing_mode' => $c->billing_mode,
+    //             'total_amount' => $c->total_amount,
+    //             'created_at'   => $c->created_at->format('d M Y'),
+    //             'tat'          => $c->created_at->diffInDays(now()) . 'd',
+    //         ];
+    //     });
+
+    //     return response()->json(['cases' => $cases]);
+    // });
     Route::post('/cases', function (Request $request) {
         $request->validate([
             'candidate_name'  => 'required|string|max:255',
@@ -312,7 +465,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'created_by'       => $request->user()->id,
         ]);
 
-
+        // Log event
         \App\Models\CaseEvent::log(
             $case->case_id,
             'created',
@@ -325,19 +478,20 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['case' => $case], 201);
     });
 
-    // ── LIST CASES (role-filtered) ───────────────────────────
+    // ── LIST CASES (Fixed Visibility) ────────────────────────
     Route::get('/cases', function (Request $request) {
-        $user  = $request->user();
+        $user = $request->user();
         $query = BGVCase::orderByDesc('created_at');
 
-        // Client role: only sees cases they created or where their name matches
         if ($user->role === 'client') {
+            // Clients see ONLY their own cases
             $query->where(function ($q) use ($user) {
                 $q->where('created_by', $user->id)
-                  ->orWhere('candidate_email', $user->email)
-                  ->orWhere('client_name', 'like', "%{$user->name}%");
+                  ->orWhere('client_name', 'LIKE', "%{$user->name}%")
+                  ->orWhere('candidate_email', $user->email);
             });
         }
+        // Admins see ALL cases (no filter)
 
         // Search
         if ($request->search) {
@@ -355,7 +509,7 @@ Route::middleware('auth:sanctum')->group(function () {
         }
 
         $cases = $query->get()->map(function ($c) {
-            $checkLabels = collect($c->checks)->map(function ($ch) {
+            $checkLabels = collect($c->checks ?? [])->map(function ($ch) {
                 $map = [
                     'employment' => 'EMP', 'education' => 'EDU', 'address' => 'ADDR',
                     'database'   => 'DB',  'criminal'  => 'CRI', 'drug'    => 'DRUG',
@@ -365,17 +519,17 @@ Route::middleware('auth:sanctum')->group(function () {
             })->implode('·');
 
             return [
-                'id'           => $c->id,
-                'case_id'      => $c->case_id,
-                'candidate'    => $c->candidate_name,
-                'client'       => $c->client_name,
-                'checks'       => $checkLabels,
-                'status'       => $c->status,
-                'priority'     => $c->priority,
-                'billing_mode' => $c->billing_mode,
-                'total_amount' => $c->total_amount,
-                'created_at'   => $c->created_at->format('d M Y'),
-                'tat'          => $c->created_at->diffInDays(now()) . 'd',
+                'id'            => $c->id,
+                'case_id'       => $c->case_id,
+                'candidate'     => $c->candidate_name,
+                'client'        => $c->client_name,
+                'checks'        => $checkLabels,
+                'status'        => $c->status,
+                'priority'      => $c->priority,
+                'billing_mode'  => $c->billing_mode,
+                'total_amount'  => $c->total_amount,
+                'created_at'    => $c->created_at?->format('d M Y'),
+                'tat'           => $c->created_at?->diffInDays(now()) . 'd',
             ];
         });
 
