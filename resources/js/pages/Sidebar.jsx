@@ -435,7 +435,7 @@ const ROLE_NAV = {
     { path: "/Intake",         label: "QC Intake",           img: "images/sidebar/cases-icon.svg" },
     { path: "/clientportal",   label: "Candidate Portal",    img: "images/sidebar/trend-icon.svg" },
     { path: "/UserManagement", label: "User Management",     img: "images/sidebar/clients-icon.svg" },
-    { path: "/AddInstitution", label: "Institution DB",      img: "images/sidebar/setting-icon.svg" },
+    { path: "/AddInstitution", label: "Add Institution",      img: "images/sidebar/setting-icon.svg" },
     { path: "/AddCompany",     label: "Add Company",         img: "images/sidebar/setting-icon.svg" },
     { path: "/Apiintegretion", label: "API Integration",     img: "images/sidebar/setting-icon.svg" },
     { path: "/Settings",       label: "Settings",            img: "images/sidebar/setting-icon.svg" },
@@ -512,7 +512,6 @@ export default function Sidebar() {
             </li>
           );
         })} */}
-        // Sidebar.jsx — update the isActive logic
 
 {navItems.map((item) => {
   const [itemPath, itemQuery] = item.path.split("?");
