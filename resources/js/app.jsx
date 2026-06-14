@@ -227,7 +227,7 @@ import ClientRegistration from "./pages/ClientRegistration";
 import AddInstitution from "./pages/AddInstitution";
 import CompanyManagement from "./pages/AddCompany";
 import ClientBilling from "./pages/ClientBilling";
-
+import ClientOnboardingForm from "./pages/Clientonbordingform";
 // ─────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────
@@ -374,6 +374,9 @@ function App() {
         } />
         <Route path="/AddCompany" element={
           <PrivateRoute><CompanyManagement /></PrivateRoute>
+        } />
+                <Route path="/ClientOnboardingForm" element={
+          <PrivateRoute><ClientOnboardingForm /></PrivateRoute>
         } />
 
         {/* ── Catch all ── */}

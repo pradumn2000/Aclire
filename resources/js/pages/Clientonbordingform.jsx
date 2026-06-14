@@ -13,7 +13,7 @@ const STATUS_MAP = {
   "Completed":   "completed",
 };
 
-export default function Dashboard() {
+export default function ClientOnboardingForm() {
   const navigate = useNavigate();
   const { cases } = useCases();
 
