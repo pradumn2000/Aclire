@@ -459,6 +459,7 @@ client: [
   { path: "/Client?tab=in-progress", label: "In Progress",  img: "images/sidebar/report-icon.svg" },
   { path: "/Client?tab=completed",label: "Completed Cases", img: "images/sidebar/completed-icon.svg" },
   { path: "/AddCase",             label: "Add Case",        img: "images/sidebar/add-case-icon.svg" },
+  { path: "/clientportal",   label: "Candidate Portal",    img: "images/sidebar/trend-icon.svg" },
   { path: "/Settings",            label: "Settings",        img: "images/sidebar/setting-icon.svg" },
 ],
   // ... keep other roles
