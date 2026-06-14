@@ -312,6 +312,16 @@ Route::middleware('auth:sanctum')->group(function () {
             'created_by'       => $request->user()->id,
         ]);
 
+
+        \App\Models\CaseEvent::log(
+            $case->case_id,
+            'created',
+            'Case created',
+            "Case opened for {$case->candidate_name}",
+            ['checks' => $case->checks, 'billing_mode' => $case->billing_mode],
+            $request->user()
+        );
+
         return response()->json(['case' => $case], 201);
     });
 
@@ -417,6 +427,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ── UPDATE CASE STATUS ───────────────────────────────────
+    // Route::patch('/cases/{caseId}/status', function (Request $request, $caseId) {
+    //     $request->validate([
+    //         'status' => 'required|in:pending,in-progress,qc-review,completed,on-hold',
+    //     ]);
+
+    //     $case = BGVCase::where('case_id', $caseId)->first();
+    //     if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+    //     $case->update(['status' => $request->status]);
+    //     return response()->json(['message' => 'Status updated', 'case' => $case]);
+    // });
     Route::patch('/cases/{caseId}/status', function (Request $request, $caseId) {
         $request->validate([
             'status' => 'required|in:pending,in-progress,qc-review,completed,on-hold',
@@ -425,7 +446,18 @@ Route::middleware('auth:sanctum')->group(function () {
         $case = BGVCase::where('case_id', $caseId)->first();
         if (!$case) return response()->json(['message' => 'Case not found'], 404);
 
+        $oldStatus = $case->status;
         $case->update(['status' => $request->status]);
+
+        \App\Models\CaseEvent::log(
+            $case->case_id,
+            'status_change',
+            'Status updated',
+            'Status changed from ' . str_replace('-', ' ', $oldStatus) . ' to ' . str_replace('-', ' ', $request->status),
+            ['from' => $oldStatus, 'to' => $request->status],
+            $request->user()
+        );
+
         return response()->json(['message' => 'Status updated', 'case' => $case]);
     });
 
@@ -451,6 +483,19 @@ Route::middleware('auth:sanctum')->group(function () {
         ];
 
         // Auto-update case status
+    //     if (!($request->is_draft ?? false)) {
+    //         $allChecks   = $case->checks;
+    //         $doneChecks  = array_keys(array_filter($results, fn($r) => !($r['is_draft'] ?? false)));
+    //         $allDone     = count(array_intersect($allChecks, $doneChecks)) === count($allChecks);
+    //         $newStatus   = $allDone ? 'qc-review' : 'in-progress';
+    //         $case->update(['status' => $newStatus, 'check_results' => $results]);
+    //     } else {
+    //         $case->update(['status' => 'in-progress', 'check_results' => $results]);
+    //     }
+
+    //     return response()->json(['message' => 'Check result saved', 'check_results' => $results]);
+    // });
+    // Auto-update case status
         if (!($request->is_draft ?? false)) {
             $allChecks   = $case->checks;
             $doneChecks  = array_keys(array_filter($results, fn($r) => !($r['is_draft'] ?? false)));
@@ -461,7 +506,47 @@ Route::middleware('auth:sanctum')->group(function () {
             $case->update(['status' => 'in-progress', 'check_results' => $results]);
         }
 
+        \App\Models\CaseEvent::log(
+            $case->case_id,
+            'check_result',
+            ucfirst(str_replace('_', ' ', $request->check_type)) . ' check ' . (($request->is_draft ?? false) ? 'drafted' : 'completed'),
+            'Outcome: ' . $request->outcome,
+            ['check_type' => $request->check_type, 'outcome' => $request->outcome, 'is_draft' => $request->is_draft ?? false],
+            $request->user()
+        );
+
         return response()->json(['message' => 'Check result saved', 'check_results' => $results]);
+    });
+
+    // ── CASE TIMELINE ─────────────────────────────────────────
+    Route::get('/cases/{caseId}/timeline', function (Request $request, $caseId) {
+        $case = BGVCase::where('case_id', $caseId)->first();
+        if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+        $user = $request->user();
+        if ($user->role === 'client') {
+            $owns = $case->created_by === $user->id
+                || $case->candidate_email === $user->email
+                || stripos($case->client_name, $user->name) !== false;
+            if (!$owns) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+        }
+
+        $events = \App\Models\CaseEvent::where('case_id', $caseId)
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(fn ($e) => [
+                'id'          => $e->id,
+                'type'        => $e->type,
+                'title'       => $e->title,
+                'description' => $e->description,
+                'meta'        => $e->meta,
+                'actor'       => $e->actor_name,
+                'timestamp'   => $e->created_at->toIso8601String(),
+            ]);
+
+        return response()->json(['timeline' => $events]);
     });
 
 });
