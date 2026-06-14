@@ -913,8 +913,7 @@
 //   );
 // }
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { API_URL } from "../src/config";
@@ -947,8 +946,7 @@ export default function Client() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [loading, setLoading]           = useState(true);
   const [search, setSearch]             = useState("");
-  const [statusTab, setStatusTab]       = useState("all");
-  const [statusTab, setStatusTab]       = useState(getInitialTab);  
+const [statusTab, setStatusTab] = useState(getInitialTab); 
   const [activeDetailTab, setActiveDetailTab] = useState("overview");
 
   const token = localStorage.getItem("token");
