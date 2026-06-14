@@ -464,7 +464,7 @@ export default function Login() {
                 </form>
 
                 {/* ── Create account link ── */}
-                <div className="ac-switch" style={{
+                {/* <div className="ac-switch" style={{
                   marginTop: "20px", textAlign: "center",
                   fontSize: "0.85rem", color: "#64748b",
                 }}>
@@ -472,7 +472,18 @@ export default function Login() {
                   <a href="/signup" style={{ color: "#2b3b8c", fontWeight: 700, textDecoration: "underline" }}>
                     Create an Account
                   </a>
-                </div>
+                </div> */}
+                // Login.jsx — replace the ac-switch div at the bottom
+
+<div className="ac-switch" style={{
+  marginTop: "20px", textAlign: "center",
+  fontSize: "0.85rem", color: "#64748b",
+}}>
+  New client?{" "}
+  <a href="/client-register" style={{ color: "#02c39a", fontWeight: 700, textDecoration: "underline" }}>
+    Register as Company
+  </a>
+</div>
 
               </div>
             </div>
