@@ -982,7 +982,7 @@ input:checked+.slider:before {
 /* FILTER-SECTION */
 /* sidebar navbar */
 
-/* table dash-bottom */
+
 
 .dash-inner-wrp-both .dash-inner-left .down-table table {
   width: 100%;
@@ -1022,7 +1022,7 @@ input:checked+.slider:before {
 .dash-inner-wrp-both .dash-inner-left .down-table table thead th:last-child {
   border-top-right-radius: 15px;
 }
-/* Status Buttons */
+
 .dash-inner-wrp-both .dash-inner-left .down-table table td .status {
   padding: 8px 14px;
   border-radius: 4px;
@@ -1056,7 +1056,7 @@ input:checked+.slider:before {
   background: #667085;
 }
 
-/* Action Button */
+
 .action-btn {
   background: #2d3a8c;
   color: white;
@@ -1244,7 +1244,7 @@ button.primary-cta.export{
 .header-navbar .tab-cta{
   width: 100%;
 }
-/* Navbar Header */
+
 .client-portal-inner-both {
     display: flex;
     gap: 10px;
@@ -1472,7 +1472,7 @@ span.primary-cta.bdr-color{
 
 /* Emp page css */
 
-/* Core Portal Layout Container */
+
 .portal-container {
   display: flex;
   flex-direction: column;
@@ -1491,7 +1491,7 @@ span.primary-cta.bdr-color{
   align-items: stretch;
   flex-grow: 1;
 }
-/* Common Card Rules */
+
 .emplyment-check-body .frist-card,
 .emplyment-check-body .second-card,
 .emplyment-check-body .thrid-card {
@@ -1509,7 +1509,7 @@ span.primary-cta.bdr-color{
 .emplyment-check-body .thrid-card:hover {
   box-shadow: var(--shadow-hover);
 }
-/* Flex sizing rules */
+
 .emplyment-check-body .frist-card {
   flex: 1.1 1 300px;
   max-width: 380px;
@@ -1529,7 +1529,7 @@ span.primary-cta.bdr-color{
 .emplyment-check-body .thrid-card:hover {
   box-shadow: none;
 }
-/* Standard Header Styling */
+
 .card-header {
   padding: 14px 20px;
   color: #ffffff;
@@ -1555,7 +1555,7 @@ span.primary-cta.bdr-color{
 .comments-header {
   background-color: var(--purple-color);
 }
-/* LEFT COLUMN: Queue Card Details */
+
 .emplyment-check-body .queue-list {
   padding: 16px;
   display: flex;
@@ -1632,7 +1632,7 @@ span.primary-cta.bdr-color{
 .margin-top-md {
   margin-top: 16px;
 }
-/* MIDDLE COLUMN: Verification Panel Details */
+
 .card-content-wrapper {
   padding: 24px;
   display: flex;
@@ -1776,7 +1776,7 @@ span.primary-cta.bdr-color{
   background-color: var(--border-clr);
   cursor: not-allowed;
 }
-/* RIGHT COLUMN: Charges, Payment & Comments Blocks */
+
 .charges-block,
 .comments-block {
   background-color: var(--white);
@@ -1847,7 +1847,7 @@ span.primary-cta.bdr-color{
   font-size: 15px;
   color: var(--sucess-btn-color);
 }
-/* Comments Block Details */
+
 .comments-container {
   display: flex;
   flex-direction: column;
@@ -1921,7 +1921,7 @@ span.primary-cta.bdr-color{
   line-height: 1.4;
   text-align: left;
 }
-/* Comment Input Area */
+
 .comment-input-box {
   display: flex;
   flex-direction: row;
@@ -1962,7 +1962,7 @@ span.primary-cta.bdr-color{
   background-color: #085e5a;
   transform: scale(1.05);
 }
-/* Portal Bottom Footer Bar */
+
 .emplyment-check-body .portal-footer {
   position: fixed;
   bottom: 0;
@@ -1988,7 +1988,7 @@ span.primary-cta.bdr-color{
   color: #e2e8f0;
   opacity: 0.7;
 }
-/* Responsive Rules (Pure Flexbox alignment updates) */
+
 @media (max-width: 1200px) {
   .emplyment-check-body {
     flex-wrap: wrap;
@@ -2079,7 +2079,7 @@ background-color: var(--sucess-btn-color);
 
 
 /* result verify */
-/* Main outer flex layout */
+
 .sas-emplyment-check-body {
   display: flex;
   flex-direction: row;
@@ -2087,7 +2087,7 @@ background-color: var(--sucess-btn-color);
   align-items: stretch;
   flex-grow: 1;
 }
-/* Common Card Architecture */
+
 .sas-frist-card,
 .sas-second-card,
 .sas-thrid-card {
@@ -2105,7 +2105,7 @@ background-color: var(--sucess-btn-color);
 .sas-thrid-card:hover {
   box-shadow: var(--sas-shadow-hover);
 }
-/* Flexbox Sizing distributions */
+
 .sas-frist-card {
   flex: 1.5 1 420px;
 }
@@ -2123,7 +2123,7 @@ background-color: var(--sucess-btn-color);
 .sas-thrid-card:hover {
   box-shadow: none;
 }
-/* Standard Header Styling */
+
 .sas-card-header {
   padding: 14px 20px;
   color: #ffffff;
@@ -2147,7 +2147,7 @@ background-color: var(--sucess-btn-color);
 .sas-activity-header {
   background-color: var(--purple-color);
 }
-/* LEFT COLUMN: Source Availability status */
+
 .sas-table-header {
   display: flex;
   flex-direction: row;
@@ -2163,7 +2163,7 @@ background-color: var(--sucess-btn-color);
 .sas-th-col {
   text-align: left;
 }
-/* Sizing columns */
+
 .col-source {
   flex: 2 1 140px;
 }
@@ -2185,7 +2185,7 @@ background-color: var(--sucess-btn-color);
   display: flex;
   justify-content: flex-end;
 }
-/* Row List */
+
 .sas-source-rows-list {
   display: flex;
   flex-direction: column;
@@ -2211,7 +2211,7 @@ background-color: var(--sucess-btn-color);
   background-color: #f8fafc;
   transform: translateX(1px);
 }
-/* Left colored borders based on status */
+
 .status-border-green {
   border: 1px solid var(--sucess-btn-color);
   border-left: 5px solid var(--sucess-btn-color);
@@ -2230,7 +2230,7 @@ background-color: var(--sucess-btn-color);
 .status-border-navy {
   border-left: 5px solid var(--sas-status-navy);
 }
-/* Source Details layout inside row */
+
 .sas-source-info {
   display: flex;
   flex-direction: column;
@@ -2255,7 +2255,7 @@ background-color: var(--sucess-btn-color);
     width: 90px;
     justify-content: center;
 }
-/* Badge styles */
+
 .sas-badge {
   font-size: 10px;
   font-weight: 700;
@@ -2286,7 +2286,7 @@ background-color: var(--sucess-btn-color);
   color: #475569;
   font-size: 13px;
 }
-/* Row Action button */
+
 .sas-action-btn {
   background-color: var(--primary-color);
   color: #ffffff;
@@ -2307,7 +2307,7 @@ background-color: var(--sucess-btn-color);
 .sas-action-btn:active {
   transform: translateY(0);
 }
-/* MIDDLE COLUMN: Result Entry Form */
+
 .sas-entry-form {
   padding: 24px;
   display: flex;
@@ -2358,7 +2358,7 @@ background-color: var(--sucess-btn-color);
   resize: none;
   flex-grow: 1;
 }
-/* Horizontal Toggle Button Group */
+
 .sas-outcome-toggle-group {
   display: flex;
   flex-direction: row;
@@ -2396,7 +2396,7 @@ background-color: var(--sucess-btn-color);
   border-color: var(--sas-status-navy);
   color: #ffffff;
 }
-/* Bottom Action Buttons Row */
+
 .sas-form-actions-row {
   display: flex;
   flex-direction: row;
@@ -2456,7 +2456,7 @@ background-color: var(--sucess-btn-color);
   background-color: var(--alert-red);
   transform: translateY(-1px);
 }
-/* RIGHT COLUMN: Activity Log & Comments */
+
 .sas-activity-block,
 .sas-comments-sub-block {
   background-color: var(--sas-bg-card);
@@ -2482,13 +2482,13 @@ background-color: var(--sucess-btn-color);
   letter-spacing: 0.5px;
   margin-bottom: 20px;
 }
-/* Timeline Layout */
+
 .sas-timeline-list {
   display: flex;
   flex-direction: column;
   position: relative;
 }
-/* Timeline vertical line running background */
+
 .sas-timeline-list::before {
   content: '';
   position: absolute;
@@ -2518,7 +2518,7 @@ background-color: var(--sucess-btn-color);
   font-weight: 700;
   color: #94a3b8;
 }
-/* Dot node representation on line */
+
 .sas-timeline-node {
   width: 14px;
   height: 14px;
@@ -2529,7 +2529,7 @@ background-color: var(--sucess-btn-color);
   z-index: 2;
   margin-right: 4px;
 }
-/* Active node (e.g. green check node) */
+
 .sas-timeline-node.node-active {
   width: 20px;
   height: 20px;
@@ -2554,7 +2554,7 @@ background-color: var(--sucess-btn-color);
   font-weight: 700;
   color: #0f172a;
 }
-/* Pre-styled Comments section in right column */
+
 .sas-comments-bar-header {
   padding: 10px 16px;
   background-color: #f3ebfc;
@@ -2637,7 +2637,7 @@ background-color: var(--sucess-btn-color);
   line-height: 1.4;
   text-align: left;
 }
-/* Comment/Reply Input area */
+
 .sas-reply-form {
   display: flex;
   flex-direction: row;
@@ -2678,7 +2678,7 @@ background-color: var(--sucess-btn-color);
   background-color: #085e5a;
   transform: scale(1.05);
 }
-/* Bottom Portal Footer */
+
 .sas-portal-footer {
   position: fixed;
   bottom: 0;
@@ -2704,7 +2704,7 @@ background-color: var(--sucess-btn-color);
   color: #e2e8f0;
   opacity: 0.7;
 }
-/* Responsive Rules (Pure Flexbox alignment updates) */
+
 @media (max-width: 1200px) {
   .sas-emplyment-check-body {
     flex-wrap: wrap;
@@ -2771,7 +2771,7 @@ background-color: var(--sucess-btn-color);
 
 /* Onbording Page */
 
-/* Outer layout wrapper */
+
 .cob-portal-container {
   display: flex;
   flex-direction: column;
@@ -2779,7 +2779,7 @@ background-color: var(--sucess-btn-color);
   width: 100%;
   padding-bottom: 60px;
 }
-/* Main outer flex layout - 2 equal columns */
+
 .cob-emplyment-check-body {
   display: flex;
   flex-direction: row;
@@ -2787,7 +2787,7 @@ background-color: var(--sucess-btn-color);
   align-items: stretch;
   flex-grow: 1;
 }
-/* Common Card Architecture */
+
 .cob-frist-card,
 .cob-second-card {
   background-color: var(--cob-bg-card);
@@ -2804,7 +2804,7 @@ background-color: var(--sucess-btn-color);
 .cob-second-card:hover {
   box-shadow: var(--cob-shadow-hover);
 }
-/* Standard Header Styling */
+
 .cob-card-header {
   padding: 14px 20px;
   color: #ffffff;
@@ -2824,7 +2824,7 @@ background-color: var(--sucess-btn-color);
 .cob-portal-header {
   background-color: var(--tab-btn-color);
 }
-/* Forms general styling */
+
 .cob-client-form,
 .cob-generator-form {
   
@@ -2869,7 +2869,7 @@ background-color: var(--sucess-btn-color);
   background-color: #ffffff;
   box-shadow: 0 0 0 3px rgba(14, 148, 145, 0.08);
 }
-/* Billing Mode horizontal selection buttons */
+
 .cob-billing-toggle-group {
   display: flex;
   flex-direction: row;
@@ -2902,7 +2902,7 @@ background-color: var(--sucess-btn-color);
   border-color: var(--cob-accent-navy);
   color: #ffffff;
 }
-/* Agreed Check Types horizontal tags */
+
 .cob-check-tags-group {
   display: flex;
   flex-direction: row;
@@ -2928,7 +2928,7 @@ background-color: var(--sucess-btn-color);
   background-color: var(--primary-color);
   color: var(--white);
 }
-/* Rate Card side-by-side flex displaying */
+
 .cob-rate-cards-container {
   display: flex;
   flex-direction: row;
@@ -2959,7 +2959,7 @@ background-color: var(--sucess-btn-color);
   font-weight: 800;
   color: #1e3a8a; 
 }
-/* Bottom Create Client account button */
+
 .cob-btn-create-account {
   width: 100%;
   background-color: var(--cob-accent-navy);
@@ -2978,7 +2978,7 @@ background-color: var(--sucess-btn-color);
   background-color: #0f1a45;
   transform: translateY(-1px);
 }
-/* SECOND CARD: Candidate Portal Link Generator details */
+
 .cob-portal-generator-content {
   display: flex;
   flex-direction: column;
@@ -3019,7 +3019,7 @@ background-color: var(--sucess-btn-color);
 .cob-checkbox-item:hover {
   background-color: #0b7a75;
 }
-/* Native input hidden */
+
 .cob-checkbox-native {
   position: absolute;
   opacity: 0;
@@ -3027,7 +3027,7 @@ background-color: var(--sucess-btn-color);
   height: 0;
   width: 0;
 }
-/* Custom check icon */
+
 .cob-checkbox-custom {
   width: 16px;
   height: 16px;
@@ -3049,13 +3049,13 @@ background-color: var(--sucess-btn-color);
 .cob-checkbox-custom svg {
   display: none;
 }
-/* Expired link toggles */
+
 .cob-expiry-toggle-group {
   display: flex;
   flex-direction: row;
   gap: 12px;
 }
-/* Link Display box */
+
 .cob-generated-link-wrapper {
   background-color: #e6f7f7;
   border: 1.5px solid var(--cob-accent-teal);
@@ -3110,7 +3110,7 @@ background-color: var(--sucess-btn-color);
 .cob-btn-email {
   background-color: var(--primary-color);
 }
-/* Bottom Portal Footer */
+
 .cob-portal-footer {
   position: fixed;
   bottom: 0;
@@ -3136,7 +3136,7 @@ background-color: var(--sucess-btn-color);
   color: #e2e8f0;
   opacity: 0.7;
 }
-/* Responsive Rules  */
+
 @media (max-width: 1024px) {
   .cob-emplyment-check-body {
     flex-direction: column;
@@ -3196,7 +3196,7 @@ background-color: var(--sucess-btn-color);
     padding: 16px;
   }
 }
-/* Column General Styling */
+
 .dashboard-column {
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
@@ -3205,10 +3205,9 @@ background-color: var(--sucess-btn-color);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  height: 680px; /* Fixed height matching visual balance */
   width: 100%;
 }
-/* Header Styling */
+
 .column-header {
   background-color: var(--purple-color);
   padding: 18px 24px;
@@ -3221,14 +3220,14 @@ background-color: var(--sucess-btn-color);
   text-transform: uppercase;
   margin: 0;
 }
-/* Content Area */
+
 .column-content {
   padding: 24px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
-/* Custom modern scrollbar for scrollable content */
+
 .scrollable-content {
   overflow-y: auto;
   padding: 16px;
@@ -3246,7 +3245,7 @@ background-color: var(--sucess-btn-color);
 .scrollable-content::-webkit-scrollbar-thumb:hover {
   background-color: #94a3b8;
 }
-/* --- COLUMN 1: CASE QUEUE --- */
+
 .case-card {
   display: flex;
   justify-content: space-between;
@@ -3264,12 +3263,12 @@ background-color: var(--sucess-btn-color);
   border-color: #cbd5e1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
-/* Selected Case Styling */
+
 .case-card.active {
   background-color: var(--border-clr);
   border: 2px solid var(--color-primary);
   box-shadow: 0 4px 10px rgba(120, 57, 205, 0.1);
-  padding: 15px 19px; /* Compensate for 2px border */
+  padding: 15px 19px; 
 }
 .case-card-info {
   display: flex;
@@ -3286,7 +3285,7 @@ background-color: var(--sucess-btn-color);
   color: var(--color-text-muted);
   font-weight: 400;
 }
-/* Badges for Queue Statuses */
+
 .badge {
   font-size: 11px;
   font-weight: 700;
@@ -3308,7 +3307,7 @@ background-color: var(--sucess-btn-color);
 .badge-review {
   background-color: var(--yellow-color);
 }
-/* --- COLUMN 2: CASE DETAIL --- */
+
 .detail-content {
   justify-content: space-between;
   height: 100%;
@@ -3340,7 +3339,7 @@ background-color: var(--sucess-btn-color);
   color: #111827;
   letter-spacing: 0.2px;
 }
-/* Documents Section with Checkmarks */
+
 .documents-field {
   margin-top: 4px;
 }
@@ -3358,11 +3357,11 @@ background-color: var(--sucess-btn-color);
   gap: 4px;
 }
 .checkmark {
-  color: #10b981; /* Premium green check */
+  color: #10b981;
   font-weight: 800;
   font-size: 15px;
 }
-/* Action Buttons Grid at the bottom */
+
 .detail-actions {
   display: grid;
   grid-template-columns: 1.1fr 1fr 1fr;
@@ -3415,7 +3414,7 @@ background-color: var(--sucess-btn-color);
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
 }
-/* --- COLUMN 3: RIGHT PANEL (COMMENTS & INTAKE) --- */
+
 .right-column {
   background: transparent;
   border: none;
@@ -3425,7 +3424,7 @@ background-color: var(--sucess-btn-color);
   gap: 20px;
   height: 680px;
 }
-/* Split right sections into half heights */
+
 .right-subcolumn {
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
@@ -3436,7 +3435,7 @@ background-color: var(--sucess-btn-color);
   overflow: hidden;
   height: calc(50% - 10px);
 }
-/* Comments Content */
+
 .comments-content {
   justify-content: space-between;
   height: 100%;
@@ -3494,7 +3493,7 @@ background-color: var(--sucess-btn-color);
   line-height: 1.4;
   color: var(--color-text-dark);
 }
-/* Comment Input Row */
+
 .comment-input-area {
   display: flex;
   gap: 10px;
@@ -3538,12 +3537,12 @@ background-color: var(--sucess-btn-color);
   height: 16px;
   transform: rotate(45deg) translate(-1px, 1px);
 }
-/* Trends Section Content */
+
 .trends-content {
   justify-content: space-between;
   gap: 16px;
 }
-/* Chart Container & CSS Bar Chart */
+
 .chart-container {
   display: flex;
   align-items: flex-end;
@@ -3577,7 +3576,7 @@ background-color: var(--sucess-btn-color);
   background-color: var(--color-primary);
   transform: scaleY(1.05);
 }
-/* Chart Legend Row */
+
 .chart-legend {
   display: flex;
   justify-content: flex-start;
@@ -3608,7 +3607,7 @@ background-color: var(--sucess-btn-color);
   color: var(--color-text-muted);
   font-weight: 500;
 }
-/* Export Buttons at the very bottom */
+
 .export-actions {
   display: grid;
   grid-template-columns: 1fr 1.1fr;
@@ -3679,7 +3678,7 @@ section#detail-section {
     overflow: hidden;
     border: 1px solid var(--cab-border-color);
 }
-/* Headers styling */
+
 .cab-dashboard-container .cab-board-header {
     background-color: var(--tab-btn-color);
     color: #ffffff;
@@ -3698,7 +3697,7 @@ section#detail-section {
     font-weight: 700;
     text-transform: uppercase;
 }
-/* Columns Grid */
+
 .cab-dashboard-container .cab-board-columns {
   display: flex;
 
@@ -3722,7 +3721,7 @@ section#detail-section {
     box-shadow: var(--cab-shadow-md);
     border-color: var(--accent-color);
 }
-/* Column Accent Pills */
+
 .cab-dashboard-container .cab-column-header {
     background-color: var(--accent-color);
     color: #ffffff;
@@ -3735,7 +3734,7 @@ section#detail-section {
     font-size: 0.95rem;
     font-weight: 600;
 }
-/* Cards Draggable Container */
+
 .cab-dashboard-container .cab-cards-container {
     padding: 12px;
     flex-grow: 1;
@@ -3753,7 +3752,7 @@ section#detail-section {
     outline: 2px dashed var(--accent-color);
     outline-offset: -4px;
 }
-/* Premium Card design styling */
+
 .cab-dashboard-container .cab-case-card {
     background: #ffffff;
     border: 2.5px solid var(--accent-color, var(--cab-border-color));
@@ -3790,7 +3789,7 @@ section#detail-section {
     color: var(--cab-text-secondary);
     font-weight: 500;
 }
-/* Card Selection style */
+
 .cab-dashboard-container .cab-card-footer {
     display: flex;
     justify-content: flex-start;
@@ -3833,7 +3832,7 @@ section#detail-section {
     border-color: rgba(16, 185, 129, 0.3);
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23047857' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
-/* Board Footer */
+
 .cab-dashboard-container .cab-board-footer {
     padding: 20px;
     background: #f8fafc;
@@ -3841,7 +3840,7 @@ section#detail-section {
     display: flex;
     justify-content: flex-start;
 }
-/* Generic Button Rules */
+
 .cab-dashboard-container .cab-btn {
     font-family: var(--cab-font-sans);
     font-weight: 600;
@@ -3869,7 +3868,7 @@ section#detail-section {
     background-color: var(--tab-btn-color);
     box-shadow: 0 4px 12px rgba(0, 143, 162, 0.25);
 }
-/* Check Manager (Right Column) styling */
+
 .cab-dashboard-container .cab-manager-content {
     padding: 24px;
     flex-grow: 1;
@@ -3882,7 +3881,7 @@ section#detail-section {
     flex-direction: column;
     gap: 20px;
 }
-/* Progress rows */
+
 .cab-dashboard-container .cab-progress-item {
     display: flex;
     flex-direction: column;
@@ -3917,7 +3916,7 @@ section#detail-section {
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.05);
 }
-/* Manager Footer Actions */
+
 .cab-dashboard-container .cab-manager-footer {
     padding: 20px 24px;
     background: #f8fafc;
@@ -3947,7 +3946,7 @@ section#detail-section {
     background-color: var(--cab-button-navy-hover);
     box-shadow: 0 4px 12px rgba(43, 59, 140, 0.25);
 }
-/* Toast System (completely isolated outside grid, globally referenced but prefixed) */
+
 .cab-toast {
     position: fixed;
     bottom: 30px;
@@ -3978,9 +3977,9 @@ section#detail-section {
     font-size: 1.1rem;
 }
 .cab-toast.cab-hidden {
-    display: flex; /* keep flexible structure but keep translated/invisible when hidden */
+    display: flex; 
 }
-/* Media Breakpoints - completely nested & scoped */
+
 @media (max-width: 1100px) {
     .cab-dashboard-container .cab-dashboard-wrapper {
         grid-template-columns: 1fr;
@@ -4015,7 +4014,7 @@ aside.cab-manager-section{
 
 /* Spacialist Page */
 
-/* Panels generic design (scoped) */
+
 .cre-dashboard-container .cre-left-panel,
 .cre-dashboard-container .cre-middle-panel,
 .cre-dashboard-container .cre-right-panel {
@@ -4027,7 +4026,7 @@ aside.cab-manager-section{
     flex-direction: column;
     overflow: hidden;
 }
-/* Simple percentage widths to completely avoid complex flex shorthands */
+
 .cre-dashboard-container .cre-left-panel {
     width: 25%;
     max-width: 360px;
@@ -4045,7 +4044,7 @@ aside.cab-manager-section{
     min-width: 280px;
     flex-shrink: 0;
 }
-/* Headers styling inside scoped dashboard */
+
 .cre-dashboard-container .cre-panel-header {
     background-color: var(--purple-color);
     color: #ffffff;
@@ -4058,7 +4057,7 @@ aside.cab-manager-section{
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
-/* --- Left Column: Check Results List --- */
+
 .cre-dashboard-container .cre-check-list {
     display: flex;
     flex-direction: column;
@@ -4088,7 +4087,7 @@ aside.cab-manager-section{
     font-size: 0.9rem;
     color: var(--cre-text-primary);
 }
-/* Status pills custom buttons */
+
 .cre-dashboard-container .cre-status-pill {
     font-family: var(--cre-font-sans);
     font-size: 0.75rem;
@@ -4129,7 +4128,7 @@ aside.cab-manager-section{
 .cre-dashboard-container .cre-pill-na:hover {
     background-color: var(--blue-gray);
 }
-/* Left Bottom Discrepancy Banner */
+
 .cre-dashboard-container .cre-alert-banner {
     display: flex;
     flex-direction: row;
@@ -4143,7 +4142,7 @@ aside.cab-manager-section{
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-top: auto; /* Push completely to the bottom of left panel */
+    margin-top: auto; 
 }
 .cre-dashboard-container .cre-alert-banner i {
     font-size: 1rem;
@@ -4154,7 +4153,7 @@ aside.cab-manager-section{
     50% { opacity: 0.7; transform: scale(1.1); }
     100% { opacity: 1; transform: scale(1); }
 }
-/* --- Middle Column: Report Editor Cards --- */
+
 .cre-dashboard-container .cre-editor-content {
     display: flex;
     flex-direction: column;
@@ -4197,7 +4196,7 @@ aside.cab-manager-section{
     line-height: 1.6;
     color: var(--cre-text-secondary);
 }
-/* Middle Panel Footer Buttons */
+
 .cre-dashboard-container .cre-editor-footer {
     display: flex;
     flex-direction: row;
@@ -4207,7 +4206,7 @@ aside.cab-manager-section{
     background-color: #f8fafc;
     border-top: 1px solid var(--cre-border-color);
 }
-/* Generic Scoped Buttons */
+
 .cre-dashboard-container .cre-btn {
     font-family: var(--cre-font-sans);
     font-weight: 700;
@@ -4216,7 +4215,7 @@ aside.cab-manager-section{
     border-radius: var(--cre-radius-sm);
     border: none;
     cursor: pointer;
-    width: 32%; /* Simple distributed width instead of complex flex ratios */
+    width: 32%; 
     text-align: center;
     color: #ffffff;
     letter-spacing: 0.5px;
@@ -4243,7 +4242,7 @@ aside.cab-manager-section{
 .cre-dashboard-container .cre-btn-navy:hover {
     background-color: var(--primary-color);
 }
-/* --- Right Column: Comments feed --- */
+
 .cre-dashboard-container .cre-comments-content {
     display: flex;
     flex-direction: column;
@@ -4305,7 +4304,7 @@ aside.cab-manager-section{
     color: var(--cre-text-secondary);
     line-height: 1.4;
 }
-/* Comments Input Box area */
+
 .cre-dashboard-container .cre-notes-input-wrapper {
     display: flex;
     flex-direction: row;
@@ -4349,7 +4348,7 @@ aside.cab-manager-section{
 .cre-dashboard-container .cre-btn-send:active {
     transform: scale(0.96);
 }
-/* Middle Stats Banner */
+
 .cre-dashboard-container .cre-monthly-banner {
     background-color: var(--primary-color);
     color: #ffffff;
@@ -4360,7 +4359,7 @@ aside.cab-manager-section{
     letter-spacing: 0.5px;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
-/* Right footer utilities */
+
 .cre-dashboard-container .cre-right-footer {
     display: flex;
     flex-direction: row;
@@ -4370,11 +4369,11 @@ aside.cab-manager-section{
     background-color: #f8fafc;
     border-top: 1px solid var(--cre-border-color);
 }
-/* Export buttons width */
+
 .cre-dashboard-container .cre-right-footer .cre-btn {
     width: 48%;
 }
-/* Responsive Scaling - pure flex wrapping */
+
 @media (max-width: 1100px) {
     .cre-dashboard-container .cre-dashboard-wrapper {
         flex-direction: column;
@@ -4411,14 +4410,14 @@ aside.cab-manager-section{
 .apg-dash-wrapper *::after {
   box-sizing: border-box;
 }
-/* Flex layout for the 4 top cards */
+
 .apg-dash-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   width: 100%;
 }
-/* Basic Card Component */
+
 .apg-dash-card {
   flex: 1 1 calc(25% - 12px);
   min-width: 260px;
@@ -4436,7 +4435,7 @@ aside.cab-manager-section{
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
   border-color: #2b395a;
 }
-/* Colored top accent bars */
+
 .apg-dash-card-header {
   padding: 10px 16px;
   font-size: 0.85rem;
@@ -4457,7 +4456,7 @@ aside.cab-manager-section{
 .apg-dash-card-green .apg-dash-card-header {
   background-color: var(--apg-dash-green-dark);
 }
-/* Card Body containing values and charts */
+
 .apg-dash-card-body {
   padding: 20px 16px 24px 16px;
   display: flex;
@@ -4472,7 +4471,7 @@ aside.cab-manager-section{
   justify-content: space-between;
   height: 100%;
 }
-/* Large metric values */
+
 .apg-dash-card-value {
   font-family: 'Outfit', sans-serif;
   font-size: 2.85rem;
@@ -4481,7 +4480,7 @@ aside.cab-manager-section{
   margin-bottom: 6px;
   letter-spacing: -0.5px;
 }
-/* Value colors */
+
 .apg-dash-card-value.text-teal { color: var(--apg-dash-teal); }
 .apg-dash-card-value.text-red { color: var(--apg-dash-red); }
 .apg-dash-card-value.text-orange { color: var(--apg-dash-orange); }
@@ -4491,7 +4490,7 @@ aside.cab-manager-section{
   color: var(--apg-dash-text-muted);
   margin-bottom: 12px;
 }
-/* Trend text colors and styling */
+
 .apg-dash-card-trend {
   font-size: 0.8rem;
   font-weight: 600;
@@ -4515,31 +4514,31 @@ aside.cab-manager-section{
   display: flex;
   align-items: flex-end;
 }
-/* Mini Bar Chart styling */
+
 .apg-dash-chart {
   display: flex;
   align-items: flex-end;
   gap: 3px;
   height: 60px;
-  background-color: #0b0e16; /* Clean dark chart pocket exactly like the image */
+  background-color: #0b0e16; 
   padding: 6px 8px;
   border-radius: 4px;
 }
 .apg-dash-chart-bar {
   width: 8px;
   height: var(--bar-height);
-  background-color: #1a2538; /* Base color for bars - dark grey/blue */
+  background-color: #1a2538; 
   border-radius: 1px 1px 0 0;
   position: relative;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
-/* Glow/highlight the bar matching the card color on hover */
+
 .apg-dash-card-teal .apg-dash-chart-bar:hover { background-color: var(--apg-dash-teal); transform: scaleY(1.05); }
 .apg-dash-card-red .apg-dash-chart-bar:hover { background-color: var(--apg-dash-red); transform: scaleY(1.05); }
 .apg-dash-card-orange .apg-dash-chart-bar:hover { background-color: var(--apg-dash-orange); transform: scaleY(1.05); }
 .apg-dash-card-green .apg-dash-chart-bar:hover { background-color: var(--apg-dash-green); transform: scaleY(1.05); }
-/* Simple elegant CSS tooltip using attribute data-value */
+
 .apg-dash-chart-bar::after {
   content: attr(data-value);
   position: absolute;
@@ -4563,7 +4562,7 @@ aside.cab-manager-section{
   opacity: 1;
   transform: translateX(-50%) translateY(-2px);
 }
-/* Bottom Section: Date-Wise Case Log */
+
 .apg-dash-table-section {
   border: 1px solid var(--apg-dash-card-border);
   border-radius: 6px;
@@ -4572,7 +4571,7 @@ aside.cab-manager-section{
   background-color: var(--apg-dash-card-bg);
   width: 100%;
 }
-/* Section Header Bar styling */
+
 .apg-dash-table-header {
   background-color: var(--bg-light-blue); 
   padding: 12px 16px;
@@ -4592,7 +4591,7 @@ aside.cab-manager-section{
   display: flex;
   gap: 10px;
 }
-/* Buttons style */
+
 .apg-dash-btn {
   font-family: var(--apg-dash-font-family);
   font-weight: 600;
@@ -4623,12 +4622,12 @@ aside.cab-manager-section{
   background-color: #172049;
   box-shadow: 0 0 10px rgba(30, 41, 93, 0.4);
 }
-/* Responsive Table Container */
+
 .apg-dash-table-container {
   width: 100%;
   overflow-x: auto;
 }
-/* Scrollbar customization for webkit browsers to match dark premium design */
+
 .apg-dash-table-container::-webkit-scrollbar {
   height: 6px;
   background-color: var(--apg-dash-bg);
@@ -4649,7 +4648,7 @@ aside.cab-manager-section{
   color: var(--apg-dash-text-main);
   min-width: 800px; 
 }
-/* Table head styles */
+
 .apg-dash-table th {
   background-color: var(--primary-color);
   color: var(--apg-dash-text-muted);
@@ -4660,7 +4659,7 @@ aside.cab-manager-section{
   text-transform: capitalize;
   border-bottom: 1px solid var(--primary-dark);
 }
-/* Table body cell styles */
+
 .apg-dash-table td {
   padding: 14px 16px;
   border-bottom: 1px solid var(--bg-light-blue);
@@ -4668,22 +4667,22 @@ aside.cab-manager-section{
   color: var(--white);
   background-color: var(--primary-dark);
 }
-/* Row hover highlight */
+
 .apg-dash-table tbody tr {
   transition: background-color 0.15s ease;
 }
 .apg-dash-table tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.02);
 }
-/* Last row does not need a bottom border */
+
 .apg-dash-table tbody tr:last-child td {
   border-bottom: none;
 }
-/* Specific styling for Date column */
+
 .apg-dash-td-date {
   color: var(--apg-dash-text-muted);
 }
-/* Utilities inside our namespace */
+
 .apg-dash-table .text-red {
   color: var(--alert-red);
 }
@@ -4724,7 +4723,7 @@ aside.cab-manager-section{
   min-height: 100vh;
   box-sizing: border-box;
 }
-/* Master Wrapper scoping all dashboard layout */
+
 .apg-flow-wrapper {
   box-sizing: border-box;
   font-family: var(--apg-flow-font-family);
@@ -4767,7 +4766,7 @@ aside.cab-manager-section{
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
   border-color: #2b395a;
 }
-/* Card Header Strip */
+
 .apg-flow-api-card .apg-flow-card-header {
   padding: 14px 16px;
   display: flex;
@@ -4790,7 +4789,7 @@ aside.cab-manager-section{
   color: #ffffff;
   letter-spacing: 0.5px;
 }
-/* Live Green Badge */
+
 .apg-flow-badge-live {
   background-color: var(--apg-flow-badge-green);
   color: #ffffff;
@@ -4801,7 +4800,7 @@ aside.cab-manager-section{
   text-transform: capitalize;
   box-shadow: 0 2px 6px rgba(0, 200, 83, 0.3);
 }
-/* Card Content styling */
+
 .apg-flow-api-card .apg-flow-card-body {
   padding: 24px 16px;
   font-size: 0.88rem;
@@ -4849,7 +4848,7 @@ aside.cab-manager-section{
   padding: 20px 24px;
   flex-grow: 1;
 }
-/* Bullet list custom stylings */
+
 .apg-flow-list {
   list-style: none;
   padding: 0;
@@ -4892,12 +4891,12 @@ aside.cab-manager-section{
   margin-bottom: 20px;
   letter-spacing: 0.5px;
 }
-/* Outer Scroll Wrapper to keep flow horizontal on mobile without breaking grid */
+
 .apg-flow-diagram-wrapper {
   width: 100%;
   overflow-x: auto;
 }
-/* Custom Scrollbar for the Flow Diagram container */
+
 .apg-flow-diagram-wrapper::-webkit-scrollbar {
   height: 6px;
   background-color: var(--apg-flow-bg);
@@ -4909,7 +4908,7 @@ aside.cab-manager-section{
 .apg-flow-diagram-wrapper::-webkit-scrollbar-thumb:hover {
   background-color: #2b395a;
 }
-/* Horizontal Flow Container using Flexbox */
+
 .apg-flow-diagram-row {
   display: flex;
   align-items: center;
@@ -4918,7 +4917,7 @@ aside.cab-manager-section{
   min-width: 1000px; 
   padding: 4px 0;
 }
-/* Flex item block style for the flow steps */
+
 .apg-flow-step-block {
   flex: 1;
   text-align: center;
@@ -4939,7 +4938,7 @@ aside.cab-manager-section{
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
 }
-/* Action arrows */
+
 .apg-flow-arrow {
   flex: 0 0 40px;
   display: flex;
@@ -4951,7 +4950,7 @@ aside.cab-manager-section{
   width: 16px;
   height: 16px;
 }
-/* Colors matching the system flow diagram */
+
 .apg-flow-bg-teal-light {
   background-color: #00828a;
 }
@@ -4973,7 +4972,7 @@ aside.cab-manager-section{
 .apg-flow-bg-teal-dark {
   background-color: #00695c;
 }
-/* Media query responsiveness for mobile stack adjustments */
+
 @media (max-width: 480px) {
   .apg-flow-body-bg {
     padding: 16px;
@@ -4984,7 +4983,7 @@ aside.cab-manager-section{
 /* API Integretion Page */
 
 
-/* Staus Emploment */
+
 .emp-chk-wrapper {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: #f0f4f9;
@@ -4997,7 +4996,7 @@ aside.cab-manager-section{
   box-sizing: border-box;
 }
 
-/* Card Container */
+
 .emp-chk-card {
   max-width: 1200px;
   margin: 0 auto;
@@ -5049,7 +5048,7 @@ aside.cab-manager-section{
   border-radius: 1px;
 }
 
-/* Metadata Grid */
+
 .emp-chk-meta-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -5069,7 +5068,7 @@ aside.cab-manager-section{
   color: #475569;
 }
 
-/* Inputs styling */
+
 .emp-chk-meta-input,
 .emp-chk-claim-input,
 .emp-chk-feedback-text {
@@ -5158,7 +5157,7 @@ aside.cab-manager-section{
   }
   
   .emp-chk-table-header-row {
-    display: none; /* Mobile screen पर table header को hide किया गया है */
+    display: none; 
   }
 
   .emp-chk-table-row {
@@ -5295,14 +5294,14 @@ aside.cab-manager-section{
             padding-bottom: 10px;
         }
 
-        /* Form Row Layout using Flexbox (No Grid) */
+        
         .form-group {
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
         }
 
-        /* Label Styling */
+        
         .form-group label {
             font-size: 14px;
             font-weight: 600;
@@ -5310,7 +5309,7 @@ aside.cab-manager-section{
             margin-bottom: 8px;
         }
 
-        /* Input Fields Styling (Text and Email) */
+        
         .form-group input[type="text"],
         .form-group input[type="email"] {
             width: 100%;
@@ -5323,14 +5322,13 @@ aside.cab-manager-section{
             transition: border-color 0.2s ease;
         }
 
-        /* Focus State styling */
+       
         .form-group input[type="text"]:focus,
         .form-group input[type="email"]:focus {
             border-color: #4a90e2;
             outline: none;
         }
 
-        /* Submit Button */
         .submit-btn {
             background-color: #4a90e2;
             color: white;
