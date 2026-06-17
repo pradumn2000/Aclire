@@ -932,7 +932,7 @@ input:checked+.slider:before {
   color: var(--tab-btn-color);
 }
 .cards-head-dash .card-inner-dash p{
-  color: #ccc;
+  color: #555;
 }
 .cards-head-dash .card-inner-dash{
   background-color: var(--white);
