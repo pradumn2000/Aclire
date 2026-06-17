@@ -1550,7 +1550,7 @@ span.primary-cta.bdr-color{
   background-color: var(--color-verification-header);
 }
 .charges-header {
-  background-color: var(--sucess-btn-color);
+  background-color: var(--sucess-btn-color)!important;
 }
 .comments-header {
   background-color: var(--purple-color);
@@ -3386,12 +3386,21 @@ background-color: var(--sucess-btn-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 .btn-icon {
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   flex-shrink: 0;
 }
 .btn-approve {
-  background-color: var(--sucess-btn-color); /* High fidelity green */
+  background-color: var(--sucess-btn-color); 
+}
+button.btn.btn-return {
+    font-size: 13px;
+}
+button.btn.btn-request {
+    font-size: 13px;
+}
+button.btn.btn-approve {
+    font-size: 13px;
 }
 .btn-approve:hover {
   background-color: var(--sucess-btn-color);
@@ -3652,13 +3661,13 @@ background-color: var(--sucess-btn-color);
     gap: 15px;
 }
 section#queue-section {
-    width: 32%;
+    width: 28%;
 }
 section#detail-section {
-    width: 40%;
+    width: 46%;
 }
 .dashboard-column.right-column {
-    width: 28%;
+    width: 26%;
 }
 /* Intake Page */
 
@@ -4733,6 +4742,7 @@ aside.cab-manager-section{
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-top: 20px;
 }
 .apg-flow-wrapper *, 
 .apg-flow-wrapper *::before, 
@@ -4752,7 +4762,7 @@ aside.cab-manager-section{
 .apg-flow-api-card {
   flex: 1 1 calc(33.333% - 11px);
   min-width: 280px;
-  background-color: var(--apg-flow-card-bg);
+  background-color: #fff;
   border: 1px solid var(--apg-flow-card-border);
   border-radius: 6px;
   overflow: hidden;
@@ -4786,12 +4796,12 @@ aside.cab-manager-section{
 .apg-flow-card-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #333;
   letter-spacing: 0.5px;
 }
 
 .apg-flow-badge-live {
-  background-color: var(--apg-flow-badge-green);
+  background-color: #02c39a;
   color: #ffffff;
   font-size: 0.75rem;
   font-weight: 700;
@@ -4805,7 +4815,7 @@ aside.cab-manager-section{
   padding: 24px 16px;
   font-size: 0.88rem;
   line-height: 1.6;
-  color: #c5d3ec;
+  color: #333;
   font-weight: 500;
   flex-grow: 1;
 }
@@ -4822,7 +4832,7 @@ aside.cab-manager-section{
 .apg-flow-db-card {
   flex: 1 1 calc(50% - 8px);
   min-width: 320px;
-  background-color: var(--apg-flow-card-bg);
+  background-color: #fff;
   border: 1px solid var(--apg-flow-card-border);
   border-radius: 6px;
   overflow: hidden;
@@ -4842,7 +4852,7 @@ aside.cab-manager-section{
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #ffffff;
+  color: #333;
 }
 .apg-flow-db-card .apg-flow-card-body {
   padding: 20px 24px;
@@ -4860,7 +4870,7 @@ aside.cab-manager-section{
 .apg-flow-list li {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #c5d3ec;
+  color: #333;
   display: flex;
   align-items: center;
   gap: 10px;
