@@ -417,7 +417,7 @@ export default function Client() {
 
   return (
     <>
- <Sidebar />
+
 
   {/* CONTENT */}
   <section id="noSidebar">
