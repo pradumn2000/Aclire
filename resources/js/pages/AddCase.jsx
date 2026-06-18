@@ -703,6 +703,89 @@
 //   .ac-success-link-url { font-size: 0.78rem; color: #0d9488; margin: 0; word-break: break-all; }
 //   .ac-success-actions { display: flex; gap: 12px; justify-content: center; }
 // `;
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import Header from "./Header";
+// import Sidebar from "./Sidebar";
+// import { API_URL } from "../src/config";
+
+// const MOCK_CLIENTS = [
+//   { id: 1, name: "Gaurav Technologies Pvt Ltd",  billingDefault: "postpaid_client" },
+//   { id: 2, name: "Deloitte India Pvt Ltd",        billingDefault: "prepaid_client" },
+//   { id: 3, name: "Wipro Limited",                 billingDefault: "prepaid_candidate" },
+//   { id: 4, name: "Infosys BPM",                   billingDefault: "postpaid_client" },
+// ];
+
+// // ── Default rates — used as fallback when a client hasn't set custom rates ──
+// const DEFAULT_CHECK_RATES = {
+//   employment: 350, education: 280, address: 180,
+//   database: 120,  criminal: 220,  drug: 400, court: 160,
+// };
+
+// const CHECK_TYPES = [
+//   { key: "employment", label: "Employment" },
+//   { key: "education",  label: "Education"  },
+//   { key: "address",    label: "Address"    },
+//   { key: "database",   label: "Database"   },
+//   { key: "criminal",   label: "Criminal"   },
+//   { key: "drug",       label: "Drug Test"  },
+//   { key: "court",      label: "Courtroom"  },
+// ];
+
+// const BILLING_MODES = [
+//   { key: "prepaid_client",     label: "Prepaid — Client",     desc: "Client pays upfront. Case created immediately.",                color: "#2b3b8c" },
+//   { key: "prepaid_candidate",  label: "Prepaid — Candidate",  desc: "Candidate pays via payment link before or after docs.",         color: "#0d9488" },
+//   { key: "postpaid_client",    label: "Postpaid — Client",    desc: "Case created now. Client invoiced at month end.",               color: "#7c3aed" },
+// ];
+
+// // ── Registration check keys (employment/education/.../drug_test/courtroom)
+// //    use different short keys than AddCase's CHECK_TYPES (drug/court).
+// //    Map registration keys → AddCase keys when applying a client's rate card.
+// const CHECK_KEY_ALIASES = {
+//   drug_test: "drug",
+//   courtroom: "court",
+// };
+
+// function getUser() {
+//   try { return JSON.parse(localStorage.getItem("user")) || {}; } catch { return {}; }
+// }
+
+// // Build the effective rate card for this user: client's custom rates
+// // (remapped to AddCase's key names) layered over the defaults.
+// function buildCheckRates(user) {
+//   if (user.role === "client" && user.checkRates && typeof user.checkRates === "object") {
+//     const rates = { ...DEFAULT_CHECK_RATES };
+//     Object.entries(user.checkRates).forEach(([key, val]) => {
+//       const mapped = CHECK_KEY_ALIASES[key] || key;
+//       if (mapped in rates) rates[mapped] = Number(val) || 0;
+//     });
+//     return rates;
+//   }
+//   return DEFAULT_CHECK_RATES;
+// }
+
+// // AFTER — preselect from client's agreedChecks, mapped to AddCase keys
+// const CHECK_KEY_ALIASES = { drug_test: "drug", courtroom: "court" };
+
+// function getEmptyForm(user) {
+//   const isClient = user.role === "client";
+//   const preselectedChecks = isClient && Array.isArray(user.agreedChecks)
+//     ? user.agreedChecks.map(k => CHECK_KEY_ALIASES[k] || k).filter(k => CHECK_TYPES.some(ct => ct.key === k))
+//     : [];
+
+//   return {
+//     candidateName: "", candidateEmail: "", candidateMobile: "",
+//     position: "",
+//     clientId:   isClient ? String(user.id ?? "") : "",
+//     clientName: isClient ? (user.name || "") : "",
+//     priority: "normal",
+//     billingMode: isClient ? (user.billingMode || "") : "",
+//     checks: preselectedChecks,   // ← preselected, but still toggleable
+//     notes: "",
+//     paymentTiming: "before", paymentLinkSent: false,
+//     invoiceCycle: "monthly", poNumber: "",
+//   };
+// }
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
@@ -716,7 +799,6 @@ const MOCK_CLIENTS = [
   { id: 4, name: "Infosys BPM",                   billingDefault: "postpaid_client" },
 ];
 
-// ── Default rates — used as fallback when a client hasn't set custom rates ──
 const DEFAULT_CHECK_RATES = {
   employment: 350, education: 280, address: 180,
   database: 120,  criminal: 220,  drug: 400, court: 160,
@@ -733,14 +815,12 @@ const CHECK_TYPES = [
 ];
 
 const BILLING_MODES = [
-  { key: "prepaid_client",     label: "Prepaid — Client",     desc: "Client pays upfront. Case created immediately.",                color: "#2b3b8c" },
-  { key: "prepaid_candidate",  label: "Prepaid — Candidate",  desc: "Candidate pays via payment link before or after docs.",         color: "#0d9488" },
-  { key: "postpaid_client",    label: "Postpaid — Client",    desc: "Case created now. Client invoiced at month end.",               color: "#7c3aed" },
+  { key: "prepaid_client",    label: "Prepaid — Client",    desc: "Client pays upfront. Case created immediately.",          color: "#2b3b8c" },
+  { key: "prepaid_candidate", label: "Prepaid — Candidate", desc: "Candidate pays via payment link before or after docs.",   color: "#0d9488" },
+  { key: "postpaid_client",   label: "Postpaid — Client",   desc: "Case created now. Client invoiced at month end.",         color: "#7c3aed" },
 ];
 
-// ── Registration check keys (employment/education/.../drug_test/courtroom)
-//    use different short keys than AddCase's CHECK_TYPES (drug/court).
-//    Map registration keys → AddCase keys when applying a client's rate card.
+// ── SINGLE declaration — remove the duplicate below getEmptyForm ──
 const CHECK_KEY_ALIASES = {
   drug_test: "drug",
   courtroom: "court",
@@ -750,8 +830,6 @@ function getUser() {
   try { return JSON.parse(localStorage.getItem("user")) || {}; } catch { return {}; }
 }
 
-// Build the effective rate card for this user: client's custom rates
-// (remapped to AddCase's key names) layered over the defaults.
 function buildCheckRates(user) {
   if (user.role === "client" && user.checkRates && typeof user.checkRates === "object") {
     const rates = { ...DEFAULT_CHECK_RATES };
@@ -763,9 +841,6 @@ function buildCheckRates(user) {
   }
   return DEFAULT_CHECK_RATES;
 }
-
-// AFTER — preselect from client's agreedChecks, mapped to AddCase keys
-const CHECK_KEY_ALIASES = { drug_test: "drug", courtroom: "court" };
 
 function getEmptyForm(user) {
   const isClient = user.role === "client";
@@ -780,7 +855,7 @@ function getEmptyForm(user) {
     clientName: isClient ? (user.name || "") : "",
     priority: "normal",
     billingMode: isClient ? (user.billingMode || "") : "",
-    checks: preselectedChecks,   // ← preselected, but still toggleable
+    checks: preselectedChecks,
     notes: "",
     paymentTiming: "before", paymentLinkSent: false,
     invoiceCycle: "monthly", poNumber: "",
