@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import Sidebar from "./Sidebar"; // adjust path if needed
 
 export default function Client() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ export default function Client() {
   return (
     <>
  
-
+<Sidebar />
   {/* CONTENT */}
   <section id="noSidebar">
     {/* NAVBAR */}

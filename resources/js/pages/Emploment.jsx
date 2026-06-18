@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 
 export default function Dashboard() {
@@ -12,7 +13,7 @@ export default function Dashboard() {
 
   return (
     <>
- 
+ <Sidebar />
 
   {/* CONTENT */}
   <section id="noSidebar">
