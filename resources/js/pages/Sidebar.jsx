@@ -35,8 +35,8 @@ client: [
   { path: "/Client?tab=completed",label: "Completed Cases", img: "images/sidebar/completed-icon.svg" },
   { path: "/AddCase",             label: "Add Case",       img: "images/sidebar/plus-solid-full-white.svg" },
   { path: "/clientportal",   label: "Generate Links",    img: "images/sidebar/chart-bar-regular-full.svg" },
-  { path: "",   label: "Reports & Trends",    img: "images/sidebar/money-check-dollar-solid-full.svg" },
-  { path: "",   label: "Billing",    img: "images/sidebar/trend-icon.svg" },
+  { path: "/Trends",   label: "Reports & Trends",    img: "images/sidebar/money-check-dollar-solid-full.svg" },
+  { path: "/ClientBilling",   label: "Billing",    img: "images/sidebar/trend-icon.svg" },
   // { path: "/Settings",            label: "Settings",        img: "images/sidebar/setting-icon.svg" },
 ],
   // ... keep other roles
