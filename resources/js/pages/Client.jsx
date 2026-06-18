@@ -1332,14 +1332,14 @@ export default function Client() {
                           const isSelected = selectedCase?.case_id === c.case_id;
                           const name       = c.candidate || c.candidate_name || "—";
                           return (
-                            <tr
+                            <tr className="boder-tbl active"
                               key={c.case_id}
                               onClick={() => { setSelectedCase(c); setActiveDetailTab("overview"); }}
-                              style={{
-                                cursor:     "pointer",
-                                background: isSelected ? "#eef1fb" : undefined,
-                                borderLeft: isSelected ? "4px solid #2b3b8c" : "4px solid transparent",
-                              }}
+                              // style={{
+                              //   cursor:     "pointer",
+                              //   background: isSelected ? "#eef1fb" : undefined,
+                              //   borderLeft: isSelected ? "4px solid #2b3b8c" : "4px solid transparent",
+                              // }}
                             >
                               <td>
                                 <div className="criminal-case">
@@ -1419,7 +1419,7 @@ export default function Client() {
                     )}
 
                     {/* Checks tab */}
-                    {activeDetailTab === "checks" && (
+                    {activeDetailTab === "timeline" && (
                       <div className="clients-status">
                         <h4>Check-wise Status</h4>
                         <div className="empolyment-body-wrp">
