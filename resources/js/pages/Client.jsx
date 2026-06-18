@@ -1178,6 +1178,7 @@ export default function Client() {
                 </button>
               </div>
             </div>
+            
 
             {/* ── Date filter tabs — Dashboard only ── */}
             {isDashboard && (
@@ -1278,21 +1279,24 @@ export default function Client() {
               </div>
             )}
 
-            {/* ── Status filter tabs ── */}
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {STATUS_TABS.map(tab => (
-                <button
-                  key={tab.key}
-                  className={`tab-cta ${statusTab === tab.key ? "active" : ""}`}
-                  onClick={() => handleTabChange(tab.key)}
-                >
-                  {tab.label}
-                  <span style={{ marginLeft: "6px", background: "rgba(0,0,0,0.1)", borderRadius: "8px", padding: "1px 6px", fontSize: "11px", fontWeight: 700 }}>
-                    {counts[tab.key] ?? 0}
-                  </span>
-                </button>
-              ))}
-            </div>
+{/* ── Status filter tabs ── */}
+{/* ── Status filter tabs — Dashboard only ── */}
+{isDashboard && (
+  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+    {STATUS_TABS.map(tab => (
+      <button
+        key={tab.key}
+        className={`tab-cta ${statusTab === tab.key ? "active" : ""}`}
+        onClick={() => handleTabChange(tab.key)}
+      >
+        {tab.label}
+        <span style={{ marginLeft: "6px", background: "rgba(0,0,0,0.1)", borderRadius: "8px", padding: "1px 6px", fontSize: "11px", fontWeight: 700 }}>
+          {counts[tab.key] ?? 0}
+        </span>
+      </button>
+    ))}
+  </div>
+)}
 
             {/* ── Split panel: case list + detail ── */}
             <div className="dash-inner-wrp-both client-portal">

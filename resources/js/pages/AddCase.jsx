@@ -764,8 +764,15 @@ function buildCheckRates(user) {
   return DEFAULT_CHECK_RATES;
 }
 
+// AFTER — preselect from client's agreedChecks, mapped to AddCase keys
+const CHECK_KEY_ALIASES = { drug_test: "drug", courtroom: "court" };
+
 function getEmptyForm(user) {
   const isClient = user.role === "client";
+  const preselectedChecks = isClient && Array.isArray(user.agreedChecks)
+    ? user.agreedChecks.map(k => CHECK_KEY_ALIASES[k] || k).filter(k => CHECK_TYPES.some(ct => ct.key === k))
+    : [];
+
   return {
     candidateName: "", candidateEmail: "", candidateMobile: "",
     position: "",
@@ -773,11 +780,27 @@ function getEmptyForm(user) {
     clientName: isClient ? (user.name || "") : "",
     priority: "normal",
     billingMode: isClient ? (user.billingMode || "") : "",
-    checks: [], notes: "",
+    checks: preselectedChecks,   // ← preselected, but still toggleable
+    notes: "",
     paymentTiming: "before", paymentLinkSent: false,
     invoiceCycle: "monthly", poNumber: "",
   };
 }
+
+// function getEmptyForm(user) {
+//   const isClient = user.role === "client";
+//   return {
+//     candidateName: "", candidateEmail: "", candidateMobile: "",
+//     position: "",
+//     clientId:   isClient ? String(user.id ?? "") : "",
+//     clientName: isClient ? (user.name || "") : "",
+//     priority: "normal",
+//     billingMode: isClient ? (user.billingMode || "") : "",
+//     checks: [], notes: "",
+//     paymentTiming: "before", paymentLinkSent: false,
+//     invoiceCycle: "monthly", poNumber: "",
+//   };
+// }
 
 export default function AddCase() {
   const navigate = useNavigate();
