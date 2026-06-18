@@ -5714,6 +5714,6 @@ button.btn.btn-request {
 }
 .boder-tbl.active{
   cursor: pointer;
-  border-left:4px solid #2b3b8c;
-  border:2px solis #2b3b8c;
+  border:4px solid #2b3b8c;
+  border-left:8px solid #2b3b8c;
 }
