@@ -1208,7 +1208,7 @@ export default function Clientportal() {
                       Upload a CSV to generate links for multiple candidates at once.
                     </p>
 
-                    <div className="cob-form-group">
+                    <div className="cob-form-group form">
                       <label className="cob-form-label">CSV File</label>
                       <input type="file" accept=".csv" className="cob-form-input" onChange={handleBulkFile} />
                       {bulkFileName && (

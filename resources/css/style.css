@@ -1535,6 +1535,7 @@ span.primary-cta.bdr-color{
   color: #ffffff;
   display: flex;
   align-items: center;
+  background-color:var(--sucess-btn-color)
 }
 .card-header h2 {
   font-size: 14px;
@@ -3222,7 +3223,7 @@ background-color: var(--sucess-btn-color);
 }
 
 .column-content {
-  padding: 24px;
+  padding: 24px 10px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -5698,4 +5699,16 @@ aside.cab-manager-section{
 .delete-confirm-bg {
   background: #dc2626;
   border: none;
+}
+.cob-form-group.form{
+  padding:24px;
+}
+button.btn.btn-approve {
+    display: flex;
+}
+button.btn.btn-return {
+    display: flex;
+}
+button.btn.btn-request {
+    display: flex;
 }
