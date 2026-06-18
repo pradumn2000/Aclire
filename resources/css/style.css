@@ -5712,3 +5712,8 @@ button.btn.btn-return {
 button.btn.btn-request {
     display: flex;
 }
+.boder-tbl.active{
+  cursor: pointer;
+  border-left:4px solid #2b3b8c;
+  border:2px solis #2b3b8c;
+}

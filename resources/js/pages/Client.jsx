@@ -1328,14 +1328,14 @@ export default function Client() {
                           const isSelected = selectedCase?.case_id === c.case_id;
                           const name       = c.candidate || c.candidate_name || "—";
                           return (
-                            <tr
+                            <tr className="boder-tbl active"
                               key={c.case_id}
                               onClick={() => { setSelectedCase(c); setActiveDetailTab("overview"); }}
-                              style={{
-                                cursor:     "pointer",
-                                background: isSelected ? "#eef1fb" : undefined,
-                                borderLeft: isSelected ? "4px solid #2b3b8c" : "4px solid transparent",
-                              }}
+                              // style={{
+                              //   cursor:     "pointer",
+                              //   background: isSelected ? "#eef1fb" : undefined,
+                              //   borderLeft: isSelected ? "4px solid #2b3b8c" : "4px solid transparent",
+                              // }}
                             >
                               <td>
                                 <div className="criminal-case">
