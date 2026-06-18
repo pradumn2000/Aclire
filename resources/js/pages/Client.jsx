@@ -1415,7 +1415,7 @@ export default function Client() {
                     )}
 
                     {/* Checks tab */}
-                    {activeDetailTab === "checks" && (
+                    {activeDetailTab === "timeline" && (
                       <div className="clients-status">
                         <h4>Check-wise Status</h4>
                         <div className="empolyment-body-wrp">
