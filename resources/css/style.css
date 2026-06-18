@@ -5717,3 +5717,14 @@ button.btn.btn-request {
   border:4px solid #2b3b8c;
   border-left:8px solid #2b3b8c;
 }
+#noSidebar {
+  position: relative;
+  width: calc(100% - 270px);
+  left: 270px;
+  transition: .3s ease;
+}
+
+#sidebar.hide ~ #noSidebar {
+  width: calc(100% - 80px);
+  left: 80px;
+}
