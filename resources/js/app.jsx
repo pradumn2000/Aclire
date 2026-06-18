@@ -496,9 +496,9 @@ function App() {
         <Route path="/dashboard" element={
           <PrivateRoute role="admin"><Dashboard /></PrivateRoute>
         } />
-        <Route path="/Trends" element={
-          <PrivateRoute role="admin"><Trends /></PrivateRoute>
-        } />
+       <Route path="/Trends" element={
+  <PrivateRoute role={["admin", "client"]}><Trends /></PrivateRoute>
+} />
         <Route path="/Apiintegretion" element={
           <PrivateRoute role="admin"><Apiintegretion /></PrivateRoute>
         } />
