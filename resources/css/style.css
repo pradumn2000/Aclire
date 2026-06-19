@@ -5728,3 +5728,56 @@ button.btn.btn-request {
   width: calc(100% - 80px);
   left: 80px;
 }
+/* ===== USER MANAGEMENT TABLE ===== */
+.down-table {
+  background: var(--white);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 0;
+}
+
+.down-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+}
+
+.down-table table thead {
+  background: var(--primary-color);
+}
+
+.down-table table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--primary-dark);
+}
+
+.down-table table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.down-table table tbody tr {
+  background: var(--white);
+  transition: 0.2s ease-in-out;
+}
+
+.down-table table tbody tr:nth-child(even) {
+  background-color: var(--bg-color);
+}
+
+.down-table table tbody tr:hover {
+  background-color: #e7ebf5;
+}
+
+.down-table table tbody tr:last-child td {
+  border-bottom: none;
+}

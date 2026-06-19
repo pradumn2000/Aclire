@@ -29,11 +29,11 @@ const ROLE_NAV = {
 
 client: [
   { path: "/Client",              label: "Dashboard",       img: "images/sidebar/home-icon.svg" },
+  { path: "/AddCase",             label: "Add Case",       img: "images/sidebar/plus-solid-full-white.svg" },
   { path: "/Client?tab=all",      label: "Total Cases",       img: "images/sidebar/cases-icon.svg" },
   { path: "/Client?tab=pending",  label: "In Process",   img: "images/sidebar/wip-icon.svg" },
   { path: "/Client?tab=in-progress", label: "In Progress",  img: "images/sidebar/report-icon.svg" },
   { path: "/Client?tab=completed",label: "Completed Cases", img: "images/sidebar/completed-icon.svg" },
-  { path: "/AddCase",             label: "Add Case",       img: "images/sidebar/plus-solid-full-white.svg" },
   { path: "/clientportal",   label: "Generate Links",    img: "images/sidebar/chart-bar-regular-full.svg" },
   { path: "/Trends",   label: "Reports & Trends",    img: "images/sidebar/money-check-dollar-solid-full.svg" },
   { path: "/ClientBilling",   label: "Billing",    img: "images/sidebar/trend-icon.svg" },

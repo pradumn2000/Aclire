@@ -404,6 +404,7 @@
 //   );
 // }
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 
 export default function Client() {
@@ -417,7 +418,7 @@ export default function Client() {
 
   return (
     <>
-
+<Sidebar />
 
   {/* CONTENT */}
   <section id="noSidebar">
