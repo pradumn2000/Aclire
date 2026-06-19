@@ -39,7 +39,70 @@ client: [
   { path: "/ClientBilling",   label: "Billing",    img: "images/sidebar/trend-icon.svg" },
   // { path: "/Settings",            label: "Settings",        img: "images/sidebar/setting-icon.svg" },
 ],
-  // ... keep other roles
+  // ── Allocator ──────────────────────────────────────────────────────────────
+  allocator: [
+    { path: "/AllocatorDashboard",           label: "Dashboard",        img: "images/sidebar/home-icon.svg" },
+    { path: "/Allocator",                    label: "Case Allocation",  img: "images/sidebar/cases-icon.svg" },
+    { path: "/Allocator?tab=unassigned",     label: "Unassigned",       img: "images/sidebar/wip-icon.svg" },
+    { path: "/Allocator?tab=assigned",       label: "Assigned",         img: "images/sidebar/report-icon.svg" },
+    { path: "/Allocator?tab=in-progress",    label: "In Progress",      img: "images/sidebar/wip-icon.svg" },
+    { path: "/Allocator?tab=completed",      label: "Completed",        img: "images/sidebar/completed-icon.svg" },
+    { path: "/AllCases",                     label: "All Cases",        img: "images/sidebar/cases-icon.svg" },
+  ],
+
+  // ── Verifyer ───────────────────────────────────────────────────────────────
+  verifyer: [
+    { path: "/VerifyerDashboard",            label: "Dashboard",        img: "images/sidebar/home-icon.svg" },
+    { path: "/Verifyer",                     label: "My Cases",         img: "images/sidebar/cases-icon.svg" },
+    { path: "/Verifyer?tab=pending",         label: "Pending",          img: "images/sidebar/wip-icon.svg" },
+    { path: "/Verifyer?tab=in-progress",     label: "In Progress",      img: "images/sidebar/report-icon.svg" },
+    { path: "/Verifyer?tab=completed",       label: "Completed",        img: "images/sidebar/completed-icon.svg" },
+    { path: "/emploment",                    label: "Employment Check",  img: "images/sidebar/report-icon.svg" },
+    { path: "/StatusEmploment",              label: "Employment Status", img: "images/sidebar/wip-icon.svg" },
+  ],
+
+  // ── Check Manager ──────────────────────────────────────────────────────────
+  check_manager: [
+    { path: "/CheckManagerDashboard",        label: "Dashboard",        img: "images/sidebar/home-icon.svg" },
+    { path: "/AllCases",                     label: "All Cases",        img: "images/sidebar/cases-icon.svg" },
+    { path: "/Allocator",                    label: "Case Allocation",  img: "images/sidebar/cases-icon.svg" },
+    { path: "/Verifyer",                     label: "Verification",     img: "images/sidebar/setting-icon.svg" },
+    { path: "/emploment",                    label: "Employment",       img: "images/sidebar/report-icon.svg" },
+    { path: "/StatusEmploment",              label: "Employment Status",img: "images/sidebar/wip-icon.svg" },
+    { path: "/Intake",                       label: "QC Intake",        img: "images/sidebar/cases-icon.svg" },
+    { path: "/UserManagement",               label: "Team",             img: "images/sidebar/clients-icon.svg" },
+  ],
+
+  // ── Report Writing (Specialist) ────────────────────────────────────────────
+  report_writing: [
+    { path: "/SpecialistDashboard",          label: "Dashboard",        img: "images/sidebar/home-icon.svg" },
+    { path: "/Specialist",                   label: "Report Writing",   img: "images/sidebar/report-icon.svg" },
+    { path: "/Specialist?tab=pending",       label: "Pending Reports",  img: "images/sidebar/wip-icon.svg" },
+    { path: "/Specialist?tab=in-progress",   label: "In Progress",      img: "images/sidebar/report-icon.svg" },
+    { path: "/Specialist?tab=completed",     label: "Completed",        img: "images/sidebar/completed-icon.svg" },
+    { path: "/AllCases",                     label: "Case Reference",   img: "images/sidebar/cases-icon.svg" },
+  ],
+
+  // ── PVC / QC ───────────────────────────────────────────────────────────────
+  pvc_qc: [
+    { path: "/QCDashboard",                  label: "Dashboard",        img: "images/sidebar/home-icon.svg" },
+    { path: "/Intake",                       label: "QC Intake",        img: "images/sidebar/cases-icon.svg" },
+    { path: "/Intake?tab=pending",           label: "Pending QC",       img: "images/sidebar/wip-icon.svg" },
+    { path: "/Intake?tab=review",            label: "Under Review",     img: "images/sidebar/report-icon.svg" },
+    { path: "/Intake?tab=approved",          label: "Approved",         img: "images/sidebar/completed-icon.svg" },
+    { path: "/Intake?tab=rejected",          label: "Rejected",         img: "images/sidebar/setting-icon.svg" },
+    { path: "/AllCases",                     label: "All Cases",        img: "images/sidebar/cases-icon.svg" },
+  ],
+
+  // ── Onboarding ─────────────────────────────────────────────────────────────
+  onboarding: [
+    { path: "/OnboardingDashboard",          label: "Dashboard",        img: "images/sidebar/home-icon.svg" },
+    { path: "/AddCase",                      label: "New Case",         img: "images/sidebar/plus-solid-full.svg" },
+    { path: "/clientportal",                 label: "Generate Links",   img: "images/sidebar/trend-icon.svg" },
+    { path: "/AddInstitution",               label: "Add Institution",  img: "images/sidebar/setting-icon.svg" },
+    { path: "/AddCompany",                   label: "Add Company",      img: "images/sidebar/setting-icon.svg" },
+    { path: "/AllCases",                     label: "All Cases",        img: "images/sidebar/cases-icon.svg" },
+  ],
 };
 export default function Sidebar() {
   const navigate  = useNavigate();
