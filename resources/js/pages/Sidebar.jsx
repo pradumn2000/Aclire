@@ -161,25 +161,20 @@ export default function Sidebar() {
   const user      = getUser();
   const role      = user.role || "admin";
   const navItems  = ROLE_NAV[role] || ROLE_NAV.admin;
- 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/");
   };
- 
   return (
     <aside id="sidebar">
- 
       {/* Brand */}
       <div className="brand">
         <img src="/images/login/logo.png" alt="BGV Portal" />
         <img src="/images/login/logo-small.png" alt="" className="collapsed" />
       </div>
- 
       {/* Navigation */}
       <ul className="side-menu">
- 
 {navItems.map((item) => {
   const [itemPath, itemQuery] = item.path.split("?");
   
@@ -188,7 +183,6 @@ export default function Sidebar() {
     if (!itemQuery) return !location.search;                   // /Client (no query) = Dashboard only
     return location.search === `?${itemQuery}`;                // ?tab=pending must match exactly
   })();
- 
   return (
     <li key={item.path} className={isActive ? "active" : ""}>
       <a href="#" onClick={(e) => { e.preventDefault(); navigate(item.path); }}>
@@ -199,7 +193,6 @@ export default function Sidebar() {
     </li>
   );
 })}
- 
         {/* Logout */}
         <li className="logout-menu">
           <a href="#" onClick={(e) => { e.preventDefault(); logout(); }}>
@@ -209,7 +202,6 @@ export default function Sidebar() {
           </a>
         </li>
       </ul>
- 
     </aside>
   );
 }
