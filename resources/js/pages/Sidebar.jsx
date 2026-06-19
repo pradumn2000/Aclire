@@ -1,11 +1,7 @@
 
 
 import { useNavigate, useLocation } from "react-router-dom";
- 
 function getUser() { try { return JSON.parse(localStorage.getItem("user")) || {}; } catch { return {}; } }
- 
- 
- 
 const ROLE_NAV = {
   admin: [
     { path: "/dashboard",      label: "Dashboard",           img: "images/sidebar/home-icon.svg" },
@@ -25,8 +21,6 @@ const ROLE_NAV = {
     { path: "/Apiintegretion", label: "API Integration",     img: "images/sidebar/setting-icon.svg" },
     { path: "/Settings",       label: "Settings",            img: "images/sidebar/setting-icon.svg" },
   ],
- 
- 
 client: [
   { path: "/Client",              label: "Dashboard",       img: "images/sidebar/home-icon.svg" },
   { path: "/AddCase",             label: "Add Case",       img: "images/sidebar/plus-solid-full-white.svg" },
