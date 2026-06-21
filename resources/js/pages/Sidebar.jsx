@@ -10,7 +10,7 @@ const ROLE_NAV = {
     { path: "/Allocator",      label: "Case Allocation",     img: "images/sidebar/cases-icon.svg" },
     { path: "/Verifyer",       label: "Verifier",            img: "images/sidebar/setting-icon.svg" },
     { path: "/emploment",      label: "Employment",          img: "images/sidebar/report-icon.svg" },
-    { path: "/StatusEmploment",label: "Employment Status",   img: "images/sidebar/wip-icon.svg" },
+    // { path: "/StatusEmploment",label: "Employment Status",   img: "images/sidebar/wip-icon.svg" },
     { path: "/Specialist",     label: "Report Writing",      img: "images/sidebar/report-icon.svg" },
     { path: "/Intake",         label: "QC Intake",           img: "images/sidebar/cases-icon.svg" },
     { path: "/clientportal",   label: "Generate Links",    img: "images/sidebar/trend-icon.svg" },
