@@ -1,4 +1,3 @@
-
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -63,36 +62,6 @@ Route::post('/register', function (Request $request) {
 // ─────────────────────────────────────────
 // CLIENT COMPANY REGISTER
 // ─────────────────────────────────────────
-// Route::post('/clients/register', function (Request $request) {
-
-//     $request->validate([
-//         'companyName'    => 'required|string|max:255',
-//         'gstin'          => 'required|string|max:15',
-//         'primaryContact' => 'required|string|max:255',
-//         'contactEmail'   => 'required|email|unique:users,email',
-//         'password'       => 'required|min:8',
-//     ]);
-
-//     $user = \App\Models\User::create([
-//         'name'     => $request->companyName,
-//         'email'    => $request->contactEmail,
-//         'password' => Hash::make($request->password),
-//         'role'     => 'client',
-//     ]);
-
-//     $token = $user->createToken('authToken')->plainTextToken;
-
-//     return response()->json([
-//         'message' => 'Client registered successfully',
-//         'token'   => $token,
-//         'user'    => [
-//             'id'    => $user->id,
-//             'name'  => $user->name,
-//             'email' => $user->email,
-//             'role'  => $user->role,
-//         ],
-//     ], 201);
-// });
 Route::post('/clients/register', function (Request $request) {
     $request->validate([
         'companyName'    => 'required|string|max:255',
@@ -126,7 +95,7 @@ Route::post('/clients/register', function (Request $request) {
         'billing_mode'    => $request->billingMode,
         'agreed_checks'   => $request->agreedChecks,
         'check_rates'     => $request->checkRates ?? [],
-        'total_amount'    => $totalAmount,           // ← New field
+        'total_amount'    => $totalAmount,
     ]);
 
     $token = $user->createToken('authToken')->plainTextToken;
@@ -146,6 +115,7 @@ Route::post('/clients/register', function (Request $request) {
         ],
     ], 201);
 });
+
 // ─────────────────────────────────────────
 // FORGOT PASSWORD — Step 1: Send OTP
 // ─────────────────────────────────────────
@@ -283,7 +253,8 @@ Route::middleware('auth:sanctum')->group(function () {
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role'     => 'required|in:admin,allocator,verifier,check_manager,report_writing,pvt_qc,client,onboarding',
+            // ↓ UPDATED: 7 new specialist verifier roles added
+            'role'     => 'required|in:admin,allocator,verifyer,check_manager,report_writing,pvt_qc,client,onboarding,employment_verifier,education_verifier,address_verifier,database_verifier,criminal_verifier,drug_test_verifier,courtroom_verifier',
         ]);
 
         $user = \App\Models\User::create([
@@ -334,106 +305,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // ═════════════════════════════════════════════════════════
 
     // ── CREATE CASE ──────────────────────────────────────────
-    // Route::post('/cases', function (Request $request) {
-    //     $request->validate([
-    //         'candidate_name'  => 'required|string|max:255',
-    //         'candidate_email' => 'required|email',
-    //         'client_name'     => 'required|string|max:255',
-    //         'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
-    //         'checks'          => 'required|array|min:1',
-    //         'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
-    //     ]);
-
-    //     $case = BGVCase::create([
-    //         'case_id'          => BGVCase::generateCaseId(),
-    //         'candidate_name'   => $request->candidate_name,
-    //         'candidate_email'  => $request->candidate_email,
-    //         'candidate_mobile' => $request->candidate_mobile,
-    //         'position'         => $request->position,
-    //         'client_name'      => $request->client_name,
-    //         'client_id'        => $request->client_id,
-    //         'checks'           => $request->checks,
-    //         'priority'         => $request->priority ?? 'normal',
-    //         'billing_mode'     => $request->billing_mode,
-    //         'payment_timing'   => $request->payment_timing,
-    //         'invoice_cycle'    => $request->invoice_cycle,
-    //         'po_number'        => $request->po_number,
-    //         'total_amount'     => $request->total_amount ?? 0,
-    //         'payment_link'     => $request->payment_link,
-    //         'status'           => 'pending',
-    //         'notes'            => $request->notes,
-    //         'created_by'       => $request->user()->id,
-    //     ]);
-
-
-    //     \App\Models\CaseEvent::log(
-    //         $case->case_id,
-    //         'created',
-    //         'Case created',
-    //         "Case opened for {$case->candidate_name}",
-    //         ['checks' => $case->checks, 'billing_mode' => $case->billing_mode],
-    //         $request->user()
-    //     );
-
-    //     return response()->json(['case' => $case], 201);
-    // });
-
-    // // ── LIST CASES (role-filtered) ───────────────────────────
-    // Route::get('/cases', function (Request $request) {
-    //     $user  = $request->user();
-    //     $query = BGVCase::orderByDesc('created_at');
-
-    //     // Client role: only sees cases they created or where their name matches
-    //     if ($user->role === 'client') {
-    //         $query->where(function ($q) use ($user) {
-    //             $q->where('created_by', $user->id)
-    //               ->orWhere('candidate_email', $user->email)
-    //               ->orWhere('client_name', 'like', "%{$user->name}%");
-    //         });
-    //     }
-
-    //     // Search
-    //     if ($request->search) {
-    //         $s = $request->search;
-    //         $query->where(function ($q) use ($s) {
-    //             $q->where('case_id', 'like', "%$s%")
-    //               ->orWhere('candidate_name', 'like', "%$s%")
-    //               ->orWhere('client_name', 'like', "%$s%");
-    //         });
-    //     }
-
-    //     // Status filter
-    //     if ($request->status && $request->status !== 'all') {
-    //         $query->where('status', $request->status);
-    //     }
-
-    //     $cases = $query->get()->map(function ($c) {
-    //         $checkLabels = collect($c->checks)->map(function ($ch) {
-    //             $map = [
-    //                 'employment' => 'EMP', 'education' => 'EDU', 'address' => 'ADDR',
-    //                 'database'   => 'DB',  'criminal'  => 'CRI', 'drug'    => 'DRUG',
-    //                 'court'      => 'CRT',
-    //             ];
-    //             return $map[$ch] ?? strtoupper(substr($ch, 0, 3));
-    //         })->implode('·');
-
-    //         return [
-    //             'id'           => $c->id,
-    //             'case_id'      => $c->case_id,
-    //             'candidate'    => $c->candidate_name,
-    //             'client'       => $c->client_name,
-    //             'checks'       => $checkLabels,
-    //             'status'       => $c->status,
-    //             'priority'     => $c->priority,
-    //             'billing_mode' => $c->billing_mode,
-    //             'total_amount' => $c->total_amount,
-    //             'created_at'   => $c->created_at->format('d M Y'),
-    //             'tat'          => $c->created_at->diffInDays(now()) . 'd',
-    //         ];
-    //     });
-
-    //     return response()->json(['cases' => $cases]);
-    // });
     Route::post('/cases', function (Request $request) {
         $request->validate([
             'candidate_name'  => 'required|string|max:255',
@@ -465,7 +336,6 @@ Route::middleware('auth:sanctum')->group(function () {
             'created_by'       => $request->user()->id,
         ]);
 
-        // Log event
         \App\Models\CaseEvent::log(
             $case->case_id,
             'created',
@@ -558,15 +428,10 @@ Route::middleware('auth:sanctum')->group(function () {
         $clients    = BGVCase::distinct('client_name')->count('client_name');
         $clearRate  = $total > 0 ? round(($completed / $total) * 100) : 0;
 
-        // Avg TAT for completed cases
-        // SQLite version (local dev):
+        // Avg TAT for completed cases (SQLite — swap for PostgreSQL version on Render)
         $avgTat = BGVCase::where('status', 'completed')
             ->selectRaw('AVG(JULIANDAY(updated_at) - JULIANDAY(created_at)) as avg_days')
             ->value('avg_days');
-        // PostgreSQL version (Render — uncomment and comment out the SQLite version above):
-        // $avgTat = BGVCase::where('status', 'completed')
-        //     ->selectRaw("AVG(EXTRACT(EPOCH FROM (updated_at - created_at))/86400) as avg_days")
-        //     ->value('avg_days');
 
         return response()->json([
             'total'       => $total,
@@ -581,17 +446,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ── UPDATE CASE STATUS ───────────────────────────────────
-    // Route::patch('/cases/{caseId}/status', function (Request $request, $caseId) {
-    //     $request->validate([
-    //         'status' => 'required|in:pending,in-progress,qc-review,completed,on-hold',
-    //     ]);
-
-    //     $case = BGVCase::where('case_id', $caseId)->first();
-    //     if (!$case) return response()->json(['message' => 'Case not found'], 404);
-
-    //     $case->update(['status' => $request->status]);
-    //     return response()->json(['message' => 'Status updated', 'case' => $case]);
-    // });
     Route::patch('/cases/{caseId}/status', function (Request $request, $caseId) {
         $request->validate([
             'status' => 'required|in:pending,in-progress,qc-review,completed,on-hold',
@@ -626,7 +480,6 @@ Route::middleware('auth:sanctum')->group(function () {
         $case = BGVCase::where('case_id', $caseId)->first();
         if (!$case) return response()->json(['message' => 'Case not found'], 404);
 
-        // Store result in a JSON column (check_results) — add this column to migration if needed
         $results = $case->check_results ?? [];
         $results[$request->check_type] = [
             'outcome'   => $request->outcome,
@@ -636,20 +489,6 @@ Route::middleware('auth:sanctum')->group(function () {
             'saved_at'  => now()->toDateTimeString(),
         ];
 
-        // Auto-update case status
-    //     if (!($request->is_draft ?? false)) {
-    //         $allChecks   = $case->checks;
-    //         $doneChecks  = array_keys(array_filter($results, fn($r) => !($r['is_draft'] ?? false)));
-    //         $allDone     = count(array_intersect($allChecks, $doneChecks)) === count($allChecks);
-    //         $newStatus   = $allDone ? 'qc-review' : 'in-progress';
-    //         $case->update(['status' => $newStatus, 'check_results' => $results]);
-    //     } else {
-    //         $case->update(['status' => 'in-progress', 'check_results' => $results]);
-    //     }
-
-    //     return response()->json(['message' => 'Check result saved', 'check_results' => $results]);
-    // });
-    // Auto-update case status
         if (!($request->is_draft ?? false)) {
             $allChecks   = $case->checks;
             $doneChecks  = array_keys(array_filter($results, fn($r) => !($r['is_draft'] ?? false)));
@@ -703,59 +542,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['timeline' => $events]);
     });
 
-});
-// ─────────────────────────────────────────
-// CLIENT COMPANY REGISTER
-// ─────────────────────────────────────────
-Route::post('/clients/register', function (Request $request) {
-
-    $request->validate([
-        'companyName'    => 'required|string|max:255',
-        'gstin'          => 'required|string|max:15',
-        'primaryContact' => 'required|string|max:255',
-        'contactPhone'   => 'nullable|string|max:20',
-        'contactEmail'   => 'required|email|unique:users,email',
-        'password'       => 'required|min:8',
-        'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
-        'agreedChecks'   => 'required|array|min:1',
-        'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug_test,courtroom',
-        'checkRates'     => 'nullable|array',
-        'checkRates.*'   => 'numeric|min:0',
-    ]);
-
-    $user = \App\Models\User::create([
-        'name'            => $request->companyName,
-        'email'           => $request->contactEmail,
-        'password'        => Hash::make($request->password),
-        'role'            => 'client',
-        'gstin'           => $request->gstin,
-        'primary_contact' => $request->primaryContact,
-        'contact_phone'   => $request->contactPhone,
-        'billing_mode'    => $request->billingMode,
-        'agreed_checks'   => $request->agreedChecks,
-        'check_rates'     => $request->checkRates ?? [],
-    ]);
-
-    $token = $user->createToken('authToken')->plainTextToken;
-
-    return response()->json([
-        'message' => 'Client registered successfully',
-        'token'   => $token,
-        'user'    => [
-            'id'             => $user->id,
-            'name'           => $user->name,
-            'email'          => $user->email,
-            'role'           => $user->role,
-            'gstin'          => $user->gstin,
-            'primaryContact' => $user->primary_contact,
-            'contactPhone'   => $user->contact_phone,
-            'billingMode'    => $user->billing_mode,
-            'agreedChecks'   => $user->agreed_checks,
-            'checkRates'     => $user->check_rates,
-        ],
-    ], 201);
-});
-// ═════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════
     // CANDIDATE LINKS (Candidate Portal — Link Generator)
     // ═════════════════════════════════════════════════════════
 
@@ -833,7 +620,7 @@ Route::post('/clients/register', function (Request $request) {
     // ── CREATE BULK LINKS (CSV upload) ────────────────────────
     Route::post('/candidate-links/bulk', function (Request $request) {
         $request->validate([
-            'rows'              => 'required|array|min:1',
+            'rows'                 => 'required|array|min:1',
             'rows.*.candidateName' => 'required|string|max:255',
             'rows.*.email'         => 'required|email',
             'rows.*.mobile'        => 'nullable|string|max:20',
@@ -892,7 +679,6 @@ Route::post('/clients/register', function (Request $request) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // TODO: actually send via SendGrid (email) or SMS gateway
         if ($request->method === 'Email') {
             Mail::raw(
                 "Hi {$link->candidate_name},\n\nPlease complete your verification here: " . url("/candidate/{$link->token}"),
@@ -922,207 +708,208 @@ Route::post('/clients/register', function (Request $request) {
     // INSTITUTIONS & COMPANIES
     // ═════════════════════════════════════════════════════════
 
-    // ── LIST INSTITUTIONS (any authenticated user — for dropdowns) ──
+    // ── LIST INSTITUTIONS ─────────────────────────────────────
     Route::get('/institutions', function (Request $request) {
-    $query = \App\Models\Institution::query();
+        $query = \App\Models\Institution::query();
 
-    if ($request->type && $request->type !== 'all') {
-        $query->where('type', $request->type);
-    }
+        if ($request->type && $request->type !== 'all') {
+            $query->where('type', $request->type);
+        }
 
-    if (!$request->boolean('include_inactive')) {
-        $query->where('status', '!=', 'inactive');
-    }
+        if (!$request->boolean('include_inactive')) {
+            $query->where('status', '!=', 'inactive');
+        }
 
-    if ($request->search) {
-        $s = $request->search;
-        $query->where(function ($q) use ($s) {
-            $q->where('name', 'like', "%$s%")
-              ->orWhere('code', 'like', "%$s%")
-              ->orWhere('state', 'like', "%$s%");
-        });
-    }
+        if ($request->search) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%$s%")
+                  ->orWhere('code', 'like', "%$s%")
+                  ->orWhere('state', 'like', "%$s%");
+            });
+        }
 
-    return response()->json([
-        'institutions' => $query->orderBy('name')->get(),
-    ]);
-});
-
-// ── CREATE INSTITUTION (admin only) ──────────────────────────
-Route::post('/institutions', function (Request $request) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
-    }
-
-    $request->validate([
-        'type'       => 'required|in:university,lab,court',
-        'name'       => 'required|string|max:255',
-        'code'       => 'nullable|string|max:20',
-        'state'      => 'nullable|string|max:100',
-        'website'    => 'nullable|string|max:255',
-        'stature'    => 'nullable|string|max:50',
-        'aicte'      => 'nullable|string|max:50',
-        'accredited' => 'nullable|boolean',
-        'level'      => 'nullable|string|max:50',
-    ]);
-
-    $institution = \App\Models\Institution::create([
-        'type'       => $request->type,
-        'name'       => $request->name,
-        'code'       => $request->code,
-        'state'      => $request->state,
-        'website'    => $request->website,
-        'stature'    => $request->stature,
-        'aicte'      => $request->aicte,
-        'accredited' => $request->boolean('accredited'),
-        'level'      => $request->level,
-    ]);
-
-    return response()->json(['institution' => $institution], 201);
-});
-
-// ── BULK IMPORT INSTITUTIONS (admin only — CSV/Excel) ────────
-Route::post('/institutions/bulk', function (Request $request) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
-    }
-
-    $request->validate([
-        'rows'           => 'required|array|min:1',
-        'rows.*.type'    => 'required|in:university,lab,court',
-        'rows.*.name'    => 'required|string|max:255',
-        'rows.*.code'    => 'nullable|string|max:20',
-        'rows.*.state'   => 'nullable|string|max:100',
-        'rows.*.website' => 'nullable|string|max:255',
-    ]);
-
-    $created = [];
-    foreach ($request->rows as $row) {
-        $created[] = \App\Models\Institution::create([
-            'type'       => $row['type'],
-            'name'       => $row['name'],
-            'code'       => $row['code'] ?? null,
-            'state'      => $row['state'] ?? null,
-            'website'    => $row['website'] ?? null,
-            'stature'    => $row['stature'] ?? null,
-            'aicte'      => $row['aicte'] ?? null,
-            'accredited' => filter_var($row['accredited'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'level'      => $row['level'] ?? null,
+        return response()->json([
+            'institutions' => $query->orderBy('name')->get(),
         ]);
-    }
+    });
 
-    return response()->json([
-        'message'      => count($created) . ' institution(s) imported successfully',
-        'institutions' => $created,
-    ], 201);
-});
+    // ── CREATE INSTITUTION (admin only) ──────────────────────
+    Route::post('/institutions', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
 
-// ── REMOVE INSTITUTION (admin only — soft delete) ────────────
-Route::delete('/institutions/{id}', function (Request $request, $id) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
-    }
-
-    $institution = \App\Models\Institution::find($id);
-    if (!$institution) {
-        return response()->json(['message' => 'Institution not found'], 404);
-    }
-
-    $institution->update(['status' => 'inactive']);
-
-    return response()->json(['message' => 'Institution removed']);
-});
-
-
-// ═════════════════════════════════════════════════════════
-// COMPANIES
-// ═════════════════════════════════════════════════════════
-
-// ── LIST COMPANIES (any authenticated user — for dropdowns) ──
-Route::get('/companies', function (Request $request) {
-    $query = \App\Models\Company::query();
-
-    if (!$request->boolean('include_inactive')) {
-        $query->where('status', '!=', 'inactive');
-    }
-
-    if ($request->search) {
-        $s = $request->search;
-        $query->where(function ($q) use ($s) {
-            $q->where('name', 'like', "%$s%")
-              ->orWhere('code', 'like', "%$s%")
-              ->orWhere('industry', 'like', "%$s%");
-        });
-    }
-
-    return response()->json([
-        'companies' => $query->orderBy('name')->get(),
-    ]);
-});
-
-// ── CREATE COMPANY (admin only) ───────────────────────────────
-Route::post('/companies', function (Request $request) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
-    }
-
-    $request->validate([
-        'name'     => 'required|string|max:255',
-        'code'     => 'nullable|string|max:20',
-        'industry' => 'nullable|string|max:100',
-        'state'    => 'nullable|string|max:100',
-        'website'  => 'nullable|string|max:255',
-    ]);
-
-    $company = \App\Models\Company::create($request->only(['name', 'code', 'industry', 'state', 'website']));
-
-    return response()->json(['company' => $company], 201);
-});
-
-// ── BULK IMPORT COMPANIES (admin only — CSV/Excel) ───────────
-Route::post('/companies/bulk', function (Request $request) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
-    }
-
-    $request->validate([
-        'rows'           => 'required|array|min:1',
-        'rows.*.name'    => 'required|string|max:255',
-        'rows.*.code'    => 'nullable|string|max:20',
-        'rows.*.industry'=> 'nullable|string|max:100',
-        'rows.*.state'   => 'nullable|string|max:100',
-        'rows.*.website' => 'nullable|string|max:255',
-    ]);
-
-    $created = [];
-    foreach ($request->rows as $row) {
-        $created[] = \App\Models\Company::create([
-            'name'     => $row['name'],
-            'code'     => $row['code'] ?? null,
-            'industry' => $row['industry'] ?? null,
-            'state'    => $row['state'] ?? null,
-            'website'  => $row['website'] ?? null,
+        $request->validate([
+            'type'       => 'required|in:university,lab,court',
+            'name'       => 'required|string|max:255',
+            'code'       => 'nullable|string|max:20',
+            'state'      => 'nullable|string|max:100',
+            'website'    => 'nullable|string|max:255',
+            'stature'    => 'nullable|string|max:50',
+            'aicte'      => 'nullable|string|max:50',
+            'accredited' => 'nullable|boolean',
+            'level'      => 'nullable|string|max:50',
         ]);
-    }
 
-    return response()->json([
-        'message'   => count($created) . ' company/companies imported successfully',
-        'companies' => $created,
-    ], 201);
-});
+        $institution = \App\Models\Institution::create([
+            'type'       => $request->type,
+            'name'       => $request->name,
+            'code'       => $request->code,
+            'state'      => $request->state,
+            'website'    => $request->website,
+            'stature'    => $request->stature,
+            'aicte'      => $request->aicte,
+            'accredited' => $request->boolean('accredited'),
+            'level'      => $request->level,
+        ]);
 
-// ── REMOVE COMPANY (admin only — soft delete) ─────────────────
-Route::delete('/companies/{id}', function (Request $request, $id) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
-    }
+        return response()->json(['institution' => $institution], 201);
+    });
 
-    $company = \App\Models\Company::find($id);
-    if (!$company) {
-        return response()->json(['message' => 'Company not found'], 404);
-    }
+    // ── BULK IMPORT INSTITUTIONS (admin only) ─────────────────
+    Route::post('/institutions/bulk', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
 
-    $company->update(['status' => 'inactive']);
+        $request->validate([
+            'rows'           => 'required|array|min:1',
+            'rows.*.type'    => 'required|in:university,lab,court',
+            'rows.*.name'    => 'required|string|max:255',
+            'rows.*.code'    => 'nullable|string|max:20',
+            'rows.*.state'   => 'nullable|string|max:100',
+            'rows.*.website' => 'nullable|string|max:255',
+        ]);
 
-    return response()->json(['message' => 'Company removed']);
+        $created = [];
+        foreach ($request->rows as $row) {
+            $created[] = \App\Models\Institution::create([
+                'type'       => $row['type'],
+                'name'       => $row['name'],
+                'code'       => $row['code'] ?? null,
+                'state'      => $row['state'] ?? null,
+                'website'    => $row['website'] ?? null,
+                'stature'    => $row['stature'] ?? null,
+                'aicte'      => $row['aicte'] ?? null,
+                'accredited' => filter_var($row['accredited'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'level'      => $row['level'] ?? null,
+            ]);
+        }
+
+        return response()->json([
+            'message'      => count($created) . ' institution(s) imported successfully',
+            'institutions' => $created,
+        ], 201);
+    });
+
+    // ── REMOVE INSTITUTION (admin only — soft delete) ─────────
+    Route::delete('/institutions/{id}', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $institution = \App\Models\Institution::find($id);
+        if (!$institution) {
+            return response()->json(['message' => 'Institution not found'], 404);
+        }
+
+        $institution->update(['status' => 'inactive']);
+
+        return response()->json(['message' => 'Institution removed']);
+    });
+
+    // ═════════════════════════════════════════════════════════
+    // COMPANIES
+    // ═════════════════════════════════════════════════════════
+
+    // ── LIST COMPANIES ────────────────────────────────────────
+    Route::get('/companies', function (Request $request) {
+        $query = \App\Models\Company::query();
+
+        if (!$request->boolean('include_inactive')) {
+            $query->where('status', '!=', 'inactive');
+        }
+
+        if ($request->search) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%$s%")
+                  ->orWhere('code', 'like', "%$s%")
+                  ->orWhere('industry', 'like', "%$s%");
+            });
+        }
+
+        return response()->json([
+            'companies' => $query->orderBy('name')->get(),
+        ]);
+    });
+
+    // ── CREATE COMPANY (admin only) ───────────────────────────
+    Route::post('/companies', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'code'     => 'nullable|string|max:20',
+            'industry' => 'nullable|string|max:100',
+            'state'    => 'nullable|string|max:100',
+            'website'  => 'nullable|string|max:255',
+        ]);
+
+        $company = \App\Models\Company::create($request->only(['name', 'code', 'industry', 'state', 'website']));
+
+        return response()->json(['company' => $company], 201);
+    });
+
+    // ── BULK IMPORT COMPANIES (admin only) ────────────────────
+    Route::post('/companies/bulk', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $request->validate([
+            'rows'            => 'required|array|min:1',
+            'rows.*.name'     => 'required|string|max:255',
+            'rows.*.code'     => 'nullable|string|max:20',
+            'rows.*.industry' => 'nullable|string|max:100',
+            'rows.*.state'    => 'nullable|string|max:100',
+            'rows.*.website'  => 'nullable|string|max:255',
+        ]);
+
+        $created = [];
+        foreach ($request->rows as $row) {
+            $created[] = \App\Models\Company::create([
+                'name'     => $row['name'],
+                'code'     => $row['code'] ?? null,
+                'industry' => $row['industry'] ?? null,
+                'state'    => $row['state'] ?? null,
+                'website'  => $row['website'] ?? null,
+            ]);
+        }
+
+        return response()->json([
+            'message'   => count($created) . ' company/companies imported successfully',
+            'companies' => $created,
+        ], 201);
+    });
+
+    // ── REMOVE COMPANY (admin only — soft delete) ─────────────
+    Route::delete('/companies/{id}', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $company = \App\Models\Company::find($id);
+        if (!$company) {
+            return response()->json(['message' => 'Company not found'], 404);
+        }
+
+        $company->update(['status' => 'inactive']);
+
+        return response()->json(['message' => 'Company removed']);
+    });
+
 });
