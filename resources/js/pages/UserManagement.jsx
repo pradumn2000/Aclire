@@ -372,27 +372,41 @@ import Sidebar from "./Sidebar";
 import { API_URL } from "../src/config";
 
 const ROLES = [
-  { value: "admin",          label: "Admin" },
-  { value: "allocator",      label: "Allocator" },
-  { value: "verifier",       label: "Verifier" },
-  { value: "check_manager",  label: "Check Manager" },
-  { value: "report_writing", label: "Report Writing" },
-  { value: "pvt_qc",         label: "PVT / QC" },
-  { value: "client",         label: "Client" },
-  { value: "onboarding",     label: "Onboarding" },
+  { value: "admin",                label: "Admin" },
+  { value: "allocator",            label: "Allocator" },
+  { value: "verifier",             label: "Verifier" },
+  { value: "employment_verifier",  label: "Employment Verifier" },
+  { value: "education_verifier",   label: "Education Verifier" },
+  { value: "address_verifier",     label: "Address Verifier" },
+  { value: "database_verifier",    label: "Database Verifier" },
+  { value: "criminal_verifier",    label: "Criminal Verifier" },
+  { value: "drug_test_verifier",   label: "Drug Test Verifier" },
+  { value: "courtroom_verifier",   label: "Courtroom Verifier" },
+  { value: "check_manager",        label: "Check Manager" },
+  { value: "report_writing",       label: "Report Writing" },
+  { value: "pvt_qc",               label: "PVT / QC" },
+  { value: "client",               label: "Client" },
+  { value: "onboarding",           label: "Onboarding" },
 ];
 
 const ROLE_LABELS = Object.fromEntries(ROLES.map((r) => [r.value, r.label]));
 
 const ROLE_COLORS = {
-  admin:          { bg: "#eef1fb", color: "#2b3b8c" },
-  allocator:      { bg: "#f0fdfa", color: "#0d9488" },
-  verifier:       { bg: "#fdf4ff", color: "#7c3aed" },
-  check_manager:  { bg: "#fff7ed", color: "#c2410c" },
-  report_writing: { bg: "#f0fdf4", color: "#16a34a" },
-  pvt_qc:         { bg: "#fff5f5", color: "#eb4d4b" },
-  client:         { bg: "#eff6ff", color: "#2563eb" },
-  onboarding:     { bg: "#fefce8", color: "#ca8a04" },
+  admin:               { bg: "#eef1fb", color: "#2b3b8c" },
+  allocator:           { bg: "#f0fdfa", color: "#0d9488" },
+  verifier:            { bg: "#fdf4ff", color: "#7c3aed" },
+  employment_verifier: { bg: "#eff6ff", color: "#1d4ed8" },
+  education_verifier:  { bg: "#f0fdf4", color: "#15803d" },
+  address_verifier:    { bg: "#fff7ed", color: "#c2410c" },
+  database_verifier:   { bg: "#f5f3ff", color: "#6d28d9" },
+  criminal_verifier:   { bg: "#fef2f2", color: "#b91c1c" },
+  drug_test_verifier:  { bg: "#ecfeff", color: "#0e7490" },
+  courtroom_verifier:  { bg: "#fffbeb", color: "#a16207" },
+  check_manager:       { bg: "#fff7ed", color: "#c2410c" },
+  report_writing:      { bg: "#f0fdf4", color: "#16a34a" },
+  pvt_qc:              { bg: "#fff5f5", color: "#eb4d4b" },
+  client:              { bg: "#eff6ff", color: "#2563eb" },
+  onboarding:          { bg: "#fefce8", color: "#ca8a04" },
 };
 
 export default function UserManagement() {

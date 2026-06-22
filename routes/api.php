@@ -254,7 +254,8 @@ Route::middleware('auth:sanctum')->group(function () {
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             // ↓ UPDATED: 7 new specialist verifier roles added
-            'role'     => 'required|in:admin,allocator,verifyer,check_manager,report_writing,pvt_qc,client,onboarding,employment_verifier,education_verifier,address_verifier,database_verifier,criminal_verifier,drug_test_verifier,courtroom_verifier',
+            // fixed "verifyer" typo → "verifier"; 7 specialist verifier roles included
+'role'     => 'required|in:admin,allocator,verifier,check_manager,report_writing,pvt_qc,client,onboarding,employment_verifier,education_verifier,address_verifier,database_verifier,criminal_verifier,drug_test_verifier,courtroom_verifier',
         ]);
 
         $user = \App\Models\User::create([
