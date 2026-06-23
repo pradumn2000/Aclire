@@ -340,6 +340,14 @@ const ROLE_ROUTES = {
   pvt_qc:         "/Intake",
   client:         "/Client",
   onboarding:     "/clientportal",
+  // Specialist verifier roles — all land on the Verifyer dashboard
+  employment_verifier: "/Verifyer",
+  education_verifier:  "/Verifyer",
+  address_verifier:    "/Verifyer",
+  database_verifier:   "/Verifyer",
+  criminal_verifier:   "/Verifyer",
+  drug_test_verifier:  "/Verifyer",
+  courtroom_verifier:  "/Verifyer",
 };
 
 export default function Login() {
