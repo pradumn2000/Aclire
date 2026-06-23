@@ -5848,6 +5848,8 @@ export default function Client() {
   const isDashboard = !getTabFromURL(location.search);
   // Split view = Active Cases ("pending") or Completed Cases ("completed") pages from sidebar
   const isSplitView = statusTab === "pending" || statusTab === "completed";
+  // Total Cases grid view = "all" tab from sidebar
+  const isTotalCasesView = statusTab === "all";
 
   const filtered = cases.filter(c => {
     const matchTab    = !statusTab || statusTab === "all" || c.status === statusTab;
@@ -5856,6 +5858,37 @@ export default function Client() {
       (c.candidate || c.candidate_name || "").toLowerCase().includes(search.toLowerCase());
     const matchDate = isDashboard ? isInRange(c.created_at) : true;
     return matchTab && matchSearch && matchDate;
+  });
+
+  // Total Cases grid — independent date range, all statuses
+  const [totalDateFilter, setTotalDateFilter] = useState("month");
+  const [totalCustomFrom, setTotalCustomFrom] = useState("");
+  const [totalCustomTo, setTotalCustomTo]     = useState("");
+
+  const isInRangeWith = (createdAt, filterKey, from, to) => {
+    if (!createdAt) return true;
+    const d   = new Date(createdAt);
+    const now = new Date();
+    if (filterKey === "today") return d.toDateString() === now.toDateString();
+    if (filterKey === "week")  { const w = new Date(now); w.setDate(now.getDate() - 7); return d >= w; }
+    if (filterKey === "month") { return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }
+    if (filterKey === "custom") {
+      if (!from && !to) return true;
+      const f = from ? new Date(from) : null;
+      const t = to   ? new Date(to + "T23:59:59") : null;
+      if (f && d < f) return false;
+      if (t && d > t) return false;
+      return true;
+    }
+    return true;
+  };
+
+  const totalFiltered = cases.filter(c => {
+    const matchSearch = !search ||
+      (c.case_id || "").toLowerCase().includes(search.toLowerCase()) ||
+      (c.candidate || c.candidate_name || "").toLowerCase().includes(search.toLowerCase());
+    const matchDate = isInRangeWith(c.created_at, totalDateFilter, totalCustomFrom, totalCustomTo);
+    return matchSearch && matchDate;
   });
 
   const counts = {
@@ -6198,6 +6231,146 @@ export default function Client() {
     </div>
   );
 
+  // ── Shared status table row renderer (used by Total Cases + Dashboard table)
+  const StatusBadge = ({ status }) => (
+    <span style={{
+      background: getStatusMeta(status).color, color: "#fff", fontSize: "12px", fontWeight: 700,
+      padding: "6px 18px", borderRadius: "6px", display: "inline-block", minWidth: "90px", textAlign: "center",
+    }}>
+      {statusLabel(status)}
+    </span>
+  );
+
+  const ViewButton = ({ c }) => (
+    <button
+      onClick={() => {
+        const dest = c.status === "completed" ? "completed" : "pending";
+        navigate(`/Client?tab=${dest}`);
+        setSelectedCase(c);
+        setActiveDetailTab("overview");
+      }}
+      style={{
+        background: "#27348B", color: "#fff", border: "none", padding: "10px 26px",
+        borderRadius: "6px", fontSize: "13px", fontWeight: 700, cursor: "pointer",
+      }}
+    >
+      View
+    </button>
+  );
+
+  // ── Cases table — shared visual style for Total Cases grid + Dashboard table
+  const CasesTable = ({ rows, showDate }) => (
+    <div style={{ background: "#fff", borderRadius: "10px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+        <thead>
+          <tr style={{ background: "#27348B" }}>
+            {[
+              "Case ID",
+              ...(showDate ? ["Case Receive Date"] : []),
+              "Candidate", "Client", "Checks", "Status", "TAT", "Action",
+            ].map(h => (
+              <th key={h} style={{
+                padding: "16px 20px", textAlign: "left", color: "#fff",
+                fontWeight: 700, fontSize: "13px", textTransform: "uppercase",
+                letterSpacing: "0.04em", whiteSpace: "nowrap",
+              }}>
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {loading ? (
+            <tr><td colSpan={showDate ? 8 : 7} style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>Loading…</td></tr>
+          ) : rows.length === 0 ? (
+            <tr><td colSpan={showDate ? 8 : 7} style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>No cases found.</td></tr>
+          ) : (
+            rows.map((c, i) => (
+              <tr key={c.case_id} style={{
+                background: i % 2 === 0 ? "#f5f7fc" : "#fff",
+                borderBottom: "1px solid #eef1f6",
+              }}>
+                <td style={{ padding: "18px 20px", color: "#1e293b" }}>{c.case_id}</td>
+                {showDate && (
+                  <td style={{ padding: "18px 20px", color: "#1e293b" }}>
+                    {c.created_at ? new Date(c.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
+                  </td>
+                )}
+                <td style={{ padding: "18px 20px", color: "#1e293b" }}>{c.candidate || c.candidate_name || "—"}</td>
+                <td style={{ padding: "18px 20px", color: "#1e293b" }}>{c.client || c.client_name || "—"}</td>
+                <td style={{ padding: "18px 20px", color: "#1e293b" }}>
+                  {Array.isArray(c.checks) ? c.checks.join(" · ") : (c.checks || "—")}
+                </td>
+                <td style={{ padding: "18px 20px" }}><StatusBadge status={c.status} /></td>
+                <td style={{ padding: "18px 20px", color: "#1e293b" }}>{formatTAT(c.tat)}</td>
+                <td style={{ padding: "18px 20px" }}><ViewButton c={c} /></td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  // ════════════════════════════════════════════════════════════════════════
+  // TOTAL CASES — full grid view with date range + export (from sidebar)
+  // ════════════════════════════════════════════════════════════════════════
+  if (isTotalCasesView) {
+    return (
+      <>
+        <Sidebar />
+        <section id="content">
+          <Header />
+          <main>
+            <div className="dash-wrper">
+
+              <div className="dash-upper-head">
+                <div className="left">
+                  <h3 className="dash-title-text">Total Cases</h3>
+                  <span style={{ fontSize: "12px", color: "#64748b", background: "#eef3ff", padding: "3px 10px", borderRadius: "20px", marginLeft: "10px" }}>
+                    {totalFiltered.length} records
+                  </span>
+                </div>
+                <div className="right">
+                  <input type="text" className="dash-search-input" placeholder="Search case ID or candidate…"
+                    value={search} onChange={e => setSearch(e.target.value)} />
+                  {search && (
+                    <button onClick={() => setSearch("")}
+                      style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#94a3b8" }}>×</button>
+                  )}
+                  <button className="primary-cta export" onClick={exportCSV}>
+                    <img src="images/dashboard/export-icon.svg" alt="" /> Export
+                  </button>
+                </div>
+              </div>
+
+              {/* Date range filter — required for Total Cases page */}
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center", marginBottom: "4px" }}>
+                {DATE_FILTERS.map(df => (
+                  <button key={df.key} className={`tab-cta ${totalDateFilter === df.key ? "active" : ""}`}
+                    onClick={() => setTotalDateFilter(df.key)}>
+                    {df.label}
+                  </button>
+                ))}
+                {totalDateFilter === "custom" && (
+                  <>
+                    <input type="date" value={totalCustomFrom} onChange={e => setTotalCustomFrom(e.target.value)}
+                      style={{ padding: "8px 12px", border: "1px solid #e2e8f0", borderRadius: "10px", fontSize: "13px" }} />
+                    <span style={{ color: "#94a3b8" }}>→</span>
+                    <input type="date" value={totalCustomTo} onChange={e => setTotalCustomTo(e.target.value)}
+                      style={{ padding: "8px 12px", border: "1px solid #e2e8f0", borderRadius: "10px", fontSize: "13px" }} />
+                  </>
+                )}
+              </div>
+
+              <CasesTable rows={totalFiltered} showDate />
+            </div>
+          </main>
+        </section>
+      </>
+    );
+  }
+
   // ════════════════════════════════════════════════════════════════════════
   // SPLIT VIEW — Active Cases / Completed Cases pages (from sidebar)
   // ════════════════════════════════════════════════════════════════════════
@@ -6357,6 +6530,11 @@ export default function Client() {
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* Recent Cases table — sits below chart + quick stats */}
+            <div style={{ marginTop: "4px" }}>
+              <CasesTable rows={chartCases.slice(0, 5)} showDate={false} />
             </div>
 
           </div>
