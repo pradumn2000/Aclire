@@ -4661,7 +4661,7 @@
 //     </>
 //   );
 // }
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -4710,12 +4710,14 @@ export default function Client() {
   const location = useLocation();
 
   const [cases, setCases] = useState([]);
+  const [selectedCase, setSelectedCase] = useState(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusTab, setStatusTab] = useState(() => getTabFromURL(location.search));
   const [dateFilter, setDateFilter] = useState("month");
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
+  const [activeDetailTab, setActiveDetailTab] = useState("overview");
 
   const token = localStorage.getItem("token");
 
@@ -4726,7 +4728,11 @@ export default function Client() {
     })
       .then(r => r.json())
       .then(data => {
-        setCases(data.cases || []);
+        const list = data.cases || [];
+        setCases(list);
+        if (list.length > 0) {
+          setSelectedCase(list[0]);
+        }
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -4740,7 +4746,11 @@ export default function Client() {
     const tab = getTabFromURL(location.search);
     setStatusTab(tab);
     setSearch("");
-  }, [location.search]);
+    if (cases.length > 0) {
+      const first = cases.find(c => tab === "all" || c.status === tab) || cases[0];
+      setSelectedCase(first);
+    }
+  }, [location.search, cases]);
 
   const isInRange = (createdAt) => {
     if (!createdAt) return true;
@@ -4749,9 +4759,7 @@ export default function Client() {
 
     if (dateFilter === "today") return d.toDateString() === now.toDateString();
     if (dateFilter === "week") {
-      const w = new Date(now);
-      w.setDate(now.getDate() - 7);
-      return d >= w;
+      const w = new Date(now); w.setDate(now.getDate() - 7); return d >= w;
     }
     if (dateFilter === "month") {
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
@@ -4787,13 +4795,14 @@ export default function Client() {
   const clearRate = total > 0 ? Math.round((counts.completed / total) * 100) : 0;
   const pendingLinkCount = counts["in-progress"];
 
-  const handleTabChange = (key) => {
-    navigate(`/Client?tab=${key}`, { replace: true });
-  };
+  const handleTabChange = (key) => navigate(`/Client?tab=${key}`, { replace: true });
 
   const exportCSV = () => {
-    alert("CSV Export will be implemented here");
+    alert("Export functionality ready");
   };
+
+  // Decide layout: Split view for Active & Completed, Full table for Dashboard / All Cases
+  const showSplitView = statusTab === "pending" || statusTab === "completed";
 
   return (
     <>
@@ -4885,7 +4894,7 @@ export default function Client() {
               </div>
             </div>
 
-            {/* Chart + Quick Stats (Matching Admin Dashboard) */}
+            {/* Chart + Quick Stats */}
             <div className="dash-inner-wrp-both" style={{ marginBottom: "24px" }}>
               <div className="dash-inner-left">
                 <CaseTrendsChart
@@ -4925,82 +4934,119 @@ export default function Client() {
               </div>
             </div>
 
-            {/* Cases Table - Full Width (No Split View) */}
-            <div style={{ background: "#fff", borderRadius: "12px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-                <thead>
-                  <tr style={{ background: "#27348B", color: "#fff" }}>
-                    <th style={{ padding: "16px 14px", textAlign: "left" }}>CASE ID</th>
-                    <th style={{ padding: "16px 14px", textAlign: "left" }}>CANDIDATE</th>
-                    <th style={{ padding: "16px 14px", textAlign: "left" }}>CLIENT</th>
-                    <th style={{ padding: "16px 14px", textAlign: "left" }}>CHECKS</th>
-                    <th style={{ padding: "16px 14px", textAlign: "left" }}>STATUS</th>
-                    <th style={{ padding: "16px 14px", textAlign: "left" }}>TAT</th>
-                    <th style={{ padding: "16px 14px", textAlign: "center" }}>ACTION</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan="7" style={{ padding: "60px", textAlign: "center", color: "#64748b" }}>
-                        Loading cases...
-                      </td>
-                    </tr>
-                  ) : filtered.length === 0 ? (
-                    <tr>
-                      <td colSpan="7" style={{ padding: "60px", textAlign: "center", color: "#64748b" }}>
-                        No cases found
-                      </td>
-                    </tr>
+            {/* Conditional Layout */}
+            {showSplitView ? (
+              /* ==================== SPLIT VIEW (Active / Completed) ==================== */
+              <div className="dash-inner-wrp-both client-portal">
+                {/* LEFT: Case List */}
+                <div className="dash-inner-left">
+                  <div className="down-table">
+                    <h3 style={{ marginBottom: "16px" }}>
+                      {statusTab === "pending" ? "ACTIVE CASES" : "COMPLETED CASES"} ({filtered.length})
+                    </h3>
+                    {loading ? (
+                      <p style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>Loading...</p>
+                    ) : filtered.length === 0 ? (
+                      <p style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>No cases found</p>
+                    ) : (
+                      <table>
+                        <tbody>
+                          {filtered.map((c) => {
+                            const isSelected = selectedCase?.case_id === c.case_id;
+                            return (
+                              <tr
+                                key={c.case_id}
+                                onClick={() => setSelectedCase(c)}
+                                style={{
+                                  cursor: "pointer",
+                                  background: isSelected ? "#eef3ff" : "transparent",
+                                  borderLeft: isSelected ? "4px solid #27348B" : "4px solid transparent"
+                                }}
+                              >
+                                <td style={{ padding: "14px" }}>
+                                  <strong>{c.case_id}</strong><br />
+                                  <small style={{ color: "#64748b" }}>{c.candidate || c.candidate_name}</small>
+                                </td>
+                                <td style={{ padding: "14px" }}>{Array.isArray(c.checks) ? c.checks.join(" · ") : c.checks}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </div>
+
+                {/* RIGHT: Case Details */}
+                <div className="dash-inner-right status-cases">
+                  {selectedCase ? (
+                    <div style={{ background: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                      <div style={{ background: "#27348B", color: "#fff", padding: "16px", borderRadius: "8px 8px 0 0" }}>
+                        CASE DETAIL — {selectedCase.case_id}
+                      </div>
+                      <div style={{ padding: "20px" }}>
+                        <p><strong>Candidate:</strong> {selectedCase.candidate || selectedCase.candidate_name}</p>
+                        <p><strong>Status:</strong> {statusLabel(selectedCase.status)}</p>
+                        <p><strong>TAT:</strong> {formatTAT(selectedCase.tat)}</p>
+                      </div>
+                    </div>
                   ) : (
-                    filtered.map((c, i) => (
-                      <tr
-                        key={c.case_id}
-                        style={{
-                          background: i % 2 === 0 ? "#fff" : "#f8fafc",
-                          borderBottom: "1px solid #f1f5f9"
-                        }}
-                      >
-                        <td style={{ padding: "16px 14px", fontWeight: 600, color: "#27348B" }}>{c.case_id}</td>
-                        <td style={{ padding: "16px 14px" }}>{c.candidate || c.candidate_name || "—"}</td>
-                        <td style={{ padding: "16px 14px" }}>{c.client || c.client_name || "—"}</td>
-                        <td style={{ padding: "16px 14px" }}>
-                          {Array.isArray(c.checks) ? c.checks.join(" · ") : c.checks || "—"}
-                        </td>
-                        <td style={{ padding: "16px 14px" }}>
-                          <span
-                            style={{
+                    <p style={{ textAlign: "center", color: "#94a3b8", padding: "40px" }}>Select a case to view details</p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* ==================== FULL TABLE VIEW (Dashboard / All Cases) ==================== */
+              <div style={{ background: "#fff", borderRadius: "12px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                  <thead>
+                    <tr style={{ background: "#27348B", color: "#fff" }}>
+                      <th style={{ padding: "16px 14px", textAlign: "left" }}>CASE ID</th>
+                      <th style={{ padding: "16px 14px", textAlign: "left" }}>CANDIDATE</th>
+                      <th style={{ padding: "16px 14px", textAlign: "left" }}>CLIENT</th>
+                      <th style={{ padding: "16px 14px", textAlign: "left" }}>CHECKS</th>
+                      <th style={{ padding: "16px 14px", textAlign: "left" }}>STATUS</th>
+                      <th style={{ padding: "16px 14px", textAlign: "left" }}>TAT</th>
+                      <th style={{ padding: "16px 14px", textAlign: "center" }}>ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr><td colSpan="7" style={{ padding: "60px", textAlign: "center", color: "#64748b" }}>Loading cases...</td></tr>
+                    ) : filtered.length === 0 ? (
+                      <tr><td colSpan="7" style={{ padding: "60px", textAlign: "center", color: "#64748b" }}>No cases found</td></tr>
+                    ) : (
+                      filtered.map((c, i) => (
+                        <tr key={c.case_id} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafc", borderBottom: "1px solid #f1f5f9" }}>
+                          <td style={{ padding: "16px 14px", fontWeight: 600, color: "#27348B" }}>{c.case_id}</td>
+                          <td style={{ padding: "16px 14px" }}>{c.candidate || c.candidate_name || "—"}</td>
+                          <td style={{ padding: "16px 14px" }}>{c.client || c.client_name || "—"}</td>
+                          <td style={{ padding: "16px 14px" }}>{Array.isArray(c.checks) ? c.checks.join(" · ") : c.checks || "—"}</td>
+                          <td style={{ padding: "16px 14px" }}>
+                            <span style={{
                               padding: "6px 14px",
                               borderRadius: "6px",
                               fontSize: "13px",
                               fontWeight: 600,
                               color: "#fff",
-                              background:
-                                c.status === "completed"
-                                  ? "#10b981"
-                                  : c.status === "pending"
-                                  ? "#f59e0b"
-                                  : "#028090",
-                            }}
-                          >
-                            {statusLabel(c.status)}
-                          </span>
-                        </td>
-                        <td style={{ padding: "16px 14px" }}>{formatTAT(c.tat)}</td>
-                        <td style={{ padding: "16px 14px", textAlign: "center" }}>
-                          <button
-                            className="primary-cta"
-                            onClick={() => navigate(`/Client?tab=${statusTab}&case=${c.case_id}`)}
-                          >
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                              background: c.status === "completed" ? "#10b981" : c.status === "pending" ? "#f59e0b" : "#028090"
+                            }}>
+                              {statusLabel(c.status)}
+                            </span>
+                          </td>
+                          <td style={{ padding: "16px 14px" }}>{formatTAT(c.tat)}</td>
+                          <td style={{ padding: "16px 14px", textAlign: "center" }}>
+                            <button className="primary-cta" onClick={() => setSelectedCase(c)}>
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </main>
       </section>
