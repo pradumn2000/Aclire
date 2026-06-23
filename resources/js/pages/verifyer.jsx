@@ -2913,7 +2913,11 @@ function FormField({ f, value, onChange }) {
     </div>
   );
 }
-
+const OUTCOME_STYLES = {
+  clear:       { bg: "#f0fdf4", color: "#16a34a", label: "✔ Clear" },
+  discrepancy: { bg: "#fff5f5", color: "#dc2626", label: "✗ Discrepancy" },
+  unable:      { bg: "#fffbeb", color: "#b45309", label: "? Unable to Verify" },
+};
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function Verifyer() {
   const navigate = useNavigate();
