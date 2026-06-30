@@ -1477,10 +1477,10 @@ export default function ClientRegistration() {
                 Already registered?{" "}
                 <Link to="/" style={{ color: "#1e2761", fontWeight: 700 }}>Sign In</Link>
               </p>
-              <p style={{ fontSize: "13px", color: "#64748b", marginTop: "8px" }}>
+              {/* <p style={{ fontSize: "13px", color: "#64748b", marginTop: "8px" }}>
                 Staff member?{" "}
                 <Link to="/signup" style={{ color: "#028090", fontWeight: 700 }}>Staff Signup</Link>
-              </p>
+              </p> */}
             </div>
           </div>
 
