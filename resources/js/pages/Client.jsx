@@ -6,7 +6,7 @@ import Header from "./Header";
 import CaseTrendsChart from "./CaseTrendsChart";
 import { API_URL } from "../src/config";
 import CheckDetailForm from "./CheckDetailForm";
-import { computeCheckStatus } from "./checkFormsConfig";
+import { computeCheckStatus } from "../src/checkFormsConfig";
 // ── Status tabs — kept for filtering logic, not all shown in sidebar
 const STATUS_TABS = [
   { key: "all",         label: "All Cases"   },
