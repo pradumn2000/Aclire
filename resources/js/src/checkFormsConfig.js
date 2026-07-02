@@ -8,9 +8,10 @@ export const CHECK_FORM_CONFIG = {
   education: {
     label: "Education",
     fields: [
+      { key: "scope", label: "National / International", type: "radio", options: ["National", "International"], required: true },
       { key: "qualification",   label: "Education Qualification", type: "select", options: QUALIFICATION_OPTIONS, required: true },
-      { key: "instituteName",   label: "Institute Name",  type: "text", required: true },
-      { key: "universityName",  label: "University Name", type: "text", required: true },
+      { key: "instituteName",   label: "Institute Name",  type: "select_dynamic", source: "institutions", required: true },
+      { key: "universityName",  label: "University Name", type: "select_dynamic", source: "institutions", required: true },
       { key: "rollNo",          label: "Roll No",         type: "text", required: true },
       { key: "yearOfPassing",   label: "Year of Passing", type: "text", required: true },
       { key: "modeOfStudy",     label: "Mode of Study",   type: "text", required: false },
@@ -27,12 +28,15 @@ export const CHECK_FORM_CONFIG = {
   employment: {
     label: "Employment",
     fields: [
-      { key: "lastCompanyName", label: "Last Company Name", type: "text",   required: true },
+      { key: "scope", label: "National / International", type: "radio", options: ["National", "International"], required: true },
+      { key: "lastCompanyName", label: "Last Company Name", type: "select_dynamic", source: "companies", required: true },
+      { key: "dateOfJoining",   label: "Date of Joining",   type: "date",   required: true },
       { key: "dateOfLeaving",   label: "Date of Leaving",   type: "date",   required: true },
       { key: "employmentType",  label: "Employment Type",   type: "select", options: EMPLOYMENT_TYPE_OPTIONS, required: true },
       { key: "epfoNumber",      label: "EPFO Number",       type: "text",   required: false },
       { key: "salary",          label: "Salary",            type: "text",   required: false },
     ],
+
     documents: [
       { key: "relieving_letter",  label: "Relieving Letter" },
       { key: "experience_letter", label: "Experience Letter" },
