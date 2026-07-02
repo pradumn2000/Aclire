@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { CHECK_FORM_CONFIG } from "./checkFormsConfig";
+
+import { CHECK_FORM_CONFIG } from "../src/checkFormsConfig";
 import { API_URL } from "../src/config";
 
 export default function CheckDetailForm({ caseObj, checkKey, onClose, onSaved }) {
