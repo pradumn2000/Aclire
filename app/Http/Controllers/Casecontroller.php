@@ -77,7 +77,8 @@ class CaseController extends Controller
             'case_id'         => $c->case_id,
             'candidate'       => $c->candidate_name,
             'client'          => $c->client_name,
-            'checks'          => implode('·', array_map(fn($ch) => strtoupper(substr($ch, 0, 3)), $c->checks)),
+            // 'checks'          => implode('·', array_map(fn($ch) => strtoupper(substr($ch, 0, 3)), $c->checks)),
+            'checks' => $c->checks, // send the raw array, e.g. ["employment","education","address","database"]
             'status'          => $c->status,
             'priority'        => $c->priority,
             'total_amount'    => $c->total_amount,

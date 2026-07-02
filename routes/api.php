@@ -447,48 +447,50 @@ Route::middleware('auth:sanctum')->group(function () {
     // ═════════════════════════════════════════════════════════
 
     // ── CREATE CASE ──────────────────────────────────────────
-    Route::post('/cases', function (Request $request) {
-        $request->validate([
-            'candidate_name'  => 'required|string|max:255',
-            'candidate_email' => 'required|email',
-            'client_name'     => 'required|string|max:255',
-            'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
-            'checks'          => 'required|array|min:1',
-            'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
-        ]);
+   Route::post('/cases', function (Request $request) {
+    $request->validate([
+        'candidate_name'  => 'required|string|max:255',
+        'candidate_email' => 'required|email',
+        'candidate_dob'   => 'required|date',          // ← add this
+        'client_name'     => 'required|string|max:255',
+        'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+        'checks'          => 'required|array|min:1',
+        'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
+    ]);
 
-        $case = BGVCase::create([
-            'case_id'          => BGVCase::generateCaseId(),
-            'candidate_name'   => $request->candidate_name,
-            'candidate_email'  => $request->candidate_email,
-            'candidate_mobile' => $request->candidate_mobile,
-            'position'         => $request->position,
-            'client_name'      => $request->client_name,
-            'client_id'        => $request->client_id,
-            'checks'           => $request->checks,
-            'priority'         => $request->priority ?? 'normal',
-            'billing_mode'     => $request->billing_mode,
-            'payment_timing'   => $request->payment_timing,
-            'invoice_cycle'    => $request->invoice_cycle,
-            'po_number'        => $request->po_number,
-            'total_amount'     => $request->total_amount ?? 0,
-            'payment_link'     => $request->payment_link,
-            'status'           => 'pending',
-            'notes'            => $request->notes,
-            'created_by'       => $request->user()->id,
-        ]);
+    $case = BGVCase::create([
+        'case_id'          => BGVCase::generateCaseId(),
+        'candidate_name'   => $request->candidate_name,
+        'candidate_email'  => $request->candidate_email,
+        'candidate_mobile' => $request->candidate_mobile,
+        'candidate_dob'    => $request->candidate_dob,   // ← add this
+        'position'         => $request->position,
+        'client_name'      => $request->client_name,
+        'client_id'        => $request->client_id,
+        'checks'           => $request->checks,
+        'priority'         => $request->priority ?? 'normal',
+        'billing_mode'     => $request->billing_mode,
+        'payment_timing'   => $request->payment_timing,
+        'invoice_cycle'    => $request->invoice_cycle,
+        'po_number'        => $request->po_number,
+        'total_amount'     => $request->total_amount ?? 0,
+        'payment_link'     => $request->payment_link,
+        'status'           => 'pending',
+        'notes'            => $request->notes,
+        'created_by'       => $request->user()->id,
+    ]);
 
-        \App\Models\CaseEvent::log(
-            $case->case_id,
-            'created',
-            'Case created',
-            "Case opened for {$case->candidate_name}",
-            ['checks' => $case->checks, 'billing_mode' => $case->billing_mode],
-            $request->user()
-        );
+    \App\Models\CaseEvent::log(
+        $case->case_id,
+        'created',
+        'Case created',
+        "Case opened for {$case->candidate_name}",
+        ['checks' => $case->checks, 'billing_mode' => $case->billing_mode],
+        $request->user()
+    );
 
-        return response()->json(['case' => $case], 201);
-    });
+    return response()->json(['case' => $case], 201);
+});
 
     // ── LIST CASES (Fixed Visibility) ────────────────────────
     Route::get('/cases', function (Request $request) {
@@ -651,6 +653,119 @@ Route::middleware('auth:sanctum')->group(function () {
         );
 
         return response()->json(['message' => 'Check result saved', 'check_results' => $results]);
+    });
+    // ── SAVE CHECK FIELDS (client/staff — from CheckDetailForm) ──
+    Route::patch('/cases/{caseId}/checks/{checkKey}', function (Request $request, $caseId, $checkKey) {
+        $request->validate(['fields' => 'required|array']);
+
+        $case = BGVCase::where('case_id', $caseId)->first();
+        if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+        $user = $request->user();
+        if ($user->role === 'client') {
+            $owns = $case->created_by === $user->id
+                || $case->candidate_email === $user->email
+                || stripos($case->client_name, $user->name) !== false;
+            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if (!in_array($checkKey, $case->checks ?? [])) {
+            return response()->json(['message' => 'This check is not assigned to this case'], 422);
+        }
+
+        $details = $case->check_details ?? [];
+        $details[$checkKey]['fields']    = $request->fields;
+        $details[$checkKey]['documents'] = $details[$checkKey]['documents'] ?? [];
+        $case->check_details = $details;
+        $case->save();
+
+        \App\Models\CaseEvent::log(
+            $case->case_id,
+            'check_fields_saved',
+            ucfirst($checkKey) . ' details saved',
+            'Fields updated for ' . $checkKey . ' check',
+            ['check_type' => $checkKey],
+            $user
+        );
+
+        return response()->json(['message' => 'Saved', 'check_details' => $details]);
+    });
+
+    // ── UPLOAD CHECK DOCUMENT (client/staff — from CheckDetailForm) ──
+    Route::post('/cases/{caseId}/checks/{checkKey}/documents', function (Request $request, $caseId, $checkKey) {
+        $request->validate([
+            'document_key' => 'required|string',
+            'file'         => 'required|file|max:10240|mimes:pdf,jpg,jpeg,png',
+        ]);
+
+        $case = BGVCase::where('case_id', $caseId)->first();
+        if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+        $user = $request->user();
+        if ($user->role === 'client') {
+            $owns = $case->created_by === $user->id
+                || $case->candidate_email === $user->email
+                || stripos($case->client_name, $user->name) !== false;
+            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if (!in_array($checkKey, $case->checks ?? [])) {
+            return response()->json(['message' => 'This check is not assigned to this case'], 422);
+        }
+
+        $path = $request->file('file')->store("case-documents/{$case->case_id}/{$checkKey}", 'public');
+        $url  = \Illuminate\Support\Facades\Storage::disk('public')->url($path);
+
+        $details = $case->check_details ?? [];
+        $details[$checkKey]['documents'][$request->document_key] = [
+            'name'        => $request->file('file')->getClientOriginalName(),
+            'path'        => $path,
+            'url'         => $url,
+            'uploaded_by' => 'client',
+            'uploaded_at' => now()->toDateTimeString(),
+        ];
+        $details[$checkKey]['fields'] = $details[$checkKey]['fields'] ?? [];
+        $case->check_details = $details;
+        $case->save();
+
+        return response()->json(['message' => 'Uploaded', 'url' => $url]);
+    });
+
+    // ── GENERATE SHARE LINK FOR A SINGLE CHECK (client → candidate) ──
+    Route::post('/cases/{caseId}/checks/{checkKey}/share-link', function (Request $request, $caseId, $checkKey) {
+        $case = BGVCase::where('case_id', $caseId)->first();
+        if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+        $user = $request->user();
+        if ($user->role === 'client') {
+            $owns = $case->created_by === $user->id
+                || $case->candidate_email === $user->email
+                || stripos($case->client_name, $user->name) !== false;
+            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if (!in_array($checkKey, $case->checks ?? [])) {
+            return response()->json(['message' => 'This check is not assigned to this case'], 422);
+        }
+
+        $token = \App\Models\CandidateLink::generateToken();
+
+        \App\Models\CandidateLink::create([
+            'token'          => $token,
+            'candidate_name' => $case->candidate_name,
+            'email'          => $case->candidate_email,
+            'mobile'         => $case->candidate_mobile,
+            'position'       => $case->position,
+            'case_id'        => $case->case_id,
+            'check_type'     => $checkKey,
+            'checks'         => [$checkKey],
+            'expiry'         => '72h',
+            'status'         => 'pending',
+            'client_id'      => $user->id,
+            'expires_at'     => \App\Models\CandidateLink::expiryToCarbon('72h'),
+        ]);
+
+        return response()->json(['url' => url("/candidate/{$token}")]);
     });
 
     // ── CASE TIMELINE ─────────────────────────────────────────

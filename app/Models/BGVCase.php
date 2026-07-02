@@ -11,11 +11,12 @@ class BGVCase extends Model
 
     protected $table = 'cases';
 
- protected $fillable = [
+protected $fillable = [
     'case_id',
     'candidate_name',
     'candidate_email',
     'candidate_mobile',
+    'candidate_dob',   // ← add this
     'position',
     'client_name',
     'client_id',
@@ -29,7 +30,7 @@ class BGVCase extends Model
     'payment_link',
     'status',
     'check_results',
-    'check_details',   // ← added
+    'check_details',
     'notes',
     'created_by',
 ];
@@ -37,8 +38,9 @@ class BGVCase extends Model
 protected $casts = [
     'checks' => 'array',
     'check_results' => 'array',
-    'check_details' => 'array',   // ← added
+    'check_details' => 'array',
     'total_amount' => 'float',
+    'candidate_dob' => 'date',   // ← add this
 ];
 
     public function creator()

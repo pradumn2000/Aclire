@@ -37,6 +37,16 @@ const CHECK_BADGE = {
   discrepancy: { label: "Discrepancy", bg: "#ef4444", color: "#fff" },
   na:          { label: "N/A",         bg: "#94a3b8", color: "#fff" },
 };
+// ── Maps full check names (from backend) to short display codes
+const CHECK_ABBREV = {
+  employment: "EMP", education: "EDU", address: "ADDR",
+  database: "DB", criminal: "CRI", drug: "DRUG", court: "COURT",
+};
+
+function displayChecks(checks) {
+  const arr = Array.isArray(checks) ? checks : (typeof checks === "string" ? checks.split(/[·,]/).map(x => x.trim()).filter(Boolean) : []);
+  return arr.map(c => CHECK_ABBREV[c] || String(c).toUpperCase()).join(" · ");
+}
 const STATUS_META = {
   "pending":     { color: "#f59e0b", pct: 20, dayLabel: () => "Day 1/7" },
   "in-progress": { color: "#028090", pct: 60, dayLabel: () => "Day 4/7" },
@@ -314,7 +324,7 @@ const getCheckStatus = (c, checkName) => {
       c.created_at ? new Date(c.created_at).toLocaleDateString("en-IN") : "—",
       c.candidate || c.candidate_name,
       c.client || c.client_name || "—",
-      Array.isArray(c.checks) ? c.checks.join(", ") : c.checks,
+      displayChecks(c.checks),
       formatTAT(c.tat),
       statusLabel(c.status),
     ]);
@@ -385,46 +395,41 @@ const getCheckStatus = (c, checkName) => {
         <p style={{ fontSize: "12px", fontWeight: 700, color: "#475569", marginBottom: "14px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
           Check-wise Status
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1px 1fr", gap: "0 12px" }}>
-          <div>
-            {/* {left.map((chk, i) => {
-              const badge = CHECK_BADGE[getCheckStatus(c, chk)] || CHECK_BADGE.na;
-              return (
-                <div key={chk} style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
-                  padding: "9px 0", borderBottom: i < left.length - 1 ? "1px solid #f1f5f9" : "none" }}>
-                  <span style={{ fontSize: "13px", color: "#334155", fontWeight: 500 }}>{chk}</span>
-                  <span style={{ background: badge.bg, color: badge.color, fontSize: "11px", fontWeight: 700,
-                    padding: "4px 12px", borderRadius: "4px", minWidth: "90px", textAlign: "center" }}>{badge.label}</span>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{ background: "#e2e8f0" }} />
-          <div>
-            {right.map((chk, i) => {
-              const badge = CHECK_BADGE[getCheckStatus(c, chk)] || CHECK_BADGE.na;
-              return (
-                <div key={chk} style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
-                  padding: "9px 0", borderBottom: i < right.length - 1 ? "1px solid #f1f5f9" : "none" }}>
-                  <span style={{ fontSize: "13px", color: "#334155", fontWeight: 500 }}>{chk}</span>
-                  <span style={{ background: badge.bg, color: badge.color, fontSize: "11px", fontWeight: 700,
-                    padding: "4px 12px", borderRadius: "4px", minWidth: "90px", textAlign: "center" }}>{badge.label}</span>
-                </div>
-              );
-            })} */}
-            {left.map((chk, i) => {
-  const badge = CHECK_BADGE[getCheckStatus(c, chk)] || CHECK_BADGE.na;
-  return (
-    <div key={chk} onClick={() => setOpenCheck(chk)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "9px 0", borderBottom: i < left.length - 1 ? "1px solid #f1f5f9" : "none", cursor: "pointer" }}>
-      <span style={{ fontSize: "13px", color: "#334155", fontWeight: 500 }}>{chk}</span>
-      <span style={{ background: badge.bg, color: badge.color, fontSize: "11px", fontWeight: 700,
-        padding: "4px 12px", borderRadius: "4px", minWidth: "90px", textAlign: "center" }}>{badge.label}</span>
-    </div>
-  );
-})}
-          </div>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1px 1fr", gap: "0 12px" }}>
+  <div>
+    {left.map((chk, i) => {
+      const badge = CHECK_BADGE[getCheckStatus(c, chk)] || CHECK_BADGE.na;
+      return (
+        <div key={chk} onClick={() => setOpenCheck(chk)} style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "9px 0", borderBottom: i < left.length - 1 ? "1px solid #f1f5f9" : "none",
+          cursor: "pointer",
+        }}>
+          <span style={{ fontSize: "13px", color: "#334155", fontWeight: 500 }}>{CHECK_ABBREV[chk] || chk}</span>
+          <span style={{ background: badge.bg, color: badge.color, fontSize: "11px", fontWeight: 700,
+            padding: "4px 12px", borderRadius: "4px", minWidth: "90px", textAlign: "center" }}>{badge.label}</span>
         </div>
+      );
+    })}
+  </div>
+  <div style={{ background: "#e2e8f0" }} />
+  <div>
+    {right.map((chk, i) => {
+      const badge = CHECK_BADGE[getCheckStatus(c, chk)] || CHECK_BADGE.na;
+      return (
+        <div key={chk} onClick={() => setOpenCheck(chk)} style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "9px 0", borderBottom: i < right.length - 1 ? "1px solid #f1f5f9" : "none",
+          cursor: "pointer",
+        }}>
+          <span style={{ fontSize: "13px", color: "#334155", fontWeight: 500 }}>{CHECK_ABBREV[chk] || chk}</span>
+          <span style={{ background: badge.bg, color: badge.color, fontSize: "11px", fontWeight: 700,
+            padding: "4px 12px", borderRadius: "4px", minWidth: "90px", textAlign: "center" }}>{badge.label}</span>
+        </div>
+      );
+    })}
+  </div>
+</div>
       </div>
     );
   };
@@ -608,7 +613,7 @@ const getCheckStatus = (c, checkName) => {
                         <p>
                           <span>{c.case_id}</span><br />
                           <span style={{ fontSize: "11px", color: "#94a3b8" }}>
-                            {Array.isArray(c.checks) ? c.checks.join(" · ") : c.checks}
+                      {displayChecks(c.checks)}
                           </span>
                         </p>
                       </div>
@@ -703,7 +708,7 @@ const getCheckStatus = (c, checkName) => {
                 <td style={{ padding: "18px 20px", color: "#1e293b" }}>{c.candidate || c.candidate_name || "—"}</td>
                 <td style={{ padding: "18px 20px", color: "#1e293b" }}>{c.client || c.client_name || "—"}</td>
                 <td style={{ padding: "18px 20px", color: "#1e293b" }}>
-                  {Array.isArray(c.checks) ? c.checks.join(" · ") : (c.checks || "—")}
+                  {displayChecks(c.checks) || "—"}
                 </td>
                 <td style={{ padding: "18px 20px" }}><StatusBadge status={c.status} /></td>
                 <td style={{ padding: "18px 20px", color: "#1e293b" }}>{formatTAT(c.tat)}</td>
