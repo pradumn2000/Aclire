@@ -11,18 +11,10 @@ class CandidateLink extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'token',
-        'candidate_name',
-        'email',
-        'mobile',
-        'position',
-        'checks',
-        'expiry',
-        'status',
-        'client_id',
-        'expires_at',
-    ];
+protected $fillable = [
+    'token', 'case_id', 'check_type', 'candidate_name', 'email', 'mobile',
+    'position', 'checks', 'expiry', 'status', 'client_id', 'expires_at',
+];
 
     protected $casts = [
         'checks' => 'array',

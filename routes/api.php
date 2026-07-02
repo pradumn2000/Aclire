@@ -218,6 +218,147 @@ Route::get('/test-password', function () {
         'password_match' => Hash::check('Admin@123', $user->password),
     ]);
 });
+// ─────────────────────────────────────────
+// CANDIDATE-FACING (public, token-gated)
+// ─────────────────────────────────────────
+
+$normalizeCheckKey = function ($key) {
+    $map = [
+        'emp' => 'employment', 'edu' => 'education', 'addr' => 'address', 'db' => 'database',
+        'drug_test' => 'drug', 'courtroom' => 'court',
+    ];
+    return $map[$key] ?? $key;
+};
+
+Route::get('/candidate-link/{token}', function ($token) use ($normalizeCheckKey) {
+    $link = \App\Models\CandidateLink::where('token', $token)->first();
+    if (!$link) return response()->json(['message' => 'Invalid link'], 404);
+
+    if ($link->expires_at && now()->greaterThan($link->expires_at)) {
+        return response()->json(['message' => 'Link expired', 'expired' => true], 410);
+    }
+    if ($link->status === 'submitted') {
+        return response()->json(['message' => 'Already submitted', 'submitted' => true], 200);
+    }
+
+    $checks = collect($link->checks ?? [])->map($normalizeCheckKey)->values()->all();
+    $case = $link->case_id ? BGVCase::where('case_id', $link->case_id)->first() : null;
+
+    return response()->json([
+        'link' => [
+            'candidateName' => $link->candidate_name,
+            'email'         => $link->email,
+            'mobile'        => $link->mobile,
+            'position'      => $link->position,
+            'caseId'        => $link->case_id,
+            'checkType'     => $link->check_type ? $normalizeCheckKey($link->check_type) : null,
+            'checks'        => $checks,
+            'expiresAt'     => $link->expires_at,
+        ],
+        'checkDetails' => $case?->check_details ?? [],
+    ]);
+});
+
+Route::patch('/candidate-link/{token}/fields', function (Request $request, $token) use ($normalizeCheckKey) {
+    $request->validate(['check_type' => 'required|string', 'fields' => 'required|array']);
+
+    $link = \App\Models\CandidateLink::where('token', $token)->first();
+    if (!$link) return response()->json(['message' => 'Invalid link'], 404);
+    if ($link->expires_at && now()->greaterThan($link->expires_at)) {
+        return response()->json(['message' => 'Link expired'], 410);
+    }
+    if (!$link->case_id) return response()->json(['message' => 'This link has no linked case'], 422);
+
+    $checkType = $normalizeCheckKey($request->check_type);
+    $allowed   = collect($link->checks ?? [])->map($normalizeCheckKey)->push('general')->all();
+    if (!in_array($checkType, $allowed)) {
+        return response()->json(['message' => 'Check type not permitted for this link'], 403);
+    }
+
+    $case = BGVCase::where('case_id', $link->case_id)->first();
+    if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+    $details = $case->check_details ?? [];
+    $details[$checkType]['fields']    = $request->fields;
+    $details[$checkType]['documents'] = $details[$checkType]['documents'] ?? [];
+    $case->check_details = $details;
+    $case->save();
+
+    return response()->json(['message' => 'Saved']);
+});
+
+Route::post('/candidate-link/{token}/documents', function (Request $request, $token) use ($normalizeCheckKey) {
+    $request->validate([
+        'check_type'   => 'required|string',
+        'document_key' => 'required|string',
+        'file'         => 'required|file|max:10240|mimes:pdf,jpg,jpeg,png',
+    ]);
+
+    $link = \App\Models\CandidateLink::where('token', $token)->first();
+    if (!$link) return response()->json(['message' => 'Invalid link'], 404);
+    if ($link->expires_at && now()->greaterThan($link->expires_at)) {
+        return response()->json(['message' => 'Link expired'], 410);
+    }
+    if (!$link->case_id) return response()->json(['message' => 'This link has no linked case'], 422);
+
+    $checkType = $normalizeCheckKey($request->check_type);
+    $allowed   = collect($link->checks ?? [])->map($normalizeCheckKey)->push('general')->all();
+    if (!in_array($checkType, $allowed)) {
+        return response()->json(['message' => 'Check type not permitted for this link'], 403);
+    }
+
+    $case = BGVCase::where('case_id', $link->case_id)->first();
+    if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+    $path = $request->file('file')->store("case-documents/{$case->case_id}/{$checkType}", 'public');
+    $url  = \Illuminate\Support\Facades\Storage::disk('public')->url($path);
+
+    $details = $case->check_details ?? [];
+    $details[$checkType]['documents'][$request->document_key] = [
+        'name'        => $request->file('file')->getClientOriginalName(),
+        'path'        => $path,
+        'url'         => $url,
+        'uploaded_by' => 'candidate',
+        'uploaded_at' => now()->toDateTimeString(),
+    ];
+    $details[$checkType]['fields'] = $details[$checkType]['fields'] ?? [];
+    $case->check_details = $details;
+    $case->save();
+
+    return response()->json(['message' => 'Uploaded', 'url' => $url]);
+});
+
+Route::post('/candidate-link/{token}/submit', function (Request $request, $token) {
+    $link = \App\Models\CandidateLink::where('token', $token)->first();
+    if (!$link) return response()->json(['message' => 'Invalid link'], 404);
+    if ($link->expires_at && now()->greaterThan($link->expires_at)) {
+        return response()->json(['message' => 'Link expired'], 410);
+    }
+
+    $link->update(['status' => 'submitted']);
+
+    if ($link->case_id) {
+        $case = BGVCase::where('case_id', $link->case_id)->first();
+        if ($case && $case->status === 'pending') {
+            $case->update(['status' => 'in-progress']);
+        }
+        if ($case) {
+            \App\Models\CaseEvent::log(
+                $case->case_id,
+                'candidate_submitted',
+                'Candidate submitted documents',
+                $link->check_type
+                    ? ucfirst($link->check_type) . ' info/documents submitted by candidate'
+                    : 'Documents submitted by candidate',
+                ['check_type' => $link->check_type, 'checks' => $link->checks],
+                null
+            );
+        }
+    }
+
+    return response()->json(['message' => 'Submitted successfully']);
+});
+
 
 // ═════════════════════════════════════════
 // PROTECTED ROUTES (Bearer token required)
