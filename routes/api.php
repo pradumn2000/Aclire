@@ -537,7 +537,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 'case_id'       => $c->case_id,
                 'candidate'     => $c->candidate_name,
                 'client'        => $c->client_name,
-                'checks'        => $checkLabels,
+                'checks'        => $c->checks,
                 'status'        => $c->status,
                 'priority'      => $c->priority,
                 'billing_mode'  => $c->billing_mode,
