@@ -426,7 +426,7 @@ h4 {
     border-radius: 20px;
     margin-top: 30px;
 }
-.login-left-img {
+/* .login-left-img {
     height: 100%;
     width: 100%;
    overflow: hidden;
@@ -442,14 +442,14 @@ h4 {
     border-radius: 15px;
      object-fit: cover;       
         transition: .4s ease-in-out;
-}
+} */
 .login-wrp {
     width: 100%;
 }
-.login-left-img  img:hover{
+/* .login-left-img  img:hover{
   transform: scale(1.1) rotate(-1deg);
         transition: .4s ease-in-out;
-}
+} */
 .password-icon{
   display: flex;
   gap: 10px;
