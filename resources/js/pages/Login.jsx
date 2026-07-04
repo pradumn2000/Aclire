@@ -401,13 +401,13 @@ export default function Login() {
       <div className="container">
         <div className="row">
 
-          <div className="col-lg-6">
+          {/* <div className="col-lg-6">
             <div className="login-left-img">
-              {/* <img src="/images/login/login-left.png" alt="" /> */}
+              <img src="/images/login/login-left.png" alt="" />
             </div>
-          </div>
+          </div> */}
 
-          <div className="col-lg-6">
+          <div className="col-lg-12">
             <div className="login-wrp">
 
               <div className="log-in-logo">

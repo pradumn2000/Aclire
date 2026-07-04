@@ -444,7 +444,7 @@ h4 {
         transition: .4s ease-in-out;
 } */
 .login-wrp {
-    width: 100%;
+    width: 50%;
 }
 /* .login-left-img  img:hover{
   transform: scale(1.1) rotate(-1deg);
