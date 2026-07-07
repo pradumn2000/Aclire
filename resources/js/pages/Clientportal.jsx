@@ -1118,17 +1118,33 @@ export default function Clientportal() {
                           value={linkForm.email} onChange={(e) => setL("email", e.target.value)} required />
                       </div>
 
-                      <div className="cob-form-group">
-                        <label className="cob-form-label">Mobile</label>
-                        <input type="tel" className="cob-form-input" placeholder="+91 XXXXX XXXXX"
-                          value={linkForm.mobile} onChange={(e) => setL("mobile", e.target.value)} />
-                      </div>
+                     <div className="cob-form-group">
+  <label className="cob-form-label">
+    Mobile <span className="form-required">*</span>
+  </label>
+
+  <input
+    type="tel"
+    className="cob-form-input"
+    placeholder="+91 XXXXX XXXXX"
+    value={linkForm.mobile}
+    onChange={(e) => setL("mobile", e.target.value)}
+  />
+</div>
 
                       <div className="cob-form-group">
-                        <label className="cob-form-label">Position Applied</label>
-                        <input type="text" className="cob-form-input" placeholder="e.g. Senior Engineer"
-                          value={linkForm.position} onChange={(e) => setL("position", e.target.value)} />
-                      </div>
+  <label className="cob-form-label">
+    Position Applied <span className="form-required">*</span>
+  </label>
+
+  <input
+    type="text"
+    className="cob-form-input"
+    placeholder="e.g. Senior Engineer"
+    value={linkForm.position}
+    onChange={(e) => setL("position", e.target.value)}
+  />
+</div>
 
                       <div className="cob-form-group">
                         <label className="cob-form-label">Check Types</label>
