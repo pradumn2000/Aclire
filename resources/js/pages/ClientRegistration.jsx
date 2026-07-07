@@ -1609,16 +1609,38 @@ export default function ClientRegistration() {
 </FormRow>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                      <FormRow label="Password *">
-                        <input type="password" placeholder="Min. 8 characters"
-                          value={form.password} onChange={(e) => set("password", e.target.value)} required
-                          style={inputStyle} />
-                      </FormRow>
-                      <FormRow label="Confirm Password *">
-                        <input type="password" placeholder="Repeat password"
-                          value={form.confirmPass} onChange={(e) => set("confirmPass", e.target.value)} required
-                          style={inputStyle} />
-                      </FormRow>
+                      <FormRow
+  label={
+    <>
+      Password <span className="form-required">*</span>
+    </>
+  }
+>
+  <input
+    type="password"
+    placeholder="Min. 8 characters"
+    value={form.password}
+    onChange={(e) => set("password", e.target.value)}
+    required
+    style={inputStyle}
+  />
+</FormRow>
+                      <FormRow
+  label={
+    <>
+      Confirm Password <span className="form-required">*</span>
+    </>
+  }
+>
+  <input
+    type="password"
+    placeholder="Repeat password"
+    value={form.confirmPass}
+    onChange={(e) => set("confirmPass", e.target.value)}
+    required
+    style={inputStyle}
+  />
+</FormRow>
                     </div>
 
                     {error && <p style={{ color: "#ff6b6b", fontSize: "13px" }}>⚠ {error}</p>}
