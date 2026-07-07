@@ -1118,7 +1118,7 @@ export default function Clientportal() {
                           value={linkForm.email} onChange={(e) => setL("email", e.target.value)} required />
                       </div>
 
-                     <div className="cob-form-group">
+               <div className="cob-form-group">
   <label className="cob-form-label">
     Mobile <span className="form-required">*</span>
   </label>
@@ -1128,7 +1128,14 @@ export default function Clientportal() {
     className="cob-form-input"
     placeholder="+91 XXXXX XXXXX"
     value={linkForm.mobile}
-    onChange={(e) => setL("mobile", e.target.value)}
+    onChange={(e) => {
+      const value = e.target.value.replace(/\D/g, "").slice(0, 12);
+      setL("mobile", value);
+    }}
+    required
+    maxLength={12}
+    pattern="[0-9]{12}"
+    title="Please enter a valid 12-digit mobile number"
   />
 </div>
 
