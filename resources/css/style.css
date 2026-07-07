@@ -786,7 +786,7 @@ color: #02C39A;
 
 /* NAVBAR */
 #content nav {
-  height: 100px;
+  height: 66px;
   padding: 0 24px;
   background-color: var(--primary-color);
   display: flex;
