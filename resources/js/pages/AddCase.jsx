@@ -1054,15 +1054,38 @@ export default function AddCase() {
                         value={form.candidateEmail} onChange={e => set("candidateEmail", e.target.value)} />
                     </div>
                     <div className="ac-field">
-                      <label className="ac-label">Mobile Number</label>
-                      <input className="ac-input" type="tel" placeholder="+91 XXXXX XXXXX"
-                        value={form.candidateMobile} onChange={e => set("candidateMobile", e.target.value)} />
-                    </div>
+  <label className="ac-label">
+    Mobile Number <span className="form-required">*</span>
+  </label>
+
+  <input
+    className="ac-input"
+    type="tel"
+    placeholder="+91 XXXXX XXXXX"
+    value={form.candidateMobile}
+    onChange={(e) => {
+      const value = e.target.value.replace(/\D/g, "").slice(0, 12);
+      set("candidateMobile", value);
+    }}
+    required
+    maxLength={12}
+    pattern="[0-9]{12}"
+    title="Please enter a valid 12-digit mobile number"
+  />
+</div>
                     <div className="ac-field">
-                      <label className="ac-label">Position Applied For</label>
-                      <input className="ac-input" type="text" placeholder="e.g. Senior Engineer"
-                        value={form.position} onChange={e => set("position", e.target.value)} />
-                    </div>
+  <label className="ac-label">
+    Position Applied For <span className="form-required">*</span>
+  </label>
+
+  <input
+    className="ac-input"
+    type="text"
+    placeholder="e.g. Senior Engineer"
+    value={form.position}
+    onChange={e => set("position", e.target.value)}
+  />
+</div>
                     <div className="ac-field">
                       <label className="ac-label">Date of Birth <span className="ac-req">*</span></label>
                       <input className="ac-input" type="date"
@@ -1354,7 +1377,7 @@ export default function AddCase() {
 // ── Styles ─────────────────────────────────────────
 const sharedStyles = `
   .ac-page-title { font-size: 1.25rem; font-weight: 700; color: #2b3b8c; margin: 0; }
-  .ac-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  .ac-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 0px; }
   @media (max-width: 960px) { .ac-layout { grid-template-columns: 1fr; } }
   .ac-left, .ac-right { display: flex; flex-direction: column; gap: 20px; }
   .ac-card { background: #fff; border: 1px solid #e8ecf4; border-radius: 12px; padding: 22px; }

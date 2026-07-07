@@ -1146,6 +1146,7 @@ input:checked+.slider:before {
 .dash-upper-head .left{
   display: flex;
   gap: 10px;
+  align-items:center
 }
 .dash-upper-head .right{
   display: flex;
