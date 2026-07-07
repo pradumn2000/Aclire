@@ -1496,36 +1496,117 @@ export default function ClientRegistration() {
                   </h3>
                   <form onSubmit={handleStep1} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 
-                    <FormRow label="Company Name *">
+                    {/* <FormRow label="Company Name *">
                       <input type="text" placeholder="e.g. Deloitte India Pvt Ltd"
                         value={form.companyName} onChange={(e) => set("companyName", e.target.value)} required
                         style={inputStyle} />
-                    </FormRow>
+                    </FormRow> */}
+                    <FormRow
+  label={
+    <>
+      Company Name <span className="form-required">*</span>
+    </>
+  }
+>
+  <input
+    type="text"
+    placeholder="e.g. Deloitte India Pvt Ltd"
+    value={form.companyName}
+    onChange={(e) => set("companyName", e.target.value)}
+    required
+    style={inputStyle}
+  />
+</FormRow>
 
-                    <FormRow label="GSTIN *">
+                    {/* <FormRow label="GSTIN *">
                       <input type="text" placeholder="e.g. 27AABCD1234F1Z5"
                         value={form.gstin} onChange={(e) => set("gstin", e.target.value.toUpperCase())} required
                         maxLength={15} style={inputStyle} />
-                    </FormRow>
+                    </FormRow> */}
+                    <FormRow
+  label={
+    <>
+      GSTIN <span className="form-required">*</span>
+    </>
+  }
+>
+  <input
+    type="text"
+    placeholder="e.g. 27AABCD1234F1Z5"
+    value={form.gstin}
+    onChange={(e) => set("gstin", e.target.value.toUpperCase())}
+    required
+    maxLength={15}
+    style={inputStyle}
+  />
+</FormRow>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                      <FormRow label="Primary Contact Name *">
+                      {/* <FormRow label="Primary Contact Name *">
                         <input type="text" placeholder="Full name"
                           value={form.primaryContact} onChange={(e) => set("primaryContact", e.target.value)} required
                           style={inputStyle} />
-                      </FormRow>
-                      <FormRow label="Contact Phone">
+                      </FormRow> */}
+                      <FormRow
+  label={
+    <>
+      Primary Contact Name <span className="form-required">*</span>
+    </>
+  }
+>
+  <input
+    type="text"
+    placeholder="Full name"
+    value={form.primaryContact}
+    onChange={(e) => set("primaryContact", e.target.value)}
+    required
+    style={inputStyle}
+  />
+</FormRow>
+                      <FormRow
+  label={
+    <>
+      Contact Phone <span className="form-required">*</span>
+    </>
+  }
+>
+  <input
+    type="text"
+    placeholder="Enter 12 digit mobile number"
+    value={form.contactPhone}
+    onChange={(e) => {
+      // Sirf digits allow karo aur max 12 digits
+      const value = e.target.value.replace(/\D/g, "").slice(0, 12);
+      set("contactPhone", value);
+    }}
+    maxLength={12}
+    style={inputStyle}
+    required
+  />
+</FormRow>
+                      {/* <FormRow label="Contact Phone">
                         <input type="tel" placeholder="+91 XXXXX XXXXX"
                           value={form.contactPhone} onChange={(e) => set("contactPhone", e.target.value)}
                           style={inputStyle} />
-                      </FormRow>
+                      </FormRow> */}
                     </div>
 
-                    <FormRow label="Company Email *">
-                      <input type="email" placeholder="hr@yourcompany.com"
-                        value={form.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} required
-                        style={inputStyle} />
-                    </FormRow>
+                    <FormRow
+  label={
+    <>
+      Company Email <span className="form-required">*</span>
+    </>
+  }
+>
+  <input
+    type="email"
+    placeholder="hr@yourcompany.com"
+    value={form.contactEmail}
+    onChange={(e) => set("contactEmail", e.target.value)}
+    required
+    style={inputStyle}
+  />
+</FormRow>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                       <FormRow label="Password *">

@@ -5781,3 +5781,6 @@ button.btn.btn-request {
 .down-table table tbody tr:last-child td {
   border-bottom: none;
 }
+.form-required{
+  color: red;
+}
