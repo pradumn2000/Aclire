@@ -5791,3 +5791,8 @@ button.btn.btn-request {
 
 
 
+.ac-success-id .down-table {
+    height: 100%;
+    max-height: 460px;
+    overflow-y: auto;
+}

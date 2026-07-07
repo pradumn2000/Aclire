@@ -1451,7 +1451,7 @@ const sharedStyles = `
   .ac-success-card { background: #fff; border: 1px solid #e8ecf4; border-radius: 16px; padding: 48px 40px; text-align: center; max-width: 500px; width: 100%; }
   .ac-success-icon { width: 64px; height: 64px; background: #10b981; color: #fff; border-radius: 50%; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
   .ac-success-title { font-size: 1.5rem; font-weight: 800; color: #1e293b; margin: 0 0 8px; }
-  .ac-success-id { font-size: 1.1rem; font-weight: 700; color: #2b3b8c; background: #eef1fb; display: inline-block; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; }
+  .ac-success-id { font-size: 1.1rem; font-weight: 700; color: #2b3b8c; background: #eef1fb; display: inline-block; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px!important; }
   .ac-success-meta { background: #f8fafc; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; text-align: left; }
   .ac-success-meta-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: #64748b; }
   .ac-success-checks { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 24px; }
