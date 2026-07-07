@@ -51,7 +51,7 @@ export default function Header() {
 
   return (
     <nav>
-      <div className="nav-toggle" onClick={() => setCollapsed(!collapsed)}>
+      <div className="nav-toggle">
         <div className="bx bx-menu">
           <img src="images/sidebar/sidebar-collapse.svg" alt="" />
         </div>

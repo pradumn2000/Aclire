@@ -729,10 +729,6 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { API_URL } from "../src/config";
 
-import { useState } from "react";
-
-const [collapsed, setCollapsed] = useState(false);
-
 const MOCK_CLIENTS = [
   { id: 1, name: "Gaurav Technologies Pvt Ltd",  billingDefault: "postpaid_client" },
   { id: 2, name: "Deloitte India Pvt Ltd",        billingDefault: "prepaid_client" },
@@ -1009,10 +1005,9 @@ export default function AddCase() {
   // ── Main Form ─────────────────────────────────────────────
   return (
     <>
-      <Sidebar collapsed={collapsed} />
-      <section id="content" className={collapsed ? "collapsed" : ""}>
-        <Header  collapsed={collapsed}
-  setCollapsed={setCollapsed} />
+      <Sidebar />
+      <section id="content">
+        <Header />
         <main>
           <div className="dash-wrper">
 

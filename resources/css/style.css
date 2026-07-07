@@ -5788,23 +5788,3 @@ button.btn.btn-request {
 
 
 
-#sidebar{
-    width:270px;
-    transition:.3s;
-}
-
-#content{
-    width:calc(100% - 270px);
-    left:270px;
-    transition:.3s;
-    position:relative;
-}
-
-#sidebar.collapsed{
-    width:70px;
-}
-
-#content.collapsed{
-    width:calc(100% - 70px);
-    left:70px;
-}
