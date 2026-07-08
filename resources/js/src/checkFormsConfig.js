@@ -8,14 +8,16 @@ export const CHECK_FORM_CONFIG = {
   education: {
     label: "Education",
     fields: [
-      { key: "scope", label: "National / International", type: "radio", options: ["National", "International"], required: true },
-      { key: "qualification",   label: "Education Qualification", type: "select", options: QUALIFICATION_OPTIONS, required: true },
-      { key: "instituteName",   label: "Institute Name",  type: "select_dynamic", source: "institutions", required: true },
-      { key: "universityName",  label: "University Name", type: "select_dynamic", source: "institutions", required: true },
-      { key: "rollNo",          label: "Roll No",         type: "text", required: true },
-      { key: "yearOfPassing",   label: "Year of Passing", type: "text", required: true },
-      { key: "modeOfStudy",     label: "Mode of Study",   type: "text", required: false },
-    ],
+    { key: "scope", label: "National / International", type: "radio", options: ["National", "International"], required: true },
+    { key: "qualification",  label: "Education Qualification", type: "select", options: QUALIFICATION_OPTIONS, required: true },
+    { key: "instituteName",  label: "Institute Name",  type: "select_dynamic", source: "institutions",
+      filterBy: "scope", extraParams: { type: "university" }, required: true },      // ← added filterBy + extraParams
+    { key: "universityName", label: "University Name", type: "select_dynamic", source: "institutions",
+      filterBy: "scope", extraParams: { type: "university" }, required: true },      // ← added filterBy + extraParams
+    { key: "rollNo",        label: "Roll No",         type: "text", required: true },
+    { key: "yearOfPassing", label: "Year of Passing", type: "text", required: true },
+    { key: "modeOfStudy",   label: "Mode of Study",   type: "text", required: false },
+  ],
     documents: [
       { key: "final_year_marksheet", label: "Final Year Marksheet" },
       { key: "degree",                label: "Degree" },

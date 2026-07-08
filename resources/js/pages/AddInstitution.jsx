@@ -912,6 +912,7 @@ const EMPTY_FORM = {
   website: "",
   stature: "",
   aicte: "",
+  scope: "",   
 };
 
 export default function AddInstitution() {
@@ -1210,6 +1211,18 @@ export default function AddInstitution() {
                         <option value="applied">Applied / Pending</option>
                       </select>
                     </div>
+                    <div className="form-field-group">
+  <label>Scope</label>
+  <select
+    className="form-theme-input"
+    value={form.scope}
+    onChange={(e) => set("scope", e.target.value)}
+  >
+    <option value="">Select</option>
+    <option value="national">National</option>
+    <option value="international">International</option>
+  </select>
+</div>
 
                   </div>
 

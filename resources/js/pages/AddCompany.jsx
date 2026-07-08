@@ -263,7 +263,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { useCompanies } from "../src/store/companyStore";
 
-const EMPTY_FORM = { name: "", code: "", industry: "", state: "", website: "" };
+const EMPTY_FORM = { name: "", code: "", industry: "", state: "", website: "", scope: "" };
 
 export default function CompanyManagement() {
   const { companies, loading, error, addOne, bulkAdd, remove } = useCompanies();
@@ -494,6 +494,14 @@ export default function CompanyManagement() {
                           <label>WEBSITE</label>
                           <input type="url" name="website" value={form.website} onChange={(e) => set("website", e.target.value)} placeholder="https://..." className="form-theme-input" />
                         </div>
+                        <div className="form-field-group">
+  <label>SCOPE</label>
+  <select value={form.scope} onChange={(e) => set("scope", e.target.value)} className="form-theme-input">
+    <option value="">Select</option>
+    <option value="national">National</option>
+    <option value="international">International</option>
+  </select>
+</div>
                       </div>
 
                       {formError   && <p style={{ color: "#dc2626", fontSize: "13px", marginTop: "8px" }}>{formError}</p>}

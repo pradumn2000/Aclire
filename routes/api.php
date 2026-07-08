@@ -972,6 +972,9 @@ Route::middleware('auth:sanctum')->group(function () {
         if ($request->type && $request->type !== 'all') {
             $query->where('type', $request->type);
         }
+          if ($request->scope) {                                    // ← add
+        $query->where('scope', strtolower($request->scope));  // ← add
+    }
 
         if (!$request->boolean('include_inactive')) {
             $query->where('status', '!=', 'inactive');
@@ -1007,6 +1010,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'aicte'      => 'nullable|string|max:50',
             'accredited' => 'nullable|boolean',
             'level'      => 'nullable|string|max:50',
+            'scope'      => 'nullable|in:national,international',   
         ]);
 
         $institution = \App\Models\Institution::create([
@@ -1019,6 +1023,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'aicte'      => $request->aicte,
             'accredited' => $request->boolean('accredited'),
             'level'      => $request->level,
+            'scope'      => $request->scope,                        
         ]);
 
         return response()->json(['institution' => $institution], 201);
@@ -1037,6 +1042,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'rows.*.code'    => 'nullable|string|max:20',
             'rows.*.state'   => 'nullable|string|max:100',
             'rows.*.website' => 'nullable|string|max:255',
+            'rows.*.scope' => 'nullable|in:national,international',
         ]);
 
         $created = [];
@@ -1051,6 +1057,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 'aicte'      => $row['aicte'] ?? null,
                 'accredited' => filter_var($row['accredited'] ?? false, FILTER_VALIDATE_BOOLEAN),
                 'level'      => $row['level'] ?? null,
+                'scope' => $row['scope'] ?? null,
             ]);
         }
 
@@ -1087,6 +1094,9 @@ Route::middleware('auth:sanctum')->group(function () {
         if (!$request->boolean('include_inactive')) {
             $query->where('status', '!=', 'inactive');
         }
+            if ($request->scope) {                                    // ← add
+        $query->where('scope', strtolower($request->scope));  // ← add
+    }
 
         if ($request->search) {
             $s = $request->search;
@@ -1114,9 +1124,10 @@ Route::middleware('auth:sanctum')->group(function () {
             'industry' => 'nullable|string|max:100',
             'state'    => 'nullable|string|max:100',
             'website'  => 'nullable|string|max:255',
+            'scope'    => 'nullable|in:national,international',
         ]);
 
-        $company = \App\Models\Company::create($request->only(['name', 'code', 'industry', 'state', 'website']));
+        $company = \App\Models\Company::create($request->only(['name', 'code', 'industry', 'state', 'website', 'scope']));
 
         return response()->json(['company' => $company], 201);
     });
@@ -1134,6 +1145,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'rows.*.industry' => 'nullable|string|max:100',
             'rows.*.state'    => 'nullable|string|max:100',
             'rows.*.website'  => 'nullable|string|max:255',
+            'rows.*.scope'    => 'nullable|in:national,international',
         ]);
 
         $created = [];
@@ -1144,6 +1156,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 'industry' => $row['industry'] ?? null,
                 'state'    => $row['state'] ?? null,
                 'website'  => $row['website'] ?? null,
+                'scope'    => $row['scope'] ?? null,
             ]);
         }
 
