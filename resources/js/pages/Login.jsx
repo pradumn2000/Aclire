@@ -408,7 +408,7 @@ export default function Login() {
           </div> */}
 
           <div className="col-lg-12">
-            <div className="login-wrp">
+            <div className="login-wrp login">
 
               <div className="log-in-logo">
                 <img src="/images/login/logo.png" alt="logo" />
