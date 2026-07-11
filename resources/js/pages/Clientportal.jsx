@@ -1325,31 +1325,7 @@ export default function Clientportal() {
                   </tbody>
                 </table>
 
-                <div className="user-table-bottom">
-      <p className="pagination-text">
-        Showing {startItem} to {endItem} from {totalResults} results
-      </p>
-      <div className="pagination-user">
-        <button className="prevnext" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
-          Prev
-        </button>
-        
-        {/* Buttons logic */}
-        {[1, 2, 3, '...', 10].map((page, index) => (
-          <button 
-            key={index} 
-            className={currentPage === page ? 'active' : ''}
-            onClick={() => typeof page === 'number' && onPageChange(page)}
-          >
-            {page}
-          </button>
-        ))}
-        
-        <button className="prevnext" onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-          Next
-        </button>
-      </div>
-    </div>
+                
               </div>
 
             </div>
