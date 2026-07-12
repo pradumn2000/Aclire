@@ -412,10 +412,13 @@ Route::middleware('auth:sanctum')->group(function () {
         ], 201);
     });
 
-    // ── GET ALL USERS (admin only) ───────────────────────────
+    // ── GET ALL USERS (admin + allocator) ────────────────────
+    // CHANGED: allocator now allowed too, so the Case Allocation Board can
+    // populate its per-check "Assign" dropdowns with real verifiers instead
+    // of a 403. Still blocked for everyone else.
     Route::get('/users', function (Request $request) {
-        if ($request->user()->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        if (!in_array($request->user()->role, ['admin', 'allocator'])) {
+            return response()->json(['message' => 'Unauthorized. Admin or allocator access required.'], 403);
         }
 
         $users = \App\Models\User::select('id', 'name', 'email', 'role', 'created_at')
@@ -538,6 +541,10 @@ Route::middleware('auth:sanctum')->group(function () {
                 'candidate'     => $c->candidate_name,
                 'client'        => $c->client_name,
                 'checks'        => $c->checks,
+                'check_details' => $c->check_details, // ADDED: exposes per-check fields/documents to the
+                                                        // list response — Client.jsx's per-check status
+                                                        // badges and Intake.jsx's document downloads both
+                                                        // read this and previously always got null/undefined.
                 'status'        => $c->status,
                 'priority'      => $c->priority,
                 'billing_mode'  => $c->billing_mode,
