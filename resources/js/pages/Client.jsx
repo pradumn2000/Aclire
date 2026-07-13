@@ -3317,63 +3317,142 @@ export default function Client() {
   };
 
   // ── Summary Cards (Active, Completed, Pending Link, Clear Rate) ─────────────
-  const SummaryCards = ({ activeCount, completedCount, pendingLinkCount: plCount, clearRate: cr }) => (
+  // const SummaryCards = ({ activeCount, completedCount, pendingLinkCount: plCount, clearRate: cr }) => (
+  //   <div style={{ 
+  //     display: "flex", 
+  //     gap: "12px", 
+  //     marginBottom: "24px",
+  //     flexWrap: "wrap"
+  //   }}>
+  //     <div style={{ 
+  //       flex: 1, 
+  //       minWidth: "220px",
+  //       background: "#fff", 
+  //       borderRadius: "10px", 
+  //       padding: "16px 20px", 
+  //       borderLeft: "5px solid #10b981",
+  //       boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+  //     }}>
+  //       <div style={{ fontSize: "32px", fontWeight: 700, color: "#10b981" }}>{activeCount}</div>
+  //       <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Active</div>
+  //     </div>
+
+  //     <div style={{ 
+  //       flex: 1, 
+  //       minWidth: "220px",
+  //       background: "#fff", 
+  //       borderRadius: "10px", 
+  //       padding: "16px 20px", 
+  //       borderLeft: "5px solid #3b82f6",
+  //       boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+  //     }}>
+  //       <div style={{ fontSize: "32px", fontWeight: 700, color: "#3b82f6" }}>{completedCount}</div>
+  //       <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Completed</div>
+  //     </div>
+
+  //     <div style={{ 
+  //       flex: 1, 
+  //       minWidth: "220px",
+  //       background: "#fff", 
+  //       borderRadius: "10px", 
+  //       padding: "16px 20px", 
+  //       borderLeft: "5px solid #f59e0b",
+  //       boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+  //     }}>
+  //       <div style={{ fontSize: "32px", fontWeight: 700, color: "#f59e0b" }}>{plCount}</div>
+  //       <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Pending Link</div>
+  //     </div>
+
+  //     <div style={{ 
+  //       flex: 1, 
+  //       minWidth: "220px",
+  //       background: "#fff", 
+  //       borderRadius: "10px", 
+  //       padding: "16px 20px", 
+  //       borderLeft: "5px solid #64748b",
+  //       boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+  //     }}>
+  //       <div style={{ fontSize: "32px", fontWeight: 700, color: "#64748b" }}>{cr}%</div>
+  //       <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Clear Rate</div>
+  //     </div>
+  //   </div>
+  // );
+    // ── Summary Cards — Exact match to reference image ─────────────────────
+  const SummaryCards = ({ totalCount, activeCount, completedCount, pendingLinkCount: plCount, clearRate: cr }) => (
     <div style={{ 
       display: "flex", 
       gap: "12px", 
       marginBottom: "24px",
       flexWrap: "wrap"
     }}>
+      {/* Total Cases (New - first card) */}
       <div style={{ 
         flex: 1, 
-        minWidth: "220px",
+        minWidth: "210px",
         background: "#fff", 
-        borderRadius: "10px", 
+        borderRadius: "12px", 
         padding: "16px 20px", 
-        borderLeft: "5px solid #10b981",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+        borderLeft: "6px solid #10b981",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.06)"
       }}>
-        <div style={{ fontSize: "32px", fontWeight: 700, color: "#10b981" }}>{activeCount}</div>
-        <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Active</div>
+        <div style={{ fontSize: "36px", fontWeight: 700, color: "#10b981", lineHeight: 1 }}>{totalCount}</div>
+        <div style={{ fontSize: "14px", color: "#475569", marginTop: "6px", fontWeight: 500 }}>Total Cases</div>
       </div>
 
+      {/* Active */}
       <div style={{ 
         flex: 1, 
-        minWidth: "220px",
+        minWidth: "210px",
         background: "#fff", 
-        borderRadius: "10px", 
+        borderRadius: "12px", 
         padding: "16px 20px", 
-        borderLeft: "5px solid #3b82f6",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+        borderLeft: "6px solid #10b981",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.06)"
       }}>
-        <div style={{ fontSize: "32px", fontWeight: 700, color: "#3b82f6" }}>{completedCount}</div>
-        <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Completed</div>
+        <div style={{ fontSize: "36px", fontWeight: 700, color: "#10b981", lineHeight: 1 }}>{activeCount}</div>
+        <div style={{ fontSize: "14px", color: "#475569", marginTop: "6px", fontWeight: 500 }}>Active</div>
       </div>
 
+      {/* Completed */}
       <div style={{ 
         flex: 1, 
-        minWidth: "220px",
+        minWidth: "210px",
         background: "#fff", 
-        borderRadius: "10px", 
+        borderRadius: "12px", 
         padding: "16px 20px", 
-        borderLeft: "5px solid #f59e0b",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+        borderLeft: "6px solid #14b8a6",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.06)"
       }}>
-        <div style={{ fontSize: "32px", fontWeight: 700, color: "#f59e0b" }}>{plCount}</div>
-        <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Pending Link</div>
+        <div style={{ fontSize: "36px", fontWeight: 700, color: "#14b8a6", lineHeight: 1 }}>{completedCount}</div>
+        <div style={{ fontSize: "14px", color: "#475569", marginTop: "6px", fontWeight: 500 }}>Completed</div>
       </div>
 
+      {/* Pending Link */}
       <div style={{ 
         flex: 1, 
-        minWidth: "220px",
+        minWidth: "210px",
         background: "#fff", 
-        borderRadius: "10px", 
+        borderRadius: "12px", 
         padding: "16px 20px", 
-        borderLeft: "5px solid #64748b",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.05)"
+        borderLeft: "6px solid #f59e0b",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.06)"
       }}>
-        <div style={{ fontSize: "32px", fontWeight: 700, color: "#64748b" }}>{cr}%</div>
-        <div style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Clear Rate</div>
+        <div style={{ fontSize: "36px", fontWeight: 700, color: "#f59e0b", lineHeight: 1 }}>{plCount}</div>
+        <div style={{ fontSize: "14px", color: "#475569", marginTop: "6px", fontWeight: 500 }}>Pending Link</div>
+      </div>
+
+      {/* Clear Rate */}
+      <div style={{ 
+        flex: 1, 
+        minWidth: "210px",
+        background: "#fff", 
+        borderRadius: "12px", 
+        padding: "16px 20px", 
+        borderLeft: "6px solid #1e40af",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.06)"
+      }}>
+        <div style={{ fontSize: "36px", fontWeight: 700, color: "#1e40af", lineHeight: 1 }}>{cr}%</div>
+        <div style={{ fontSize: "14px", color: "#475569", marginTop: "6px", fontWeight: 500 }}>Clear Rate</div>
       </div>
     </div>
   );
@@ -3794,12 +3873,13 @@ export default function Client() {
                 </div>
               </div>
 
-              <SummaryCards 
-                activeCount={counts.pending} 
-                completedCount={counts.completed} 
-                pendingLinkCount={pendingLinkCount} 
-                clearRate={clearRate} 
-              />
+            <SummaryCards 
+  totalCount={totalFiltered.length}
+  activeCount={counts.pending} 
+  completedCount={counts.completed} 
+  pendingLinkCount={pendingLinkCount} 
+  clearRate={clearRate} 
+/>
 
               <DateFilterBar 
                 filter={totalDateFilter} 
@@ -3850,12 +3930,13 @@ export default function Client() {
                 </div>
               </div>
 
-              <SummaryCards 
-                activeCount={counts.pending} 
-                completedCount={counts.completed} 
-                pendingLinkCount={pendingLinkCount} 
-                clearRate={clearRate} 
-              />
+             <SummaryCards 
+  totalCount={total}
+  activeCount={counts.pending} 
+  completedCount={counts.completed} 
+  pendingLinkCount={pendingLinkCount} 
+  clearRate={clearRate} 
+/>
 
               <DateFilterBar 
                 filter={dateFilter} 
