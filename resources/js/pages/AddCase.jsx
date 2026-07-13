@@ -2033,9 +2033,7 @@ export default function AddCase() {
                         <strong>{form.invoiceCycle === "monthly" ? "Monthly" : "Per Case"}</strong>
                       </div>
                     )}
-                    <div className="ac-success-meta-row">
-                      <span>Amount</span><strong>₹{totalAmount.toLocaleString()}</strong>
-                    </div>
+    
                   </div>
 
                   <div className="ac-success-checks">
@@ -2445,10 +2443,7 @@ export default function AddCase() {
                       <span>Checks</span>
                       <strong>{form.checks.length} selected</strong>
                     </div>
-                    <div className="ac-summary-row">
-                      <span>Amount</span>
-                      <strong>₹{totalAmount.toLocaleString()}</strong>
-                    </div>
+                    
                     {form.billingMode === "prepaid_candidate" && (
                       <div className="ac-summary-row">
                         <span>Payment</span>
