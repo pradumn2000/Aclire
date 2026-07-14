@@ -2686,10 +2686,11 @@ const DEFAULT_CHECK_RATES = {
   database: 120,  criminal: 220,  drug: 400, court: 160,
 };
 
-// ── Default turnaround time (in days) per check type ────────────────────────
+// ── Default turnaround time (in days) per check type — starts at 0,
+//    admin fills in the actual TAT per case.
 const DEFAULT_CHECK_TAT = {
-  employment: 3, education: 4, address: 2,
-  database: 1,  criminal: 5,  drug: 7, court: 10,
+  employment: 0, education: 0, address: 0,
+  database: 0,  criminal: 0,  drug: 0, court: 0,
 };
 
 const CHECK_TYPES = [
@@ -3569,6 +3570,20 @@ export default function AddCase() {
                                   onChange={(e) => setRate(ct.key, e.target.value)}
                                 />
                               </div>
+                              <div className="ac-check-rate-edit" title="Turnaround time (days)">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  className="ac-rate-input ac-tat-input"
+                                  value={tats[ct.key]}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onChange={(e) => setTat(ct.key, e.target.value)}
+                                />
+                                <span className="ac-rate-suffix">d</span>
+                              </div>
+                            </div>
+                          ) : !isClientUser ? (
+                            <div className="ac-check-side" onClick={(e) => e.stopPropagation()}>
                               <div className="ac-check-rate-edit" title="Turnaround time (days)">
                                 <input
                                   type="number"
