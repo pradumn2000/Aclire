@@ -3597,7 +3597,19 @@ export default function AddCase() {
                               </div>
                             </div>
                           ) : (
-                            <span className="ac-check-rate">{tats[ct.key]}d TAT</span>
+                            <div className="ac-check-side" onClick={(e) => e.stopPropagation()}>
+                              <div className="ac-check-rate-edit" title="Turnaround time (days)">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  className="ac-rate-input ac-tat-input"
+                                  value={tats[ct.key]}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onChange={(e) => setTat(ct.key, e.target.value)}
+                                />
+                                <span className="ac-rate-suffix">d</span>
+                              </div>
+                            </div>
                           )}
                         </div>
                       );
