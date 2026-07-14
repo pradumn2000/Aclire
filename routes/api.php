@@ -556,6 +556,83 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['cases' => $cases]);
     });
+    // ── GET SINGLE CASE (for edit prefill) ───────────────────
+    Route::get('/cases/{caseId}', function (Request $request, $caseId) {
+        $case = BGVCase::where('case_id', $caseId)->first();
+        if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+        $user = $request->user();
+        if ($user->role === 'client') {
+            $owns = $case->created_by === $user->id
+                || $case->candidate_email === $user->email
+                || stripos($case->client_name, $user->name) !== false;
+            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return response()->json(['case' => $case]);
+    });
+
+    // ── UPDATE CASE (edit flow) ───────────────────────────────
+    Route::put('/cases/{caseId}', function (Request $request, $caseId) {
+        $case = BGVCase::where('case_id', $caseId)->first();
+        if (!$case) return response()->json(['message' => 'Case not found'], 404);
+
+        $user = $request->user();
+        if ($user->role === 'client') {
+            $owns = $case->created_by === $user->id
+                || $case->candidate_email === $user->email
+                || stripos($case->client_name, $user->name) !== false;
+            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Editing fields is blocked once verification has moved past "pending" —
+        // matches the note flagged in AddCase.jsx's edit flow.
+        if ($case->status !== 'pending' && $user->role === 'client') {
+            return response()->json(['message' => 'This case can no longer be edited — verification is already in progress.'], 422);
+        }
+
+        $request->validate([
+            'candidate_name'  => 'required|string|max:255',
+            'candidate_email' => 'required|email',
+            'candidate_dob'   => 'required|date',
+            'client_name'     => 'required|string|max:255',
+            'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+            'checks'          => 'required|array|min:1',
+            'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
+        ]);
+
+        $before = $case->toArray();
+
+        $case->update([
+            'candidate_name'   => $request->candidate_name,
+            'candidate_email'  => $request->candidate_email,
+            'candidate_mobile' => $request->candidate_mobile,
+            'candidate_dob'    => $request->candidate_dob,
+            'position'         => $request->position,
+            'client_name'      => $request->client_name,
+            'client_id'        => $request->client_id,
+            'checks'           => $request->checks,
+            'priority'         => $request->priority ?? $case->priority,
+            'billing_mode'     => $request->billing_mode,
+            'payment_timing'   => $request->payment_timing,
+            'invoice_cycle'    => $request->invoice_cycle,
+            'po_number'        => $request->po_number,
+            'total_amount'     => $request->total_amount ?? $case->total_amount,
+            'payment_link'     => $request->payment_link,
+            'notes'            => $request->notes,
+        ]);
+
+        \App\Models\CaseEvent::log(
+            $case->case_id,
+            'edited',
+            'Case details updated',
+            "Case details for {$case->candidate_name} were edited",
+            ['before' => $before, 'checks' => $case->checks],
+            $user
+        );
+
+        return response()->json(['message' => 'Case updated', 'case' => $case]);
+    });
 
     // ── DASHBOARD STATS ──────────────────────────────────────
     Route::get('/dashboard-stats', function (Request $request) {
