@@ -2686,6 +2686,12 @@ const DEFAULT_CHECK_RATES = {
   database: 120,  criminal: 220,  drug: 400, court: 160,
 };
 
+// ── Default turnaround time (in days) per check type ────────────────────────
+const DEFAULT_CHECK_TAT = {
+  employment: 3, education: 4, address: 2,
+  database: 1,  criminal: 5,  drug: 7, court: 10,
+};
+
 const CHECK_TYPES = [
   { key: "employment", label: "Employment" },
   { key: "education",  label: "Education"  },
@@ -2722,6 +2728,19 @@ function buildCheckRates(user) {
     return rates;
   }
   return DEFAULT_CHECK_RATES;
+}
+
+// ── Build the TAT map, same pattern as buildCheckRates ──────────────────────
+function buildCheckTats(user) {
+  if (user.role === "client" && user.checkTat && typeof user.checkTat === "object") {
+    const tats = { ...DEFAULT_CHECK_TAT };
+    Object.entries(user.checkTat).forEach(([key, val]) => {
+      const mapped = CHECK_KEY_ALIASES[key] || key;
+      if (mapped in tats) tats[mapped] = Number(val) || 0;
+    });
+    return tats;
+  }
+  return DEFAULT_CHECK_TAT;
 }
 
 function getEmptyForm(user) {
@@ -2819,6 +2838,10 @@ export default function AddCase() {
   //    the fixed default / contract rate as-is.
   const [rates, setRates] = useState(() => buildCheckRates(user));
 
+  // ── Check TAT (turnaround time, in days) — admin can edit these live per
+  //    case; everyone else sees the fixed default / contract TAT as-is.
+  const [tats, setTats] = useState(() => buildCheckTats(user));
+
   // ── Edit mode: fetch the existing case and prefill the form ─────────────────
   const [fetchingCase, setFetchingCase] = useState(isEditMode);
   const [loadError, setLoadError]       = useState("");
@@ -2857,6 +2880,18 @@ export default function AddCase() {
             });
           }
         }
+        // Keep admin-editable TAT in sync with whatever was actually set on
+        // this case, if the API returns a per-check TAT breakdown.
+        if (c.check_tat && typeof c.check_tat === "object") {
+          setTats(prev => {
+            const next = { ...prev };
+            Object.entries(c.check_tat).forEach(([k, v]) => {
+              const mapped = CHECK_KEY_ALIASES[k] || k;
+              if (mapped in next) next[mapped] = Number(v) || 0;
+            });
+            return next;
+          });
+        }
         if (c.payment_link) setGeneratedLink(c.payment_link);
       })
       .catch(err => { if (!cancelled) setLoadError(err.message || "Failed to load case details."); })
@@ -2878,6 +2913,12 @@ export default function AddCase() {
     setRates(p => ({ ...p, [key]: Number.isFinite(num) && num >= 0 ? num : 0 }));
   };
 
+  // ── Update a single check's TAT (days) ───────────────────────────────────
+  const setTat = (key, value) => {
+    const num = Number(value);
+    setTats(p => ({ ...p, [key]: Number.isFinite(num) && num >= 0 ? num : 0 }));
+  };
+
   const set = (field, value) => setForm(p => ({ ...p, [field]: value }));
 
   const toggleCheck = (key) =>
@@ -2892,6 +2933,13 @@ export default function AddCase() {
   const clearAll  = () => setForm(p => ({ ...p, checks: [] }));
 
   const totalAmount = form.checks.reduce((s, k) => s + (rates[k] || 0), 0);
+
+  // ── Overall TAT for the case = the longest TAT among the selected checks
+  //    (checks generally run in parallel, so the case is only as fast as its
+  //    slowest check).
+  const overallTat = form.checks.length > 0
+    ? Math.max(...form.checks.map(k => tats[k] || 0))
+    : 0;
 
   // Only used by admin/allocator — clients have a locked clientId/clientName
   const handleClientChange = (clientId) => {
@@ -2964,6 +3012,8 @@ export default function AddCase() {
           invoice_cycle:    form.invoiceCycle,
           po_number:        form.poNumber,
           total_amount:     totalAmount,
+          check_tat:        tats,
+          overall_tat:      overallTat,
           payment_link:     generatedLink || null,
           notes:            form.notes,
         }),
@@ -2989,6 +3039,7 @@ export default function AddCase() {
   const handleReset = () => {
     setForm(getEmptyForm(user));
     setRates(buildCheckRates(user));
+    setTats(buildCheckTats(user));
     setSubmitted(false);
     setCaseId(null);
     setGeneratedLink("");
@@ -3114,6 +3165,10 @@ export default function AddCase() {
                     <div className="ac-success-meta-row">
                       <span>Billing</span>
                       <strong style={{ color: activeBilling?.color }}>{activeBilling?.label}</strong>
+                    </div>
+                    <div className="ac-success-meta-row">
+                      <span>Estimated TAT</span>
+                      <strong>{overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}</strong>
                     </div>
                     {form.billingMode === "postpaid_client" && (
                       <div className="ac-success-meta-row">
@@ -3382,17 +3437,19 @@ export default function AddCase() {
                           ))}
                         </div>
                       </div>
-                      <div className="ac-field">
-                        <label className="ac-label">Payment Amount</label>
-                        <div className="ac-amount-display">
-                          ₹{totalAmount > 0 ? totalAmount.toLocaleString() : "—"}
-                          <span className="ac-amount-note">
-                            {form.checks.length > 0
-                              ? `(${form.checks.length} checks selected)`
-                              : "Select checks to calculate"}
-                          </span>
+                      {isAdminUser && (
+                        <div className="ac-field">
+                          <label className="ac-label">Payment Amount</label>
+                          <div className="ac-amount-display">
+                            ₹{totalAmount > 0 ? totalAmount.toLocaleString() : "—"}
+                            <span className="ac-amount-note">
+                              {form.checks.length > 0
+                                ? `(${form.checks.length} checks selected)`
+                                : "Select checks to calculate"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                      )}
                       <div className="ac-field">
                         <label className="ac-label">Payment Link</label>
                         {!generatedLink ? (
@@ -3440,13 +3497,22 @@ export default function AddCase() {
                         <input className="ac-input" type="text" placeholder="e.g. PO-2024-0391"
                           value={form.poNumber} onChange={e => set("poNumber", e.target.value)} />
                       </div>
-                      <div className="ac-billing-info-row">
-                        <span className="ac-billing-info-icon">ℹ</span>
-                        <span>
-                          Invoice of <strong>₹{totalAmount > 0 ? totalAmount.toLocaleString() : "—"}</strong> will be
-                          raised {form.invoiceCycle === "monthly" ? "at month end" : "immediately after case closure"}.
-                        </span>
-                      </div>
+                      {isAdminUser ? (
+                        <div className="ac-billing-info-row">
+                          <span className="ac-billing-info-icon">ℹ</span>
+                          <span>
+                            Invoice of <strong>₹{totalAmount > 0 ? totalAmount.toLocaleString() : "—"}</strong> will be
+                            raised {form.invoiceCycle === "monthly" ? "at month end" : "immediately after case closure"}.
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="ac-billing-info-row">
+                          <span className="ac-billing-info-icon">ℹ</span>
+                          <span>
+                            Invoice will be raised {form.invoiceCycle === "monthly" ? "at month end" : "immediately after case closure"}.
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -3491,23 +3557,33 @@ export default function AddCase() {
                           </div>
 
                           {isAdminUser ? (
-                            <div
-                              className="ac-check-rate-edit"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <span className="ac-rate-prefix">₹</span>
-                              <input
-                                type="number"
-                                min="0"
-                                className="ac-rate-input"
-                                value={rates[ct.key]}
-                                onClick={(e) => e.stopPropagation()}
-                                onChange={(e) => setRate(ct.key, e.target.value)}
-                              />
+                            <div className="ac-check-side" onClick={(e) => e.stopPropagation()}>
+                              <div className="ac-check-rate-edit" title="Rate">
+                                <span className="ac-rate-prefix">₹</span>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  className="ac-rate-input"
+                                  value={rates[ct.key]}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onChange={(e) => setRate(ct.key, e.target.value)}
+                                />
+                              </div>
+                              <div className="ac-check-rate-edit" title="Turnaround time (days)">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  className="ac-rate-input ac-tat-input"
+                                  value={tats[ct.key]}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onChange={(e) => setTat(ct.key, e.target.value)}
+                                />
+                                <span className="ac-rate-suffix">d</span>
+                              </div>
                             </div>
-                          ) : !isClientUser ? (
-                            <span className="ac-check-rate">₹{rates[ct.key]}</span>
-                          ) : null}
+                          ) : (
+                            <span className="ac-check-rate">{tats[ct.key]}d TAT</span>
+                          )}
                         </div>
                       );
                     })}
@@ -3515,7 +3591,10 @@ export default function AddCase() {
 
                   <div className="ac-amount-bar">
                     <span>{form.checks.length} of {CHECK_TYPES.length} selected</span>
-                    {!isClientUser && (
+                    <span className="ac-tat-bar-item">
+                      Est. TAT: <strong>{overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}</strong>
+                    </span>
+                    {isAdminUser && (
                       <span className="ac-total-amt">Total: ₹{totalAmount.toLocaleString()}</span>
                     )}
                   </div>
@@ -3544,7 +3623,10 @@ export default function AddCase() {
                       <span>Checks</span>
                       <strong>{form.checks.length} selected</strong>
                     </div>
-                    
+                    <div className="ac-summary-row">
+                      <span>Estimated TAT</span>
+                      <strong>{overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}</strong>
+                    </div>
                     {form.billingMode === "prepaid_candidate" && (
                       <div className="ac-summary-row">
                         <span>Payment</span>
@@ -3735,21 +3817,25 @@ const sharedStyles = `
   .ac-check-ctrl { display: flex; gap: 6px; align-items: center; font-size: 0.75rem; color: #94a3b8; }
   .ac-link-btn { background: none; border: none; color: #2b3b8c; font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline; }
   .ac-checks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .ac-check-tile { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; background: #f8fafc; cursor: pointer; transition: all 0.15s; }
+  .ac-check-tile { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; background: #f8fafc; cursor: pointer; transition: all 0.15s; gap: 8px; }
   .ac-check-tile:hover { border-color: #2b3b8c; }
   .ac-check-active { border-color: #2b3b8c; background: #eef1fb; }
   .ac-check-tile-top { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; font-weight: 600; color: #334155; }
   .ac-check-active .ac-check-tile-top { color: #2b3b8c; }
   .ac-check-dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid #cbd5e1; flex-shrink: 0; }
   .ac-check-active .ac-check-dot { border-color: #2b3b8c; background: #2b3b8c; }
-  .ac-check-rate { font-size: 0.7rem; color: #94a3b8; font-weight: 600; }
+  .ac-check-rate { font-size: 0.68rem; color: #94a3b8; font-weight: 600; text-align: right; white-space: nowrap; }
   .ac-check-active .ac-check-rate { color: #2b3b8c; }
+  .ac-check-side { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .ac-check-rate-edit { display: flex; align-items: center; gap: 2px; background: #fff; border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 2px 6px; flex-shrink: 0; }
   .ac-check-rate-edit:focus-within { border-color: #2b3b8c; }
   .ac-rate-prefix { font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
+  .ac-rate-suffix { font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
   .ac-rate-input { width: 52px; border: none; outline: none; background: transparent; font-size: 0.72rem; font-weight: 700; color: #1e293b; padding: 2px 0; }
+  .ac-tat-input { width: 34px; }
   .ac-rate-input::-webkit-inner-spin-button, .ac-rate-input::-webkit-outer-spin-button { margin: 0; }
-  .ac-amount-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 0.75rem; color: #94a3b8; }
+  .ac-amount-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 0.75rem; color: #94a3b8; flex-wrap: wrap; gap: 8px; }
+  .ac-tat-bar-item strong { color: #0d9488; font-weight: 700; }
   .ac-total-amt { font-weight: 700; color: #2b3b8c; font-size: 0.85rem; }
   .ac-textarea { width: 100%; padding: 10px 13px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; color: #1e293b; background: #f8fafc; outline: none; resize: vertical; font-family: inherit; box-sizing: border-box; }
   .ac-textarea:focus { border-color: #2b3b8c; background: #fff; }
