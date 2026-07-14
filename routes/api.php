@@ -11,6 +11,33 @@ use App\Models\User;
 // ─────────────────────────────────────────
 // LOGIN — returns role so frontend can redirect
 // ─────────────────────────────────────────
+// Route::post('/login', function (Request $request) {
+
+//     $request->validate([
+//         'email'    => 'required|email',
+//         'password' => 'required',
+//     ]);
+
+//     if (!Auth::attempt($request->only('email', 'password'))) {
+//         return response()->json(['message' => 'Invalid credentials'], 401);
+//     }
+
+//     $user  = Auth::user();
+//     $token = $user->createToken('authToken')->plainTextToken;
+
+//     return response()->json([
+//         'token' => $token,
+//         'user'  => [
+//             'id'    => $user->id,
+//             'name'  => $user->name,
+//             'email' => $user->email,
+//             'role'  => $user->role,
+//         ],
+//     ]);
+// });
+
+// routes/api.php — POST /login
+
 Route::post('/login', function (Request $request) {
 
     $request->validate([
@@ -28,14 +55,21 @@ Route::post('/login', function (Request $request) {
     return response()->json([
         'token' => $token,
         'user'  => [
-            'id'    => $user->id,
-            'name'  => $user->name,
-            'email' => $user->email,
-            'role'  => $user->role,
+            'id'             => $user->id,
+            'name'           => $user->name,
+            'email'          => $user->email,
+            'role'           => $user->role,
+            // These three exist directly on the users table (per your
+            // User model's $fillable/$casts) and are what the client-side
+            // billing lock in AddCase.jsx depends on. They were missing
+            // from the old login response, so a freshly logged-in client
+            // always looked like they had no billing mode configured.
+            'billing_mode'   => $user->billing_mode,
+            'agreed_checks'  => $user->agreed_checks,  // already array via cast
+            'check_rates'    => $user->check_rates,    // already array via cast
         ],
     ]);
 });
-
 // ─────────────────────────────────────────
 // REGISTER
 // ─────────────────────────────────────────

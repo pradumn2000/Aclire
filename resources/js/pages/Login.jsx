@@ -326,6 +326,182 @@
 //   );
 // }
 
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import "../../css/style.css";
+// import { API_URL } from "../src/config";
+
+// const ROLE_ROUTES = {
+//   admin:          "/dashboard",
+//   allocator:      "/Allocator",
+//   verifier:       "/Verifyer",
+//   check_manager:  "/AllCases",
+//   report_writing: "/Specialist",
+//   pvt_qc:         "/Intake",
+//   client:         "/Client",
+//   onboarding:     "/clientportal",
+//   // Specialist verifier roles — all land on the Verifyer dashboard
+//   employment_verifier: "/Verifyer",
+//   education_verifier:  "/Verifyer",
+//   address_verifier:    "/Verifyer",
+//   database_verifier:   "/Verifyer",
+//   criminal_verifier:   "/Verifyer",
+//   drug_test_verifier:  "/Verifyer",
+//   courtroom_verifier:  "/Verifyer",
+// };
+
+// export default function Login() {
+//   const [email, setEmail]               = useState("");
+//   const [password, setPassword]         = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [error, setError]               = useState("");
+//   const [loading, setLoading]           = useState(false);
+//   const navigate = useNavigate();
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (loading) return;
+//     setError("");
+//     setLoading(true);
+
+//     try {
+//       const res  = await fetch(`${API_URL}/api/login`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json", Accept: "application/json" },
+//         body: JSON.stringify({ email: email.trim(), password: password.trim() }),
+//       });
+//       const data = await res.json();
+
+//       if (!res.ok) {
+//         setError(data.message || "Login failed. Please check your credentials.");
+//         return;
+//       }
+
+//       localStorage.setItem("token", data.token);
+//       localStorage.setItem("user",  JSON.stringify(data.user));
+
+//       const route = ROLE_ROUTES[data.user?.role];
+//       if (!route) {
+//         setError("Your account role is not recognised. Please contact admin.");
+//         localStorage.removeItem("token");
+//         localStorage.removeItem("user");
+//         return;
+//       }
+//       navigate(route);
+
+//     } catch {
+//       setError("Unable to connect to server. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <section className="log-in">
+//       <div className="container">
+//         <div className="row">
+
+//           {/* <div className="col-lg-6">
+//             <div className="login-left-img">
+//               <img src="/images/login/login-left.png" alt="" />
+//             </div>
+//           </div> */}
+
+//           <div className="col-lg-12">
+//             <div className="login-wrp login">
+
+//               <div className="log-in-logo">
+//                 <img src="/images/login/logo.png" alt="logo" />
+//               </div>
+
+//               <div className="log-in-inner-wrp">
+//                 <h2>Login</h2>
+//                 <p>Verification Management System</p>
+
+//                 <form onSubmit={handleSubmit}>
+
+//                   <div className="login-pst">
+//                     <div className="input-grp">
+//                       <input
+//                         type="email"
+//                         placeholder="Enter your email"
+//                         value={email}
+//                         onChange={(e) => setEmail(e.target.value)}
+//                         required
+//                       />
+//                     </div>
+//                   </div>
+
+//                   <div className="login-pst">
+//                     <div className="input-grp pass">
+//                       <input
+//                         type={showPassword ? "text" : "password"}
+//                         placeholder="Enter your password"
+//                         className="password"
+//                         value={password}
+//                         onChange={(e) => setPassword(e.target.value)}
+//                         required
+//                       />
+//                       <div
+//                         className="password-eye"
+//                         onClick={() => setShowPassword((v) => !v)}
+//                       >
+//                         <div className={showPassword ? "eye eye-open" : "eye eye-close"} />
+//                       </div>
+//                     </div>
+//                   </div>
+
+//                   {error && (
+//                     <p style={{ color: "#dc2626", fontSize: "0.82rem", marginBottom: "10px" }}>
+//                       {error}
+//                     </p>
+//                   )}
+
+//                   <div className="forgot-pass">
+//                     <a href="/forgetpassword">Forgot Password?</a>
+//                   </div>
+
+//                   <input
+//                     type="submit"
+//                     value={loading ? "Logging in…" : "Login"}
+//                     className="primary-cta"
+//                     disabled={loading}
+//                     style={{ width: "100%", marginTop: "8px", cursor: loading ? "not-allowed" : "pointer" }}
+//                   />
+
+//                 </form>
+
+//                 {/* ── Create account link ── */}
+//                 {/* <div className="ac-switch" style={{
+//                   marginTop: "20px", textAlign: "center",
+//                   fontSize: "0.85rem", color: "#64748b",
+//                 }}>
+//                   New here?{" "}
+//                   <a href="/signup" style={{ color: "#2b3b8c", fontWeight: 700, textDecoration: "underline" }}>
+//                     Create an Account
+//                   </a>
+//                 </div> */}
+              
+
+// <div className="ac-switch" style={{
+//   marginTop: "20px", textAlign: "center",
+//   fontSize: "0.85rem", color: "#64748b",
+// }}>
+//   New client?{" "}
+//   <a href="/client-register" style={{ color: "#02c39a", fontWeight: 700, textDecoration: "underline" }}>
+//     Register as Company
+//   </a>
+// </div>
+
+//               </div>
+//             </div>
+//           </div>
+
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/style.css";
@@ -349,6 +525,26 @@ const ROLE_ROUTES = {
   drug_test_verifier:  "/Verifyer",
   courtroom_verifier:  "/Verifyer",
 };
+
+// ── Normalize the backend user object before it goes into localStorage.
+//    Different endpoints (register vs login) or different API resources
+//    can return the same data under different key casing
+//    (e.g. billing_mode vs billingMode). AddCase.jsx and other screens
+//    read the camelCase keys, so we make sure those always exist here —
+//    once, in the one place every login response passes through — instead
+//    of every consuming screen having to guess which casing it got.
+function normalizeUser(u) {
+  if (!u || typeof u !== "object") return u;
+
+  return {
+    ...u,
+    billingMode: u.billingMode ?? u.billing_mode ?? u.billingmode ?? "",
+    checkRates:  u.checkRates  ?? u.check_rates  ?? u.checkrates  ?? undefined,
+    checkTat:    u.checkTat    ?? u.check_tat    ?? u.checktat    ?? undefined,
+    agreedChecks:
+      u.agreedChecks ?? u.agreed_checks ?? u.agreedchecks ?? undefined,
+  };
+}
 
 export default function Login() {
   const [email, setEmail]               = useState("");
@@ -377,10 +573,12 @@ export default function Login() {
         return;
       }
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user",  JSON.stringify(data.user));
+      const normalizedUser = normalizeUser(data.user);
 
-      const route = ROLE_ROUTES[data.user?.role];
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user",  JSON.stringify(normalizedUser));
+
+      const route = ROLE_ROUTES[normalizedUser?.role];
       if (!route) {
         setError("Your account role is not recognised. Please contact admin.");
         localStorage.removeItem("token");
