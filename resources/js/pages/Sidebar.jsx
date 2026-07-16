@@ -281,7 +281,8 @@ const ROLE_NAV = {
   admin: [
     { path: "/dashboard",      label: "Dashboard",           img: "images/sidebar/home-icon.svg" },
     { path: "/AllCases",       label: "All Cases",           img: "images/sidebar/cases-icon.svg" },
-    { path: "/AddCase",        label: "Add Client",          img: "images/sidebar/wip-icon.svg" },
+    { path: "/AddCase",        label: "Add Case",          img: "images/sidebar/wip-icon.svg" },
+    { path: "/AddClient",        label: "Add Client",          img: "images/sidebar/wip-icon.svg" },
     { path: "/Allocator",      label: "Case Allocation",     img: "images/sidebar/cases-icon.svg" },
     { path: "/Verifyer",       label: "Verifier",            img: "images/sidebar/setting-icon.svg" },
     { path: "/emploment",      label: "Employment",          img: "images/sidebar/report-icon.svg" },
