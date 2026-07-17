@@ -184,7 +184,7 @@ Route::post('/clients/register', function (Request $request) {
         'primaryContact' => 'required|string|max:255',
         'contactPhone'   => 'nullable|string|max:20',
         'contactEmail'   => 'required|email|unique:users,email',
-        'password'       => 'required|digits:6',
+        'password'       => 'required|digits:8',
         'priority'       => 'nullable|in:normal,high,urgent',
         'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
         'agreedChecks'   => 'required|array|min:1',
