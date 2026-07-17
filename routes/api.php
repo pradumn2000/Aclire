@@ -96,19 +96,104 @@ Route::post('/register', function (Request $request) {
 // ─────────────────────────────────────────
 // CLIENT COMPANY REGISTER
 // ─────────────────────────────────────────
+// Route::post('/clients/register', function (Request $request) {
+//     $request->validate([
+//         'companyName'    => 'required|string|max:255',
+//         'gstin'          => 'required|string|max:15',
+//         'primaryContact' => 'required|string|max:255',
+//         'contactPhone'   => 'nullable|string|max:20',
+//         'contactEmail'   => 'required|email|unique:users,email',
+//         'password'       => 'required|min:8',
+//         'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+//         'agreedChecks'   => 'required|array|min:1',
+//         'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug_test,courtroom',
+//         'checkRates'     => 'nullable|array',
+//         'checkRates.*'   => 'numeric|min:0',
+//     ]);
+
+//     // Calculate total amount from selected checks
+//     $totalAmount = 0;
+//     foreach ($request->agreedChecks as $check) {
+//         $rate = $request->checkRates[$check] ?? 1500; // fallback rate
+//         $totalAmount += $rate;
+//     }
+
+//     $user = User::create([
+//         'name'            => $request->companyName,
+//         'email'           => $request->contactEmail,
+//         'password'        => Hash::make($request->password),
+//         'role'            => 'client',
+//         'gstin'           => $request->gstin,
+//         'primary_contact' => $request->primaryContact,
+//         'contact_phone'   => $request->contactPhone,
+//         'billing_mode'    => $request->billingMode,
+//         'agreed_checks'   => $request->agreedChecks,
+//         'check_rates'     => $request->checkRates ?? [],
+//         'total_amount'    => $totalAmount,
+//     ]);
+
+//     $token = $user->createToken('authToken')->plainTextToken;
+
+//     return response()->json([
+//         'message' => 'Client registered successfully',
+//         'token'   => $token,
+//         'user'    => [
+//             'id'             => $user->id,
+//             'name'           => $user->name,
+//             'email'          => $user->email,
+//             'role'           => $user->role,
+//             'billingMode'    => $user->billing_mode,
+//             'agreedChecks'   => $user->agreed_checks,
+//             'checkRates'     => $user->check_rates,
+//             'totalAmount'    => $totalAmount,
+//         ],
+//     ], 201);
+// });
+// ─────────────────────────────────────────────────────────────────────────
+// REPLACE the existing Route::post('/clients/register', ...) block in
+// routes/api.php with this version. Changes from the original:
+//
+//   1. Added `address` (required) — new "Address" field on the form.
+//   2. `password` is now `digits:6` instead of `min:8`, to match the
+//      "Password – six digits" requirement. NOTE: a 6-digit numeric
+//      password is much weaker than a normal password; consider keeping
+//      this only if it's intentional for this internal admin flow.
+//   3. `agreedChecks.*` now accepts the SAME check keys used everywhere
+//      else in the app (employment, education, address, database,
+//      criminal, drug, court) instead of the old drug_test/courtroom
+//      aliases, so rates/TAT line up with AddCase.jsx and AddClient.jsx.
+//   4. Added `checkTat` (per-check turnaround time in days), stored
+//      alongside checkRates.
+//   5. Added `priority` and `notes` passthrough (optional).
+//
+// You'll also need a migration adding these columns to `users` (or a
+// related `clients` table, if you prefer normalizing it out):
+//   - address        (string/text, nullable)
+//   - check_tat       (json, nullable)
+//   - priority        (string, nullable)
+//   - notes           (text, nullable)
+// and add them to User::$fillable and User::$casts (array cast for
+// check_tat, same as agreed_checks / check_rates already are).
+// ─────────────────────────────────────────────────────────────────────────
+
 Route::post('/clients/register', function (Request $request) {
     $request->validate([
         'companyName'    => 'required|string|max:255',
+        'address'        => 'required|string|max:1000',
         'gstin'          => 'required|string|max:15',
         'primaryContact' => 'required|string|max:255',
         'contactPhone'   => 'nullable|string|max:20',
         'contactEmail'   => 'required|email|unique:users,email',
-        'password'       => 'required|min:8',
+        'password'       => 'required|digits:6',
+        'priority'       => 'nullable|in:normal,high,urgent',
         'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
         'agreedChecks'   => 'required|array|min:1',
-        'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug_test,courtroom',
+        'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug,court',
         'checkRates'     => 'nullable|array',
         'checkRates.*'   => 'numeric|min:0',
+        'checkTat'       => 'nullable|array',
+        'checkTat.*'     => 'numeric|min:0',
+        'notes'          => 'nullable|string',
     ]);
 
     // Calculate total amount from selected checks
@@ -123,13 +208,17 @@ Route::post('/clients/register', function (Request $request) {
         'email'           => $request->contactEmail,
         'password'        => Hash::make($request->password),
         'role'            => 'client',
+        'address'         => $request->address,
         'gstin'           => $request->gstin,
         'primary_contact' => $request->primaryContact,
         'contact_phone'   => $request->contactPhone,
+        'priority'        => $request->priority ?? 'normal',
         'billing_mode'    => $request->billingMode,
         'agreed_checks'   => $request->agreedChecks,
         'check_rates'     => $request->checkRates ?? [],
+        'check_tat'       => $request->checkTat ?? [],
         'total_amount'    => $totalAmount,
+        'notes'           => $request->notes,
     ]);
 
     $token = $user->createToken('authToken')->plainTextToken;
@@ -142,9 +231,11 @@ Route::post('/clients/register', function (Request $request) {
             'name'           => $user->name,
             'email'          => $user->email,
             'role'           => $user->role,
+            'address'        => $user->address,
             'billingMode'    => $user->billing_mode,
             'agreedChecks'   => $user->agreed_checks,
             'checkRates'     => $user->check_rates,
+            'checkTat'       => $user->check_tat,
             'totalAmount'    => $totalAmount,
         ],
     ], 201);
