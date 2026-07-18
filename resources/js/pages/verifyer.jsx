@@ -3607,6 +3607,10 @@ const DATE_FILTERS = [
   { key: "all",    label: "All Time"   },
 ];
 
+// ── Valid sidebar/tab views for the queue ───────────────────────────────────────
+const VIEW_KEYS   = ["active", "completed", "clear", "discrepancy"];
+const VIEW_LABELS = { active: "ACTIVE", completed: "COMPLETED", clear: "CLEAR", discrepancy: "DISCREPANCY" };
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function getUser() {
   try { return JSON.parse(localStorage.getItem("user")) || {}; } catch { return {}; }
@@ -3631,6 +3635,11 @@ function calcTAT(createdAt) {
 function normPriority(p) {
   if (!p) return "LOW";
   return String(p).toUpperCase();
+}
+
+function getViewFromURL(search) {
+  const view = new URLSearchParams(search).get("view") || "active";
+  return VIEW_KEYS.includes(view) ? view : "active";
 }
 
 // ── Shared input styles ────────────────────────────────────────────────────────
@@ -3690,8 +3699,8 @@ export default function Verifyer() {
   const isAdmin        = role === "admin";
   const assignedCheck  = ROLE_CHECK_MAP[role] || null; // null = admin / generic verifier sees all
 
-  // ── Sidebar view: "active" | "completed"
-  const sidebarView = new URLSearchParams(location.search).get("view") || "active";
+  // ── Sidebar/tab view: "active" | "completed" | "clear" | "discrepancy"
+  const sidebarView = getViewFromURL(location.search);
 
   // ── State ─────────────────────────────────────────────────────────────────
   const [cases,        setCases]        = useState([]);
@@ -3795,9 +3804,23 @@ export default function Verifyer() {
     return true;
   };
 
-  // ── Filtered queue lists (status + date range) ──────────────────────────────
-  const activeCases    = cases.filter(c => c.status !== "completed" && isInRange(c.created_at));
-  const completedCases = cases.filter(c => c.status === "completed" && isInRange(c.created_at));
+  // ── Which check's outcome "Clear"/"Discrepancy" refers to — the verifier's
+  //    assigned check for specialists, otherwise whichever check tab is
+  //    currently open for admins/generic verifiers.
+  const outcomeCheckKey = assignedCheck || activeCheck;
+
+  // ── Filtered lists (status/outcome + date range) ────────────────────────────
+  const activeCases      = cases.filter(c => c.status !== "completed" && isInRange(c.created_at));
+  const completedCases   = cases.filter(c => c.status === "completed" && isInRange(c.created_at));
+  const clearCases       = cases.filter(c => isInRange(c.created_at) && c.check_results?.[outcomeCheckKey]?.outcome === "clear");
+  const discrepancyCases = cases.filter(c => isInRange(c.created_at) && c.check_results?.[outcomeCheckKey]?.outcome === "discrepancy");
+
+  const VIEW_LISTS = {
+    active:      activeCases,
+    completed:   completedCases,
+    clear:       clearCases,
+    discrepancy: discrepancyCases,
+  };
 
   const filterBySearch = (list) => {
     if (!search) return list;
@@ -3809,7 +3832,7 @@ export default function Verifyer() {
     );
   };
 
-  const queueList = filterBySearch(sidebarView === "completed" ? completedCases : activeCases);
+  const queueList = filterBySearch(VIEW_LISTS[sidebarView] || activeCases);
 
   // ── Tab accessibility ──────────────────────────────────────────────────────
   // A tab is accessible if:
@@ -4243,30 +4266,50 @@ export default function Verifyer() {
               </div>
             </div>
 
-            {/* View toggle: Active / Completed */}
-            <div style={{ display: "flex", gap: "8px", marginBottom: "4px" }}>
-              <button
-                className={`tab-cta ${sidebarView === "active" ? "active" : ""}`}
-                onClick={() => navigate("/Verifyer?view=active", { replace: true })}
-              >
-                Active Cases
-                <span style={{ marginLeft: "6px", background: "rgba(0,0,0,0.1)", borderRadius: "8px", padding: "1px 6px", fontSize: "11px", fontWeight: 700 }}>
-                  {activeCases.length}
-                </span>
-              </button>
-              <button
-                className={`tab-cta ${sidebarView === "completed" ? "active" : ""}`}
-                onClick={() => navigate("/Verifyer?view=completed", { replace: true })}
-              >
-                Completed
-                <span style={{ marginLeft: "6px", background: "rgba(0,0,0,0.1)", borderRadius: "8px", padding: "1px 6px", fontSize: "11px", fontWeight: 700 }}>
-                  {completedCases.length}
-                </span>
-              </button>
+            {/* ── Tabs — Active Cases / Completed / Clear / Discrepancy (mirrors Intake's tab row) ── */}
+            <div className="dash-upper-head">
+              <div className="left">
+                <button
+                  className={`tab-cta ${sidebarView === "active" ? "active" : ""}`}
+                  onClick={() => navigate("/Verifyer?view=active", { replace: true })}
+                >
+                  Active Cases
+                  <span style={{ marginLeft: "5px", background: "rgba(0,0,0,.08)", borderRadius: "10px", padding: "1px 6px", fontSize: "12px" }}>
+                    {activeCases.length}
+                  </span>
+                </button>
+                <button
+                  className={`tab-cta ${sidebarView === "completed" ? "active" : ""}`}
+                  onClick={() => navigate("/Verifyer?view=completed", { replace: true })}
+                >
+                  Completed
+                  <span style={{ marginLeft: "5px", background: "rgba(0,0,0,.08)", borderRadius: "10px", padding: "1px 6px", fontSize: "12px" }}>
+                    {completedCases.length}
+                  </span>
+                </button>
+                <button
+                  className={`tab-cta ${sidebarView === "clear" ? "active" : ""}`}
+                  onClick={() => navigate("/Verifyer?view=clear", { replace: true })}
+                >
+                  Clear
+                  <span style={{ marginLeft: "5px", background: "rgba(0,0,0,.08)", borderRadius: "10px", padding: "1px 6px", fontSize: "12px" }}>
+                    {clearCases.length}
+                  </span>
+                </button>
+                <button
+                  className={`tab-cta ${sidebarView === "discrepancy" ? "active" : ""}`}
+                  onClick={() => navigate("/Verifyer?view=discrepancy", { replace: true })}
+                >
+                  Discrepancy
+                  <span style={{ marginLeft: "5px", background: "rgba(0,0,0,.08)", borderRadius: "10px", padding: "1px 6px", fontSize: "12px" }}>
+                    {discrepancyCases.length}
+                  </span>
+                </button>
+              </div>
             </div>
 
             {/* Date filters — same pattern as Intake.jsx */}
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center", marginBottom: "4px" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
               {DATE_FILTERS.map(df => (
                 <button
                   key={df.key}
@@ -4291,6 +4334,14 @@ export default function Verifyer() {
               )}
             </div>
 
+            {/* ── Stat cards — mirrors Intake's cards-head-dash row ── */}
+            <div className="cards-head-dash">
+              <div className="card-inner-dash bdr-total"><h4>{loading ? "—" : activeCases.length}</h4><p>Active</p></div>
+              <div className="card-inner-dash bdr-com"><h4>{loading ? "—" : completedCases.length}</h4><p>Completed</p></div>
+              <div className="card-inner-dash bdr-progress"><h4>{loading ? "—" : clearCases.length}</h4><p>Clear</p></div>
+              <div className="card-inner-dash bdr-rate"><h4>{loading ? "—" : discrepancyCases.length}</h4><p>Discrepancy</p></div>
+            </div>
+
             {/* Three-column layout: Queue | Form | Charges+Comments */}
             <div style={{ display: "grid", gridTemplateColumns: "300px 1fr 280px", gap: "16px", alignItems: "start" }}>
 
@@ -4298,7 +4349,7 @@ export default function Verifyer() {
               <div className="down-table" style={{ margin: 0 }}>
                 <div className="client-portal-cases">
                   <h3>
-                    {sidebarView === "completed" ? "COMPLETED" : "ACTIVE"} ({queueList.length})
+                    {VIEW_LABELS[sidebarView] || "ACTIVE"} ({queueList.length})
                   </h3>
                 </div>
 
