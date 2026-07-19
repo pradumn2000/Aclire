@@ -182,12 +182,12 @@ export default function Header() {
             borderRadius: "10px", padding: "15px", zIndex: 1000, color: "#333"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-              <h4 style={{ margin: 0 }}>Notifications</h4>
-              <span style={{ fontSize: "12px", color: "#007bff", cursor: "pointer" }}>See all</span>
+              <h4 style={{ margin: 0, color: "#000" }}>Notifications</h4>
+              <span style={{ fontSize: "12px", color: "#000", cursor: "pointer" }}>See all</span>
             </div>
             <hr style={{ border: "0", borderTop: "1px solid #eee" }} />
             <div style={{ fontSize: "13px", lineHeight: "1.4" }}>
-              <p><b>Today at 12:50 PM</b><br/>Your request to create 1,250,000 UVs has been accepted.</p>
+              <p style={{ color: "#000" }}><b>Today at 12:50 PM</b><br/>Your request to create 1,250,000 UVs has been accepted.</p>
               <hr style={{ border: "0", borderTop: "1px solid #eee" }} />
               <p><b>July 3, 9:28 A.M</b><br/>Your request to create 50,000 UVs has been accepted.</p>
             </div>
