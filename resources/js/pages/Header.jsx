@@ -170,7 +170,7 @@ export default function Header() {
         
         {/* Notification Icon (Left of User Badge) */}
         <div style={{ position: "relative", cursor: "pointer" }} onClick={() => setShowNotifications(!showNotifications)}>
-          <img src="images/notification-icon.svg" alt="Notifications" style={{ width: "24px" }} />
+          <img src="images/sidebar/NOTIFICATION.svg" alt="Notifications" style={{ width: "24px" }} />
           <span style={{ position: "absolute", top: "-5px", right: "-5px", background: "red", color: "white", fontSize: "10px", padding: "2px 5px", borderRadius: "50%", fontWeight: "bold" }}>2</span>
         </div>
 
