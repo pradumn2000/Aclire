@@ -177,7 +177,7 @@ export default function Header() {
         {/* Notification Dropdown */}
         {showNotifications && (
           <div style={{
-            position: "absolute", top: "60px", right: "160px", width: "320px",
+            position: "absolute", top: "52px", right: "245px", width: "320px",
             background: "#fff", boxShadow: "0px 4px 15px rgba(0,0,0,0.2)",
             borderRadius: "10px", padding: "15px", zIndex: 1000, color: "#333"
           }}>
@@ -187,9 +187,9 @@ export default function Header() {
             </div>
             <hr style={{ border: "0", borderTop: "1px solid #eee" }} />
             <div style={{ fontSize: "13px", lineHeight: "1.4" }}>
-              <p style={{ color: "#000" }}><b>Today at 12:50 PM</b><br/>Your request to create 1,250,000 UVs has been accepted.</p>
+              <p style={{ color: "#000" , textAlign: "left" }}><b>Today at 12:50 PM</b><br/>Your request to create 1,250,000 UVs has been accepted.</p>
               <hr style={{ border: "0", borderTop: "1px solid #eee" }} />
-              <p><b>July 3, 9:28 A.M</b><br/>Your request to create 50,000 UVs has been accepted.</p>
+              <p style={{ color: "#000" , textAlign: "left" }}><b>July 3, 9:28 A.M</b><br/>Your request to create 50,000 UVs has been accepted.</p>
             </div>
           </div>
         )}
