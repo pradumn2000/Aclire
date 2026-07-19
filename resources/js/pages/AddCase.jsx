@@ -2682,8 +2682,8 @@ const MOCK_CLIENTS = [
 ];
 
 const DEFAULT_CHECK_RATES = {
-  employment: 350, education: 280, address: 180,
-  database: 120,  criminal: 220,  drug: 400, court: 160,
+  employment: 0, education: 0, address: 0,
+  database: 0,  criminal: 0,  drug: 0, court: 0,
 };
 
 // ── Default turnaround time (in days) per check type — starts at 0,

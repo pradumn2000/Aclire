@@ -632,6 +632,7 @@ import AddInstitution from "./pages/AddInstitution";
 import CompanyManagement from "./pages/AddCompany";
 import ClientBilling from "./pages/ClientBilling";
 import ClientOnboardingForm from "./pages/Clientonbordingform";
+import AddClient from "./pages/AddClient";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -805,6 +806,9 @@ function App() {
         <Route path="/ClientOnboardingForm" element={
           <PrivateRoute><ClientOnboardingForm /></PrivateRoute>
         } />
+        <Route path="/AddClient" element={
+  <PrivateRoute role="admin"><AddClient /></PrivateRoute>
+} />
 
         {/* ── Catch all ── */}
         <Route path="*" element={<Navigate to="/" replace />} />
