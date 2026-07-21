@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('case_events', function (Blueprint $table) {
             $table->id();
+
             $table->string('case_id');
             $table->string('type');        // created, status_change, check_result, comment, document
             $table->string('title');
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->string('actor_name')->nullable();
             $table->timestamps();
 
+            // case_id index
             $table->index('case_id');
         });
     }

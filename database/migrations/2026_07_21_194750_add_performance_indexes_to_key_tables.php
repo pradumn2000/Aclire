@@ -6,52 +6,52 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         // USERS table
         Schema::table('users', function (Blueprint $table) {
-            $table->index('role');                    // For role-based queries
-            $table->index('email');                   // Login & uniqueness
-            $table->index('created_at');              // Recent clients
-            $table->index(['role', 'created_at']);    // Admin + recent clients
+            $table->index('role');
+            $table->index('email');
+            $table->index('created_at');
+            $table->index(['role', 'created_at']);
         });
 
         // CLIENT_REGISTRATIONS table
         Schema::table('client_registrations', function (Blueprint $table) {
-            $table->index('status');                  // Pending filtering
-            $table->index('contact_email');           // Uniqueness + lookup
-            $table->index('created_at');              // Ordering
-            $table->index(['status', 'created_at']);  // Main pending list query
+            $table->index('status');
+            $table->index('contact_email');
+            $table->index('created_at');
+            $table->index(['status', 'created_at']);
         });
 
-        // BGV CASES table
-        Schema::table('bgv_cases', function (Blueprint $table) {
-            $table->index('status');                  // Dashboard stats & filters
-            $table->index('case_id');                 // Primary lookup
-            $table->index('client_name');             // Client filtering
-            $table->index('candidate_email');         // Candidate lookup
-            $table->index('created_by');              // My cases (client)
-            $table->index('created_at');              // Timeline & ordering
-            $table->index(['status', 'created_at']);  // Common combined query
-            $table->index(['client_id', 'status']);   // Client-specific cases
+        // CASES table
+        Schema::table('cases', function (Blueprint $table) {
+            $table->index('status');
+            $table->index('case_id');
+            $table->index('client_name');
+            $table->index('candidate_email');
+            $table->index('created_by');
+            $table->index('created_at');
+            $table->index(['status', 'created_at']);
+            $table->index(['client_id', 'status']);
         });
 
-        // CANDIDATE LINKS
+        // CANDIDATE LINKS table
         Schema::table('candidate_links', function (Blueprint $table) {
-            $table->index('token');                   // Fast lookup by token
-            $table->index('status');                  // Submitted / pending
-            $table->index('client_id');               // Per client links
-            $table->index('expires_at');              // Expiry checks
+            $table->index('token');
+            $table->index('status');
+            $table->index('client_id');
+            $table->index('expires_at');
         });
 
-        // CASE EVENTS (Timeline)
+        // CASE EVENTS table
         Schema::table('case_events', function (Blueprint $table) {
-            $table->index('case_id');                 // Timeline per case
-            $table->index('created_at');              // Chronological order
+            // case_id index already exists in create_case_events_table migration
+            $table->index('created_at');
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropIndex(['role']);
@@ -67,7 +67,7 @@ return new class extends Migration
             $table->dropIndex(['status', 'created_at']);
         });
 
-        Schema::table('bgv_cases', function (Blueprint $table) {
+        Schema::table('cases', function (Blueprint $table) {
             $table->dropIndex(['status']);
             $table->dropIndex(['case_id']);
             $table->dropIndex(['client_name']);
@@ -86,7 +86,6 @@ return new class extends Migration
         });
 
         Schema::table('case_events', function (Blueprint $table) {
-            $table->dropIndex(['case_id']);
             $table->dropIndex(['created_at']);
         });
     }

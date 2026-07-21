@@ -1,3 +1,282 @@
+// import { useNavigate, useLocation } from "react-router-dom";
+
+// function getUser() {
+//   try {
+//     return JSON.parse(localStorage.getItem("user")) || {};
+//   } catch {
+//     return {};
+//   }
+// }
+
+// // Helper to normalize role (handles spelling variations)
+// const normalizeRole = (role) => {
+//   if (!role) return "admin";
+
+//   const r = role.toString().toLowerCase().trim();
+
+//   const roleMap = {
+//     verifier: "verifyer",
+//     verifyer: "verifyer",
+//     employment_verifier: "employment_verifier",
+//     education_verifier: "education_verifier",
+//     address_verifier: "address_verifier",
+//     database_verifier: "database_verifier",
+//     criminal_verifier: "criminal_verifier",
+//     drug_test_verifier: "drug_test_verifier",
+//     courtroom_verifier: "courtroom_verifier",
+//     "employment verifier": "employment_verifier",
+//     "education verifier": "education_verifier",
+//   };
+
+//   return roleMap[r] || r;
+// };
+
+// // Common tabs
+// const STANDARD_CASE_TABS = (basePath) => [
+//   {
+//     path: `${basePath}?tab=pending`,
+//     label: "Active Cases",
+//     img: "images/sidebar/wip-icon.svg",
+//   },
+//   {
+//     path: `${basePath}?tab=completed`,
+//     label: "Completed Cases",
+//     img: "images/sidebar/completed-icon.svg",
+//   },
+//   {
+//     path: `${basePath}?tab=all`,
+//     label: "Total Cases",
+//     img: "images/sidebar/cases-icon.svg",
+//   },
+// ];
+
+// // Verifier tabs
+// const VERIFIER_TABS = (basePath) => [
+//   {
+//     path: `${basePath}?view=active`,
+//     label: "Active Cases",
+//     img: "images/sidebar/wip-icon.svg",
+//   },
+//   {
+//     path: `${basePath}?view=completed`,
+//     label: "Completed",
+//     img: "images/sidebar/completed-icon.svg",
+//   },
+//   {
+//     path: `${basePath}?view=clear`,
+//     label: "Clear",
+//     img: "images/sidebar/completed-icon.svg",
+//   },
+//   {
+//     path: `${basePath}?view=discrepancy`,
+//     label: "Discrepancy",
+//     img: "images/sidebar/setting-icon.svg",
+//   },
+// ];
+
+// const ROLE_NAV = {
+//   admin: [
+//     { path: "/dashboard", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     { path: "/AllCases", label: "All Cases", img: "images/sidebar/cases-icon.svg" },
+//     { path: "/AddCase", label: "Add Case", img: "images/sidebar/wip-icon.svg" },
+//     { path: "/AddClient", label: "Add Client", img: "images/sidebar/plus-solid-full-white.svg" },
+//     { path: "/Allocator", label: "Case Allocation", img: "images/sidebar/cases-icon.svg" },
+//     { path: "/Verifyer", label: "Verifier Cases", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/Specialist", label: "Report Writing", img: "images/sidebar/report-icon.svg" },
+//     { path: "/Intake", label: "QC Intake", img: "images/sidebar/cases-icon.svg" },
+//     { path: "/clientportal", label: "Generate Links", img: "images/sidebar/trend-icon.svg" },
+//     { path: "/UserManagement", label: "User Management", img: "images/sidebar/clients-icon.svg" },
+//     { path: "/PendingRegistrations", label: "Pending Registrations", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/AddInstitution", label: "Add Institution", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/AddCompany", label: "Add Company", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/Apiintegretion", label: "API Integration", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/Settings", label: "Settings", img: "images/sidebar/setting-icon.svg" },
+//   ],
+
+//   client: [
+//     { path: "/Client", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     { path: "/AddCase", label: "Add Case", img: "images/sidebar/plus-solid-full-white.svg" },
+//     { path: "/Client?tab=all", label: "Total Cases", img: "images/sidebar/cases-icon.svg" },
+//     { path: "/Client?tab=pending", label: "Active Cases", img: "images/sidebar/wip-icon.svg" },
+//     { path: "/Client?tab=completed", label: "Completed Cases", img: "images/sidebar/completed-icon.svg" },
+//     { path: "/clientportal", label: "Generate Links", img: "images/sidebar/chart-bar-regular-full.svg" },
+//     { path: "/Trends", label: "Reports & Trends", img: "images/sidebar/money-check-dollar-solid-full.svg" },
+//     { path: "/ClientBilling", label: "Billing", img: "images/sidebar/trend-icon.svg" },
+//   ],
+
+//   allocator: [
+//     { path: "/Allocator", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...STANDARD_CASE_TABS("/Allocator"),
+//     { path: "/AllCases", label: "All Cases", img: "images/sidebar/cases-icon.svg" },
+//   ],
+
+//   verifyer: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//   ],
+
+//   employment_verifier: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//     { path: "/emploment", label: "Employment Check", img: "images/sidebar/report-icon.svg" },
+//   ],
+
+//   education_verifier: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//   ],
+
+//   address_verifier: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//   ],
+
+//   database_verifier: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//   ],
+
+//   criminal_verifier: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//   ],
+
+//   drug_test_verifier: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//   ],
+
+//   courtroom_verifier: [
+//     { path: "/Verifyer", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...VERIFIER_TABS("/Verifyer"),
+//   ],
+
+//   check_manager: [
+//     { path: "/AllCases", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...STANDARD_CASE_TABS("/AllCases"),
+//     { path: "/Allocator", label: "Case Allocation", img: "images/sidebar/cases-icon.svg" },
+//     { path: "/Verifyer", label: "Verification", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/emploment", label: "Employment", img: "images/sidebar/report-icon.svg" },
+//     { path: "/StatusEmploment", label: "Employment Status", img: "images/sidebar/wip-icon.svg" },
+//     { path: "/Intake", label: "QC Intake", img: "images/sidebar/cases-icon.svg" },
+//     { path: "/UserManagement", label: "Team", img: "images/sidebar/clients-icon.svg" },
+//   ],
+
+//   report_writing: [
+//     { path: "/Specialist", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...STANDARD_CASE_TABS("/Specialist"),
+//     { path: "/AllCases", label: "Case Reference", img: "images/sidebar/cases-icon.svg" },
+//   ],
+
+//   pvt_qc: [
+//     { path: "/Intake", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     { path: "/Intake?tab=active", label: "Active", img: "images/sidebar/wip-icon.svg" },
+//     { path: "/Intake?tab=approved", label: "Approved", img: "images/sidebar/completed-icon.svg" },
+//     { path: "/Intake?tab=incomplete", label: "Incomplete", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/Intake?tab=clear-rate", label: "Clear Rate", img: "images/sidebar/trend-icon.svg" },
+//     { path: "/AllCases", label: "All Cases", img: "images/sidebar/cases-icon.svg" },
+//   ],
+
+//   onboarding: [
+//     { path: "/clientportal", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
+//     ...STANDARD_CASE_TABS("/AllCases"),
+//     { path: "/AddCase", label: "New Case", img: "images/sidebar/plus-solid-full.svg" },
+//     { path: "/clientportal", label: "Generate Links", img: "images/sidebar/trend-icon.svg" },
+//     { path: "/AddInstitution", label: "Add Institution", img: "images/sidebar/setting-icon.svg" },
+//     { path: "/AddCompany", label: "Add Company", img: "images/sidebar/setting-icon.svg" },
+//   ],
+// };
+
+// export default function Sidebar() {
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   const user = getUser();
+//   const rawRole = user.role || "admin";
+//   const role = normalizeRole(rawRole);
+
+//   const navItems = ROLE_NAV[role] || ROLE_NAV.admin;
+
+//   const logout = () => {
+//     localStorage.removeItem("token");
+//     localStorage.removeItem("user");
+//     navigate("/");
+//   };
+
+//   return (
+//     <aside id="sidebar">
+//       <div className="brand">
+//         <img src="/images/login/logo.png" alt="SATYAPAN" />
+//         <img
+//           src="/images/login/logo-small.png"
+//           alt=""
+//           className="collapsed"
+//         />
+//       </div>
+
+//       <ul className="side-menu">
+//         {navItems.map((item, idx) => {
+//           const [itemPath, itemQuery] = item.path.split("?");
+
+//           const isActive = (() => {
+//             if (location.pathname !== itemPath) return false;
+
+//             if (!itemQuery) {
+//               return !location.search;
+//             }
+
+//             return location.search === `?${itemQuery}`;
+//           })();
+
+//           return (
+//             <li
+//               key={`${item.path}-${idx}`}
+//               className={isActive ? "active" : ""}
+//             >
+//               <a
+//                 href="#"
+//                 onClick={(e) => {
+//                   e.preventDefault();
+//                   navigate(item.path);
+//                 }}
+//               >
+//                 <img
+//                   src={item.img}
+//                   alt={item.label}
+//                   onError={(e) => {
+//                     e.target.style.display = "none";
+//                   }}
+//                 />
+
+//                 <span className="text">{item.label}</span>
+//               </a>
+//             </li>
+//           );
+//         })}
+
+//         <li className="logout-menu">
+//           <a
+//             href="#"
+//             onClick={(e) => {
+//               e.preventDefault();
+//               logout();
+//             }}
+//           >
+//             <img
+//               src="/images/sidebar/logout-icon.svg"
+//               alt="Logout"
+//               onError={(e) => {
+//                 e.target.style.display = "none";
+//               }}
+//             />
+
+//             <span className="text logout">Logout</span>
+//           </a>
+//         </li>
+//       </ul>
+//     </aside>
+//   );
+// }
 import { useNavigate, useLocation } from "react-router-dom";
 
 function getUser() {
@@ -79,6 +358,7 @@ const ROLE_NAV = {
     { path: "/dashboard", label: "Dashboard", img: "images/sidebar/home-icon.svg" },
     { path: "/AllCases", label: "All Cases", img: "images/sidebar/cases-icon.svg" },
     { path: "/AddCase", label: "Add Case", img: "images/sidebar/wip-icon.svg" },
+    { path: "/AllClients", label: "All Clients", img: "images/sidebar/clients-icon.svg" },
     { path: "/AddClient", label: "Add Client", img: "images/sidebar/plus-solid-full-white.svg" },
     { path: "/Allocator", label: "Case Allocation", img: "images/sidebar/cases-icon.svg" },
     { path: "/Verifyer", label: "Verifier Cases", img: "images/sidebar/setting-icon.svg" },
