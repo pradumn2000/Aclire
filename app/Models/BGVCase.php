@@ -11,37 +11,41 @@ class BGVCase extends Model
 
     protected $table = 'cases';
 
-protected $fillable = [
-    'case_id',
-    'candidate_name',
-    'candidate_email',
-    'candidate_mobile',
-    'candidate_dob',   // ← add this
-    'position',
-    'client_name',
-    'client_id',
-    'checks',
-    'priority',
-    'billing_mode',
-    'payment_timing',
-    'invoice_cycle',
-    'po_number',
-    'total_amount',
-    'payment_link',
-    'status',
-    'check_results',
-    'check_details',
-    'notes',
-    'created_by',
-];
+    protected $fillable = [
+        'case_id',
+        'candidate_name',
+        'candidate_email',
+        'candidate_mobile',
+        'candidate_dob',
+        'position',
+        'client_name',
+        'client_id',
+        'checks',
+        'priority',
+        'billing_mode',
+        'payment_timing',
+        'invoice_cycle',
+        'po_number',
+        'total_amount',
+        'tat',          // ← added: case-level TAT (days)
+        'check_tat',    // ← added: per-check TAT breakdown
+        'payment_link',
+        'status',
+        'check_results',
+        'check_details',
+        'notes',
+        'created_by',
+    ];
 
-protected $casts = [
-    'checks' => 'array',
-    'check_results' => 'array',
-    'check_details' => 'array',
-    'total_amount' => 'float',
-    'candidate_dob' => 'date',   // ← add this
-];
+    protected $casts = [
+        'checks'         => 'array',
+        'check_results'  => 'array',
+        'check_details'  => 'array',
+        'check_tat'      => 'array',   // ← added
+        'total_amount'   => 'float',
+        'tat'            => 'float',   // ← added
+        'candidate_dob'  => 'date',
+    ];
 
     public function creator()
     {

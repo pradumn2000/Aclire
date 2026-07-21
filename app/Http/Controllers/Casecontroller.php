@@ -25,6 +25,7 @@ class CaseController extends Controller
             'candidate_name'   => $request->candidate_name,
             'candidate_email'  => $request->candidate_email,
             'candidate_mobile' => $request->candidate_mobile,
+            'candidate_dob'    => $request->candidate_dob,
             'position'         => $request->position,
             'client_name'      => $request->client_name,
             'client_id'        => $request->client_id,
@@ -35,6 +36,8 @@ class CaseController extends Controller
             'invoice_cycle'    => $request->invoice_cycle,
             'po_number'        => $request->po_number,
             'total_amount'     => $request->total_amount ?? 0,
+            'tat'              => $request->overall_tat ?? null,   // ← was missing entirely
+            'check_tat'        => $request->check_tat ?? null,     // ← was missing entirely
             'payment_link'     => $request->payment_link,
             'status'           => 'pending',
             'notes'            => $request->notes,
@@ -42,6 +45,49 @@ class CaseController extends Controller
         ]);
 
         return response()->json(['case' => $case], 201);
+    }
+
+    // ── GET /api/cases/{case}  (single case — used by AddCase.jsx edit mode) ──
+    // NOTE: this was entirely missing before. {case} here is the human-facing
+    // case_id string (e.g. "BGV-2501"), matching what the frontend sends via
+    // editCaseId — not the numeric primary key.
+    public function show($case)
+    {
+        $bgvCase = BGVCase::where('case_id', $case)->firstOrFail();
+
+        return response()->json(['case' => $bgvCase]);
+    }
+
+    // ── PUT /api/cases/{case}  (update — used by AddCase.jsx edit mode) ────
+    // NOTE: this was entirely missing before. Any value admin changed while
+    // editing an existing case (TAT, amount, anything) had nowhere to be
+    // saved, so it silently never persisted.
+    public function update(Request $request, $case)
+    {
+        $bgvCase = BGVCase::where('case_id', $case)->firstOrFail();
+
+        $bgvCase->update([
+            'candidate_name'   => $request->candidate_name   ?? $bgvCase->candidate_name,
+            'candidate_email'  => $request->candidate_email  ?? $bgvCase->candidate_email,
+            'candidate_mobile' => $request->candidate_mobile ?? $bgvCase->candidate_mobile,
+            'candidate_dob'    => $request->candidate_dob    ?? $bgvCase->candidate_dob,
+            'position'         => $request->position         ?? $bgvCase->position,
+            'client_name'      => $request->client_name      ?? $bgvCase->client_name,
+            'client_id'        => $request->client_id        ?? $bgvCase->client_id,
+            'checks'           => $request->checks           ?? $bgvCase->checks,
+            'priority'         => $request->priority         ?? $bgvCase->priority,
+            'billing_mode'     => $request->billing_mode     ?? $bgvCase->billing_mode,
+            'payment_timing'   => $request->payment_timing   ?? $bgvCase->payment_timing,
+            'invoice_cycle'    => $request->invoice_cycle    ?? $bgvCase->invoice_cycle,
+            'po_number'        => $request->po_number        ?? $bgvCase->po_number,
+            'total_amount'     => $request->total_amount     ?? $bgvCase->total_amount,
+            'tat'              => $request->overall_tat      ?? $bgvCase->tat,
+            'check_tat'        => $request->check_tat        ?? $bgvCase->check_tat,
+            'payment_link'     => $request->payment_link      ?? $bgvCase->payment_link,
+            'notes'            => $request->notes             ?? $bgvCase->notes,
+        ]);
+
+        return response()->json(['case' => $bgvCase->fresh()]);
     }
 
     // ── GET /api/cases  (list — filtered by role) ────────────
@@ -53,8 +99,10 @@ class CaseController extends Controller
         // Role-based filtering
         // client role only sees their own cases (by client_id or email match)
         if ($user->role === 'client') {
-            $query->where('candidate_email', $user->email)
+            $query->where(function ($q) use ($user) {
+                $q->where('candidate_email', $user->email)
                   ->orWhere('client_id', $user->id);
+            });
         }
 
         // Search
@@ -77,13 +125,13 @@ class CaseController extends Controller
             'case_id'         => $c->case_id,
             'candidate'       => $c->candidate_name,
             'client'          => $c->client_name,
-            // 'checks'          => implode('·', array_map(fn($ch) => strtoupper(substr($ch, 0, 3)), $c->checks)),
-            'checks' => $c->checks, // send the raw array, e.g. ["employment","education","address","database"]
+            'checks'          => $c->checks, // raw array, e.g. ["employment","education","address"]
             'status'          => $c->status,
             'priority'        => $c->priority,
             'total_amount'    => $c->total_amount,
             'created_at'      => $c->created_at->format('d M Y'),
-            'tat'             => $c->created_at->diffInDays(now()) . 'd',
+            'tat'             => $c->tat,        // ← now the real stored TAT, not diffInDays
+            'check_tat'       => $c->check_tat,  // ← per-check TAT breakdown, for CheckwiseGrid
         ]);
 
         return response()->json(['cases' => $cases]);
