@@ -431,9 +431,14 @@ function App() {
         <Route path="/AddClient" element={
   <PrivateRoute role="admin"><AddClient /></PrivateRoute>
 } />
-<Route path="/AllClients" element={
-  <PrivateRoute role="admin"><Allclients /></PrivateRoute>
-} />
+<Route
+  path="/AllClients"
+  element={
+    <PrivateRoute role="admin">
+      <AllClients />
+    </PrivateRoute>
+  }
+/>
 <Route path="/PendingRegistrations" element={
   <PrivateRoute role="admin"><PendingRegistrations /></PrivateRoute>
 } />
