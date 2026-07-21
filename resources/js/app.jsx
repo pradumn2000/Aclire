@@ -30,6 +30,7 @@ import CompanyManagement from "./pages/AddCompany";
 import ClientBilling from "./pages/ClientBilling";
 import ClientOnboardingForm from "./pages/Clientonbordingform";
 import AddClient from "./pages/AddClient";
+import PendingRegistrations from "./pages/PendingRegistrations";
 
 // ─────────────────────────────────────────
 // Helpers
