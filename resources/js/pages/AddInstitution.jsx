@@ -1328,6 +1328,19 @@ export default function AddInstitution() {
                   )}
                 </tbody>
               </table>
+
+               {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div style={{ display: "flex", justifyContent: "center", padding: "20px", gap: "5px" }}>
+                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>«</button>
+                  <button onClick={() => setCurrentPage(prev => prev - 1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>‹</button>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button key={i} onClick={() => setCurrentPage(i + 1)} style={{ padding: "5px 12px", background: currentPage === i + 1 ? "#2b3b8c" : "#fff", color: currentPage === i + 1 ? "#fff" : "#000" }}>{i + 1}</button>
+                  ))}
+                  <button onClick={() => setCurrentPage(prev => prev + 1)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>›</button>
+                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>»</button>
+                </div>
+              )}
               <div style={{ padding: "8px 16px", fontSize: "12px", color: "#94a3b8", borderTop: "1px solid #f1f5f9" }}>
                 Showing {filtered.length} of {activeCount} institutions
               </div>
