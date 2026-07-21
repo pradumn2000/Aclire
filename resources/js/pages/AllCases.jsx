@@ -47,12 +47,6 @@
 //     return matchTab && matchSearch;
 //   });
 
-//     // Calculate pagination
-//   const indexOfLastUser = currentPage * usersPerPage;
-//   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-//   const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
-//   const totalPages = Math.ceil(filtered.length / usersPerPage);
-
 //   const countFor = (status) =>
 //     status === "all" ? cases.length : cases.filter(c => c.status === status).length;
 
@@ -176,18 +170,7 @@
 //                   </tbody>
 //                 </table>
 //               )}
-//                {/* Pagination Controls */}
-//               {totalPages > 1 && (
-//                 <div style={{ display: "flex", justifyContent: "center", padding: "20px", gap: "5px" }}>
-//                   <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>«</button>
-//                   <button onClick={() => setCurrentPage(prev => prev - 1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>‹</button>
-//                   {[...Array(totalPages)].map((_, i) => (
-//                     <button key={i} onClick={() => setCurrentPage(i + 1)} style={{ padding: "5px 12px", background: currentPage === i + 1 ? "#2b3b8c" : "#fff", color: currentPage === i + 1 ? "#fff" : "#000" }}>{i + 1}</button>
-//                   ))}
-//                   <button onClick={() => setCurrentPage(prev => prev + 1)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>›</button>
-//                   <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>»</button>
-//                 </div>
-//               )}
+
 //               {!loading && (
 //                 <div style={{ padding: "10px 16px", fontSize: "12px", color: "#9ca3af", borderTop: "1px solid #f1f5f9" }}>
 //                   Showing {filtered.length} of {cases.length} cases
@@ -208,8 +191,6 @@
 // function priorityColor(p) {
 //   return { urgent: "#eb4d4b", high: "#f59e0b", normal: "#64748b" }[p] || "#64748b";
 // }
-
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
@@ -270,6 +251,34 @@ export default function AllCases() {
 
   const countFor = (status) =>
     status === "all" ? cases.length : cases.filter(c => c.status === status).length;
+
+  // ── Action buttons — same handoff pattern as Client.jsx:
+  // View opens the case detail/timeline view, Edit hands off to
+  // AddCase.jsx's existing editCaseId load → edit → save flow.
+  const ViewButton = ({ c }) => (
+    <button
+      className="view-cta"
+      onClick={() => navigate(`/CaseTimeline?caseId=${encodeURIComponent(c.case_id)}`)}
+    >
+      View
+    </button>
+  );
+
+  const EditButton = ({ c }) => (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate(`/AddCase?editCaseId=${encodeURIComponent(c.case_id)}`);
+      }}
+      style={{
+        background: "#fff", color: "#27348B", border: "1px solid #27348B",
+        padding: "6px 14px", borderRadius: "6px", fontSize: "13px",
+        fontWeight: 700, cursor: "pointer",
+      }}
+    >
+      Edit
+    </button>
+  );
 
   return (
     <>
@@ -383,7 +392,10 @@ export default function AllCases() {
                           <td style={{ fontSize: "13px" }}>{row.tat}</td>
                           <td style={{ fontSize: "12px", color: "#94a3b8" }}>{row.created_at}</td>
                           <td>
-                            <button className="view-cta">View</button>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                              <ViewButton c={row} />
+                              <EditButton c={row} />
+                            </div>
                           </td>
                         </tr>
                       ))
