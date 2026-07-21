@@ -916,6 +916,443 @@
 //     </>
 //   );
 // }
+// import { useState } from "react";
+// import Sidebar from "./Sidebar";
+// import Header from "./Header";
+
+// const CHECK_OPTIONS = [
+//   { key: "emp",      label: "Employment" },
+//   { key: "edu",      label: "Education"  },
+//   { key: "addr",     label: "Address"    },
+//   { key: "db",       label: "Database"   },
+//   { key: "criminal", label: "Criminal"   },
+//   { key: "drug",     label: "Drug Test"  },
+//   { key: "court",    label: "Courtroom"  },
+// ];
+
+// const EXPIRY_OPTIONS = ["24h", "48h", "72h", "7 days"];
+
+// const EMPTY_LINK_FORM = {
+//   candidateName: "", email: "", mobile: "", position: "",
+//   checks: ["emp", "edu"], expiry: "72h",
+// };
+
+// // ── Mock seed data — replace with: GET /api/candidate-links
+// const MOCK_LINKS = [
+//   { id: 1, candidateName: "Aman Verma", email: "aman.verma@gmail.com", mobile: "+91-98123-45678", position: "Backend Developer", checks: ["emp","edu"], expiry: "72h", link: "https://bgv.portal/candidate/9f3k2lm1qz", status: "Pending", createdAt: "2026-06-10" },
+//   { id: 2, candidateName: "Priya Singh", email: "priya.singh@gmail.com", mobile: "+91-97123-45678", position: "QA Engineer", checks: ["emp","edu","addr"], expiry: "7 days", link: "https://bgv.portal/candidate/a8d92ksld0", status: "Submitted", createdAt: "2026-06-08" },
+// ];
+
+// function randomToken() {
+//   return Math.random().toString(36).slice(2, 12);
+// }
+
+// // ── Tiny CSV parser (no external deps). Expected header row: name,email,mobile,position,checks
+// // "checks" column is pipe-separated, e.g. "emp|edu|addr"
+// function parseCSV(text) {
+//   const lines = text.trim().split(/\r?\n/).filter(Boolean);
+//   if (lines.length < 2) return [];
+//   const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+//   return lines.slice(1).map((line) => {
+//     const cols = line.split(",").map((c) => c.trim());
+//     const row = {};
+//     headers.forEach((h, i) => (row[h] = cols[i] || ""));
+//     return {
+//       candidateName: row.name || row.candidatename || "",
+//       email: row.email || "",
+//       mobile: row.mobile || row.phone || "",
+//       position: row.position || "",
+//       checks: row.checks
+//         ? row.checks.split("|").map((c) => c.trim()).filter(Boolean)
+//         : ["emp", "edu"],
+//     };
+//   });
+// }
+
+// const SAMPLE_CSV = `name,email,mobile,position,checks
+// Aman Verma,aman.verma@gmail.com,+91-98123-45678,Backend Developer,emp|edu
+// Priya Singh,priya.singh@gmail.com,+91-97123-45678,QA Engineer,emp|edu|addr`;
+
+// export default function Clientportal() {
+//   // ── Single link generator ──
+//   const [linkForm, setLinkForm] = useState(EMPTY_LINK_FORM);
+//   const [generatedLink, setGeneratedLink] = useState("");
+//   const [linkCopied, setLinkCopied] = useState(false);
+//   const [linkSent, setLinkSent] = useState("");
+
+//   // ── All generated links (single + bulk) ──
+//   const [links, setLinks] = useState(MOCK_LINKS);
+
+//   // ── Bulk upload ──
+//   const [bulkRows, setBulkRows] = useState([]);
+//   const [bulkFileName, setBulkFileName] = useState("");
+//   const [bulkGenerating, setBulkGenerating] = useState(false);
+//   const [bulkDone, setBulkDone] = useState("");
+
+//   const setL = (field, val) => setLinkForm((p) => ({ ...p, [field]: val }));
+//   const toggleLinkCheck = (key) =>
+//     setLinkForm((p) => ({
+//       ...p,
+//       checks: p.checks.includes(key) ? p.checks.filter((c) => c !== key) : [...p.checks, key],
+//     }));
+
+//   const handleGenerateLink = (e) => {
+//     e.preventDefault();
+//     if (!linkForm.candidateName.trim() || !linkForm.email.trim()) {
+//       alert("Candidate name and email are required.");
+//       return;
+//     }
+//     // TODO: POST /api/candidate-links { ...linkForm }
+//     const link = `https://bgv.portal/candidate/${randomToken()}`;
+//     setGeneratedLink(link);
+//     setLinkSent("");
+//     setLinks((prev) => [
+//       { id: Date.now(), ...linkForm, link, status: "Pending", createdAt: new Date().toISOString().slice(0, 10) },
+//       ...prev,
+//     ]);
+//   };
+
+//   const copyLink = (text = generatedLink) => {
+//     navigator.clipboard.writeText(text).catch(() => {});
+//     setLinkCopied(true);
+//     setTimeout(() => setLinkCopied(false), 2000);
+//   };
+
+//   const sendLink = (method) => {
+//     // TODO: POST /api/candidate-links/send
+//     setLinkSent(`${method} sent to ${linkForm.email || linkForm.mobile}!`);
+//     setTimeout(() => setLinkSent(""), 3000);
+//   };
+
+//   // ── Bulk upload handlers ──
+//   const handleBulkFile = (e) => {
+//     const file = e.target.files?.[0];
+//     if (!file) return;
+//     setBulkFileName(file.name);
+//     setBulkDone("");
+//     const reader = new FileReader();
+//     reader.onload = (evt) => {
+//       const rows = parseCSV(String(evt.target.result));
+//       setBulkRows(rows);
+//     };
+//     reader.readAsText(file);
+//   };
+
+//   const downloadSample = () => {
+//     const blob = new Blob([SAMPLE_CSV], { type: "text/csv" });
+//     const url = URL.createObjectURL(blob);
+//     const a = document.createElement("a");
+//     a.href = url;
+//     a.download = "candidate-links-sample.csv";
+//     a.click();
+//     URL.revokeObjectURL(url);
+//   };
+
+//   const handleBulkGenerate = async () => {
+//     if (bulkRows.length === 0) return;
+//     setBulkGenerating(true);
+//     // TODO: POST /api/candidate-links/bulk { rows: bulkRows }
+//     await new Promise((r) => setTimeout(r, 600));
+//     const newLinks = bulkRows
+//       .filter((r) => r.candidateName && r.email)
+//       .map((r) => ({
+//         id: Date.now() + Math.random(),
+//         ...r,
+//         expiry: "72h",
+//         link: `https://bgv.portal/candidate/${randomToken()}`,
+//         status: "Pending",
+//         createdAt: new Date().toISOString().slice(0, 10),
+//       }));
+//     setLinks((prev) => [...newLinks, ...prev]);
+//     setBulkDone(`${newLinks.length} candidate link(s) generated.`);
+//     setBulkRows([]);
+//     setBulkFileName("");
+//     setBulkGenerating(false);
+//   };
+
+//   // ── Stats ──
+//   const total = links.length;
+//   const pending = links.filter((l) => l.status === "Pending").length;
+//   const submitted = links.filter((l) => l.status === "Submitted").length;
+
+//     // Calculate pagination
+//   const indexOfLastUser = currentPage * usersPerPage;
+//   const indexOfFirstUser = indexOfLastUser - usersPerPage;
+//   const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
+//   const totalPages = Math.ceil(filtered.length / usersPerPage);
+
+//   return (
+//     <>
+//       <Sidebar />
+//       <section id="content">
+//         <Header />
+//         <main>
+//           <div className="dash-wrper">
+
+//             {/* ── Stats ── */}
+//             <div className="cards-head-dash">
+//               <div className="card-inner-dash bdr-total"><h4>{total}</h4><p>Total Links</p></div>
+//               <div className="card-inner-dash bdr-progress"><h4>{pending}</h4><p>Pending</p></div>
+//               <div className="card-inner-dash bdr-com"><h4>{submitted}</h4><p>Submitted</p></div>
+//               <div className="card-inner-dash bdr-rate"><h4>{CHECK_OPTIONS.length}</h4><p>Check Types</p></div>
+//             </div>
+
+//             <div className="cob-portal-container">
+//               <div className="cob-emplyment-check-body">
+
+//                 {/* ══ LEFT: Single Candidate Link ══ */}
+//                 <div className="cob-frist-card">
+//                   <div className="cob-card-header cob-portal-header">
+//                     <h2>GENERATE CANDIDATE LINK</h2>
+//                   </div>
+
+//                   <div className="cob-portal-generator-content">
+//                     <p className="cob-section-description">
+//                       Generate a unique onboarding link for a single candidate.
+//                     </p>
+
+//                     <form className="cob-generator-form" onSubmit={handleGenerateLink}>
+//                       <div className="cob-form-group">
+//                         <label className="cob-form-label">Candidate Name <span style={{color:"#eb4d4b"}}>*</span></label>
+//                         <input type="text" className="cob-form-input" placeholder="Enter candidate name"
+//                           value={linkForm.candidateName} onChange={(e) => setL("candidateName", e.target.value)} required />
+//                       </div>
+
+//                       <div className="cob-form-group">
+//                         <label className="cob-form-label">Email <span style={{color:"#eb4d4b"}}>*</span></label>
+//                         <input type="email" className="cob-form-input" placeholder="candidate@email.com"
+//                           value={linkForm.email} onChange={(e) => setL("email", e.target.value)} required />
+//                       </div>
+
+//                <div className="cob-form-group">
+//   <label className="cob-form-label">
+//     Mobile <span className="form-required">*</span>
+//   </label>
+
+//   <input
+//     type="tel"
+//     className="cob-form-input"
+//     placeholder="+91 XXXXX XXXXX"
+//     value={linkForm.mobile}
+//     onChange={(e) => {
+//       const value = e.target.value.replace(/\D/g, "").slice(0, 12);
+//       setL("mobile", value);
+//     }}
+//     required
+//     maxLength={12}
+//     pattern="[0-9]{12}"
+//     title="Please enter a valid 12-digit mobile number"
+//   />
+// </div>
+
+//                       <div className="cob-form-group">
+//   <label className="cob-form-label">
+//     Position Applied <span className="form-required">*</span>
+//   </label>
+
+//   <input
+//     type="text"
+//     className="cob-form-input"
+//     placeholder="e.g. Senior Engineer"
+//     value={linkForm.position}
+//     onChange={(e) => setL("position", e.target.value)}
+//   />
+// </div>
+
+//                       <div className="cob-form-group">
+//                         <label className="cob-form-label">Check Types</label>
+//                         <div className="cob-checkboxes-row" style={{ flexWrap: "wrap" }}>
+//                           {CHECK_OPTIONS.map((ch) => (
+//                             <label key={ch.key} className="cob-checkbox-item"
+//                               style={{ flex: "1 1 80px",
+//                                 background: linkForm.checks.includes(ch.key) ? "var(--tab-btn-color)" : "#e2e8f0",
+//                                 color: linkForm.checks.includes(ch.key) ? "#fff" : "#475569" }}>
+//                               <input type="checkbox" className="cob-checkbox-native"
+//                                 checked={linkForm.checks.includes(ch.key)}
+//                                 onChange={() => toggleLinkCheck(ch.key)} />
+//                               <span className="cob-checkbox-label" style={{ fontSize: "11px", fontWeight: 700 }}>
+//                                 {ch.label}
+//                               </span>
+//                             </label>
+//                           ))}
+//                         </div>
+//                       </div>
+
+//                       <div className="cob-form-group">
+//                         <label className="cob-form-label">Link Expiry</label>
+//                         <div className="cob-expiry-toggle-group">
+//                           {EXPIRY_OPTIONS.map((opt) => (
+//                             <button key={opt} type="button"
+//                               className={`cob-toggle-btn ${linkForm.expiry === opt ? "active-teal" : ""}`}
+//                               onClick={() => setL("expiry", opt)}>
+//                               {opt}
+//                             </button>
+//                           ))}
+//                         </div>
+//                       </div>
+
+//                       {generatedLink && (
+//                         <div className="cob-generated-link-wrapper">
+//                           <span className="cob-generated-url-text">{generatedLink}</span>
+//                         </div>
+//                       )}
+
+//                       {linkSent && (
+//                         <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "8px",
+//                           padding: "8px 12px", fontSize: "13px", fontWeight: 600, color: "#16a34a" }}>
+//                           ✓ {linkSent}
+//                         </div>
+//                       )}
+
+//                       <div className="cob-action-buttons-row">
+//                         <button type="submit" className="cob-action-btn cob-btn-generate">GENERATE LINK</button>
+//                         <button type="button" className="cob-action-btn cob-btn-copy"
+//                           onClick={() => copyLink()} disabled={!generatedLink}
+//                           style={{ opacity: generatedLink ? 1 : 0.4 }}>
+//                           {linkCopied ? "COPIED ✓" : "COPY LINK 📋"}
+//                         </button>
+//                         <button type="button" className="cob-action-btn cob-btn-sms"
+//                           onClick={() => sendLink("SMS")} disabled={!generatedLink}
+//                           style={{ opacity: generatedLink ? 1 : 0.4 }}>
+//                           SEND SMS
+//                         </button>
+//                         <button type="button" className="cob-action-btn cob-btn-email"
+//                           onClick={() => sendLink("Email")} disabled={!generatedLink}
+//                           style={{ opacity: generatedLink ? 1 : 0.4 }}>
+//                           EMAIL
+//                         </button>
+//                       </div>
+//                     </form>
+//                   </div>
+//                 </div>
+
+//                 {/* ══ RIGHT: Bulk Upload ══ */}
+//                 <div className="cob-second-card">
+//                   <div className="cob-card-header cob-client-header">
+//                     <h2>BULK UPLOAD — CANDIDATE LINKS</h2>
+//                   </div>
+
+//                   <div className="cob-portal-generator-content">
+//                     <p className="cob-section-description">
+//                       Upload a CSV to generate links for multiple candidates at once.
+//                     </p>
+
+//                     <div className="cob-form-group form">
+//                       <label className="cob-form-label">CSV File</label>
+//                       <input type="file" accept=".csv" className="cob-form-input" onChange={handleBulkFile} />
+//                       {bulkFileName && (
+//                         <p style={{ fontSize: "12px", color: "#64748b", marginTop: "6px" }}>
+//                           {bulkFileName} — {bulkRows.length} row(s) detected
+//                         </p>
+//                       )}
+//                     </div>
+
+//                     <button type="button" className="cob-toggle-btn" onClick={downloadSample}>
+//                       Download Sample CSV
+//                     </button>
+
+//                     {bulkRows.length > 0 && (
+//                       <div style={{ marginTop: "16px", maxHeight: "220px", overflowY: "auto", border: "1px solid #e2e8f0", borderRadius: "8px" }}>
+//                         <table>
+//                           <thead>
+//                             <tr><th>Name</th><th>Email</th><th>Mobile</th><th>Position</th><th>Checks</th></tr>
+//                           </thead>
+//                           <tbody>
+//                             {bulkRows.map((r, i) => (
+//                               <tr key={i}>
+//                                 <td>{r.candidateName}</td>
+//                                 <td>{r.email}</td>
+//                                 <td>{r.mobile}</td>
+//                                 <td>{r.position}</td>
+//                                 <td>{r.checks.join(", ")}</td>
+//                               </tr>
+//                             ))}
+//                           </tbody>
+//                         </table>
+//                       </div>
+//                     )}
+
+//                     {bulkDone && (
+//                       <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "8px",
+//                         padding: "8px 12px", fontSize: "13px", fontWeight: 600, color: "#16a34a", marginTop: "12px" }}>
+//                         ✓ {bulkDone}
+//                       </div>
+//                     )}
+
+//                     <div className="cob-action-buttons-row" style={{ marginTop: "16px" }}>
+//                       <button type="button" className="cob-action-btn cob-btn-generate"
+//                         onClick={handleBulkGenerate} disabled={bulkRows.length === 0 || bulkGenerating}
+//                         style={{ opacity: bulkRows.length === 0 ? 0.5 : 1 }}>
+//                         {bulkGenerating ? "GENERATING…" : `GENERATE ${bulkRows.length || ""} LINK(S)`}
+//                       </button>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//               </div>
+
+//               {/* ── Generated links table ── */}
+//               <div className="down-table" style={{ marginTop: "20px" }}>
+//                 <div style={{ background: "var(--primary-color)", padding: "12px 16px", borderRadius: "10px 10px 0 0" }}>
+//                   <h3 style={{ color: "#fff", fontSize: "15px", fontWeight: 700, margin: 0 }}>
+//                     CANDIDATE LINKS ({links.length})
+//                   </h3>
+//                 </div>
+//                 <table>
+//                   <thead>
+//                     <tr><th>Candidate</th><th>Email</th><th>Position</th><th>Checks</th><th>Expiry</th><th>Link</th><th>Status</th><th></th></tr>
+//                   </thead>
+//                   <tbody>
+//                     {links.map((l) => (
+//                       <tr key={l.id}>
+//                         <td style={{ fontWeight: 600 }}>{l.candidateName}</td>
+//                         <td>{l.email}</td>
+//                         <td>{l.position || "—"}</td>
+//                         <td style={{ fontSize: "12px", color: "#64748b" }}>
+//                           {l.checks.map((k) => CHECK_OPTIONS.find((o) => o.key === k)?.label || k).join(" · ")}
+//                         </td>
+//                         <td>{l.expiry}</td>
+//                         <td style={{ fontFamily: "monospace", fontSize: "12px", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis" }}>
+//                           {l.link}
+//                         </td>
+//                         <td>
+//                           <span className={`status ${l.status === "Submitted" ? "completed" : "in-progress"}`}
+//                             style={{ width: "auto", padding: "4px 10px", fontSize: "11px" }}>
+//                             {l.status}
+//                           </span>
+//                         </td>
+//                         <td>
+//                           <button type="button" className="cob-toggle-btn" onClick={() => copyLink(l.link)}>
+//                             Copy
+//                           </button>
+//                         </td>
+//                       </tr>
+//                     ))}
+//                   </tbody>
+//                 </table>
+
+//                  {/* Pagination Controls */}
+//               {totalPages > 1 && (
+//                 <div style={{ display: "flex", justifyContent: "center", padding: "20px", gap: "5px" }}>
+//                   <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>«</button>
+//                   <button onClick={() => setCurrentPage(prev => prev - 1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>‹</button>
+//                   {[...Array(totalPages)].map((_, i) => (
+//                     <button key={i} onClick={() => setCurrentPage(i + 1)} style={{ padding: "5px 12px", background: currentPage === i + 1 ? "#2b3b8c" : "#fff", color: currentPage === i + 1 ? "#fff" : "#000" }}>{i + 1}</button>
+//                   ))}
+//                   <button onClick={() => setCurrentPage(prev => prev + 1)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>›</button>
+//                   <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>»</button>
+//                 </div>
+//               )}
+//               </div>
+
+//             </div>
+//           </div>
+//         </main>
+//       </section>
+//     </>
+//   );
+// }
+
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -988,6 +1425,10 @@ export default function Clientportal() {
   const [bulkFileName, setBulkFileName] = useState("");
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkDone, setBulkDone] = useState("");
+
+  // Pagination States (यहाँ इन्हें define कर दिया गया है)
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5; // एक पेज पर कितने लिंक्स दिखाने हैं
 
   const setL = (field, val) => setLinkForm((p) => ({ ...p, [field]: val }));
   const toggleLinkCheck = (key) =>
@@ -1075,11 +1516,11 @@ export default function Clientportal() {
   const pending = links.filter((l) => l.status === "Pending").length;
   const submitted = links.filter((l) => l.status === "Submitted").length;
 
-    // Calculate pagination
+  // Calculate pagination based on links
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(filtered.length / usersPerPage);
+  const currentUsers = links.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(links.length / usersPerPage);
 
   return (
     <>
@@ -1124,40 +1565,38 @@ export default function Clientportal() {
                           value={linkForm.email} onChange={(e) => setL("email", e.target.value)} required />
                       </div>
 
-               <div className="cob-form-group">
-  <label className="cob-form-label">
-    Mobile <span className="form-required">*</span>
-  </label>
-
-  <input
-    type="tel"
-    className="cob-form-input"
-    placeholder="+91 XXXXX XXXXX"
-    value={linkForm.mobile}
-    onChange={(e) => {
-      const value = e.target.value.replace(/\D/g, "").slice(0, 12);
-      setL("mobile", value);
-    }}
-    required
-    maxLength={12}
-    pattern="[0-9]{12}"
-    title="Please enter a valid 12-digit mobile number"
-  />
-</div>
+                      <div className="cob-form-group">
+                        <label className="cob-form-label">
+                          Mobile <span className="form-required">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          className="cob-form-input"
+                          placeholder="+91 XXXXX XXXXX"
+                          value={linkForm.mobile}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "").slice(0, 12);
+                            setL("mobile", value);
+                          }}
+                          required
+                          maxLength={12}
+                          pattern="[0-9]{12}"
+                          title="Please enter a valid 12-digit mobile number"
+                        />
+                      </div>
 
                       <div className="cob-form-group">
-  <label className="cob-form-label">
-    Position Applied <span className="form-required">*</span>
-  </label>
-
-  <input
-    type="text"
-    className="cob-form-input"
-    placeholder="e.g. Senior Engineer"
-    value={linkForm.position}
-    onChange={(e) => setL("position", e.target.value)}
-  />
-</div>
+                        <label className="cob-form-label">
+                          Position Applied <span className="form-required">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="cob-form-input"
+                          placeholder="e.g. Senior Engineer"
+                          value={linkForm.position}
+                          onChange={(e) => setL("position", e.target.value)}
+                        />
+                      </div>
 
                       <div className="cob-form-group">
                         <label className="cob-form-label">Check Types</label>
@@ -1303,7 +1742,7 @@ export default function Clientportal() {
                     <tr><th>Candidate</th><th>Email</th><th>Position</th><th>Checks</th><th>Expiry</th><th>Link</th><th>Status</th><th></th></tr>
                   </thead>
                   <tbody>
-                    {links.map((l) => (
+                    {currentUsers.map((l) => (
                       <tr key={l.id}>
                         <td style={{ fontWeight: 600 }}>{l.candidateName}</td>
                         <td>{l.email}</td>
@@ -1331,18 +1770,18 @@ export default function Clientportal() {
                   </tbody>
                 </table>
 
-                 {/* Pagination Controls */}
-              {totalPages > 1 && (
-                <div style={{ display: "flex", justifyContent: "center", padding: "20px", gap: "5px" }}>
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>«</button>
-                  <button onClick={() => setCurrentPage(prev => prev - 1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>‹</button>
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button key={i} onClick={() => setCurrentPage(i + 1)} style={{ padding: "5px 12px", background: currentPage === i + 1 ? "#2b3b8c" : "#fff", color: currentPage === i + 1 ? "#fff" : "#000" }}>{i + 1}</button>
-                  ))}
-                  <button onClick={() => setCurrentPage(prev => prev + 1)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>›</button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>»</button>
-                </div>
-              )}
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div style={{ display: "flex", justifyContent: "center", padding: "20px", gap: "5px" }}>
+                    <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>«</button>
+                    <button onClick={() => setCurrentPage(prev => prev - 1)} disabled={currentPage === 1} style={{ padding: "5px 10px" }}>‹</button>
+                    {[...Array(totalPages)].map((_, i) => (
+                      <button key={i} onClick={() => setCurrentPage(i + 1)} style={{ padding: "5px 12px", background: currentPage === i + 1 ? "#2b3b8c" : "#fff", color: currentPage === i + 1 ? "#fff" : "#000" }}>{i + 1}</button>
+                    ))}
+                    <button onClick={() => setCurrentPage(prev => prev + 1)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>›</button>
+                    <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>»</button>
+                  </div>
+                )}
               </div>
 
             </div>
