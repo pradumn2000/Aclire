@@ -86,6 +86,7 @@ const ROLE_NAV = {
     { path: "/Intake", label: "QC Intake", img: "images/sidebar/cases-icon.svg" },
     { path: "/clientportal", label: "Generate Links", img: "images/sidebar/trend-icon.svg" },
     { path: "/UserManagement", label: "User Management", img: "images/sidebar/clients-icon.svg" },
+    { path: "/PendingRegistrations", label: "Pending Registrations", img: "images/sidebar/setting-icon.svg" },
     { path: "/AddInstitution", label: "Add Institution", img: "images/sidebar/setting-icon.svg" },
     { path: "/AddCompany", label: "Add Company", img: "images/sidebar/setting-icon.svg" },
     { path: "/Apiintegretion", label: "API Integration", img: "images/sidebar/setting-icon.svg" },

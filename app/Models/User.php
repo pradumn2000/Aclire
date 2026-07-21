@@ -22,6 +22,7 @@ class User extends Authenticatable
         'billing_mode',
         'agreed_checks',
         'check_rates',
+        'check_tat',
     ];
 
     protected $hidden = [
@@ -34,5 +35,6 @@ class User extends Authenticatable
         'password'          => 'hashed',
         'agreed_checks'     => 'array',
         'check_rates'       => 'array',
+        'check_tat' => 'array',
     ];
 }

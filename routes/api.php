@@ -9,35 +9,8 @@ use App\Models\BGVCase;
 use App\Models\User;
 
 // ─────────────────────────────────────────
-// LOGIN — returns role so frontend can redirect
+// LOGIN
 // ─────────────────────────────────────────
-// Route::post('/login', function (Request $request) {
-
-//     $request->validate([
-//         'email'    => 'required|email',
-//         'password' => 'required',
-//     ]);
-
-//     if (!Auth::attempt($request->only('email', 'password'))) {
-//         return response()->json(['message' => 'Invalid credentials'], 401);
-//     }
-
-//     $user  = Auth::user();
-//     $token = $user->createToken('authToken')->plainTextToken;
-
-//     return response()->json([
-//         'token' => $token,
-//         'user'  => [
-//             'id'    => $user->id,
-//             'name'  => $user->name,
-//             'email' => $user->email,
-//             'role'  => $user->role,
-//         ],
-//     ]);
-// });
-
-// routes/api.php — POST /login
-
 Route::post('/login', function (Request $request) {
 
     $request->validate([
@@ -55,23 +28,64 @@ Route::post('/login', function (Request $request) {
     return response()->json([
         'token' => $token,
         'user'  => [
-            'id'             => $user->id,
-            'name'           => $user->name,
-            'email'          => $user->email,
-            'role'           => $user->role,
-            // These three exist directly on the users table (per your
-            // User model's $fillable/$casts) and are what the client-side
-            // billing lock in AddCase.jsx depends on. They were missing
-            // from the old login response, so a freshly logged-in client
-            // always looked like they had no billing mode configured.
-            'billing_mode'   => $user->billing_mode,
-            'agreed_checks'  => $user->agreed_checks,  // already array via cast
-            'check_rates'    => $user->check_rates,    // already array via cast
+            'id'           => $user->id,
+            'name'         => $user->name,
+            'email'        => $user->email,
+            'role'         => $user->role,
+            'billingMode'  => $user->billing_mode,
+            'agreedChecks' => $user->agreed_checks,
+            'checkRates'   => $user->check_rates,
+            'checkTat'     => $user->check_tat,
         ],
     ]);
 });
+
 // ─────────────────────────────────────────
-// REGISTER
+// CLIENT SELF-REGISTRATION (pending, no account yet)
+// ─────────────────────────────────────────
+Route::post('/client-registrations', function (Request $request) {
+    $request->validate([
+        'companyName'    => 'required|string|max:255',
+        'address'        => 'required|string|max:1000',
+        'gstin'          => 'required|string|max:15',
+        'primaryContact' => 'required|string|max:255',
+        'contactPhone'   => 'nullable|string|max:20',
+        'contactEmail'   => 'required|email|unique:users,email|unique:client_registrations,contact_email',
+        'billingMode'    => 'nullable|in:prepaid_client,prepaid_candidate,postpaid_client',
+        'agreedChecks'   => 'required|array|min:1',
+        'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug,court',
+        'notes'          => 'nullable|string',
+    ]);
+
+    $reg = \App\Models\ClientRegistration::create([
+        'company_name'    => $request->companyName,
+        'address'         => $request->address,
+        'gstin'           => $request->gstin,
+        'primary_contact' => $request->primaryContact,
+        'contact_phone'   => $request->contactPhone,
+        'contact_email'   => $request->contactEmail,
+        'billing_mode'    => $request->billingMode,
+        'agreed_checks'   => $request->agreedChecks,
+        'notes'           => $request->notes,
+        'status'          => 'pending',
+    ]);
+
+    $adminEmails = User::where('role', 'admin')->pluck('email');
+    if ($adminEmails->isNotEmpty()) {
+        Mail::raw(
+            "New client registration from {$reg->company_name} ({$reg->contact_email}). Review it under Pending Registrations in the admin portal.",
+            fn($m) => $m->to($adminEmails->all())->subject('New Client Registration — ' . $reg->company_name)
+        );
+    }
+
+    return response()->json([
+        'message'      => 'Registration submitted. An admin will review your account shortly.',
+        'registration' => ['id' => $reg->id, 'status' => $reg->status],
+    ], 201);
+});
+
+// ─────────────────────────────────────────
+// REGISTER (individual user — unrelated to client company registration)
 // ─────────────────────────────────────────
 Route::post('/register', function (Request $request) {
 
@@ -94,88 +108,9 @@ Route::post('/register', function (Request $request) {
 });
 
 // ─────────────────────────────────────────
-// CLIENT COMPANY REGISTER
+// CLIENT COMPANY REGISTER — admin-authenticated Add Client submission.
+// Also used to approve a pending self-registration (pass registrationId).
 // ─────────────────────────────────────────
-// Route::post('/clients/register', function (Request $request) {
-//     $request->validate([
-//         'companyName'    => 'required|string|max:255',
-//         'gstin'          => 'required|string|max:15',
-//         'primaryContact' => 'required|string|max:255',
-//         'contactPhone'   => 'nullable|string|max:20',
-//         'contactEmail'   => 'required|email|unique:users,email',
-//         'password'       => 'required|min:8',
-//         'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
-//         'agreedChecks'   => 'required|array|min:1',
-//         'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug_test,courtroom',
-//         'checkRates'     => 'nullable|array',
-//         'checkRates.*'   => 'numeric|min:0',
-//     ]);
-
-//     // Calculate total amount from selected checks
-//     $totalAmount = 0;
-//     foreach ($request->agreedChecks as $check) {
-//         $rate = $request->checkRates[$check] ?? 1500; // fallback rate
-//         $totalAmount += $rate;
-//     }
-
-//     $user = User::create([
-//         'name'            => $request->companyName,
-//         'email'           => $request->contactEmail,
-//         'password'        => Hash::make($request->password),
-//         'role'            => 'client',
-//         'gstin'           => $request->gstin,
-//         'primary_contact' => $request->primaryContact,
-//         'contact_phone'   => $request->contactPhone,
-//         'billing_mode'    => $request->billingMode,
-//         'agreed_checks'   => $request->agreedChecks,
-//         'check_rates'     => $request->checkRates ?? [],
-//         'total_amount'    => $totalAmount,
-//     ]);
-
-//     $token = $user->createToken('authToken')->plainTextToken;
-
-//     return response()->json([
-//         'message' => 'Client registered successfully',
-//         'token'   => $token,
-//         'user'    => [
-//             'id'             => $user->id,
-//             'name'           => $user->name,
-//             'email'          => $user->email,
-//             'role'           => $user->role,
-//             'billingMode'    => $user->billing_mode,
-//             'agreedChecks'   => $user->agreed_checks,
-//             'checkRates'     => $user->check_rates,
-//             'totalAmount'    => $totalAmount,
-//         ],
-//     ], 201);
-// });
-// ─────────────────────────────────────────────────────────────────────────
-// REPLACE the existing Route::post('/clients/register', ...) block in
-// routes/api.php with this version. Changes from the original:
-//
-//   1. Added `address` (required) — new "Address" field on the form.
-//   2. `password` is now `digits:6` instead of `min:8`, to match the
-//      "Password – six digits" requirement. NOTE: a 6-digit numeric
-//      password is much weaker than a normal password; consider keeping
-//      this only if it's intentional for this internal admin flow.
-//   3. `agreedChecks.*` now accepts the SAME check keys used everywhere
-//      else in the app (employment, education, address, database,
-//      criminal, drug, court) instead of the old drug_test/courtroom
-//      aliases, so rates/TAT line up with AddCase.jsx and AddClient.jsx.
-//   4. Added `checkTat` (per-check turnaround time in days), stored
-//      alongside checkRates.
-//   5. Added `priority` and `notes` passthrough (optional).
-//
-// You'll also need a migration adding these columns to `users` (or a
-// related `clients` table, if you prefer normalizing it out):
-//   - address        (string/text, nullable)
-//   - check_tat       (json, nullable)
-//   - priority        (string, nullable)
-//   - notes           (text, nullable)
-// and add them to User::$fillable and User::$casts (array cast for
-// check_tat, same as agreed_checks / check_rates already are).
-// ─────────────────────────────────────────────────────────────────────────
-
 Route::post('/clients/register', function (Request $request) {
     $request->validate([
         'companyName'    => 'required|string|max:255',
@@ -194,6 +129,7 @@ Route::post('/clients/register', function (Request $request) {
         'checkTat'       => 'nullable|array',
         'checkTat.*'     => 'numeric|min:0',
         'notes'          => 'nullable|string',
+        'registrationId' => 'nullable|integer|exists:client_registrations,id',
     ]);
 
     // Calculate total amount from selected checks
@@ -221,22 +157,27 @@ Route::post('/clients/register', function (Request $request) {
         'notes'           => $request->notes,
     ]);
 
+    if ($request->registrationId) {
+        \App\Models\ClientRegistration::where('id', $request->registrationId)
+            ->update(['status' => 'converted', 'converted_user_id' => $user->id]);
+    }
+
     $token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
         'message' => 'Client registered successfully',
         'token'   => $token,
         'user'    => [
-            'id'             => $user->id,
-            'name'           => $user->name,
-            'email'          => $user->email,
-            'role'           => $user->role,
-            'address'        => $user->address,
-            'billingMode'    => $user->billing_mode,
-            'agreedChecks'   => $user->agreed_checks,
-            'checkRates'     => $user->check_rates,
-            'checkTat'       => $user->check_tat,
-            'totalAmount'    => $totalAmount,
+            'id'           => $user->id,
+            'name'         => $user->name,
+            'email'        => $user->email,
+            'role'         => $user->role,
+            'address'      => $user->address,
+            'billingMode'  => $user->billing_mode,
+            'agreedChecks' => $user->agreed_checks,
+            'checkRates'   => $user->check_rates,
+            'checkTat'     => $user->check_tat,
+            'totalAmount'  => $totalAmount,
         ],
     ], 201);
 });
@@ -343,6 +284,7 @@ Route::get('/test-password', function () {
         'password_match' => Hash::check('Admin@123', $user->password),
     ]);
 });
+
 // ─────────────────────────────────────────
 // CANDIDATE-FACING (public, token-gated)
 // ─────────────────────────────────────────
@@ -519,9 +461,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            // ↓ UPDATED: 7 new specialist verifier roles added
-            // fixed "verifyer" typo → "verifier"; 7 specialist verifier roles included
-'role'     => 'required|in:admin,allocator,verifier,check_manager,report_writing,pvt_qc,client,onboarding,employment_verifier,education_verifier,address_verifier,database_verifier,criminal_verifier,drug_test_verifier,courtroom_verifier',
+            'role'     => 'required|in:admin,allocator,verifier,check_manager,report_writing,pvt_qc,client,onboarding,employment_verifier,education_verifier,address_verifier,database_verifier,criminal_verifier,drug_test_verifier,courtroom_verifier',
         ]);
 
         $user = \App\Models\User::create([
@@ -538,9 +478,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ── GET ALL USERS (admin + allocator) ────────────────────
-    // CHANGED: allocator now allowed too, so the Case Allocation Board can
-    // populate its per-check "Assign" dropdowns with real verifiers instead
-    // of a 403. Still blocked for everyone else.
     Route::get('/users', function (Request $request) {
         if (!in_array($request->user()->role, ['admin', 'allocator'])) {
             return response()->json(['message' => 'Unauthorized. Admin or allocator access required.'], 403);
@@ -571,71 +508,111 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ═════════════════════════════════════════════════════════
+    // CLIENT REGISTRATIONS (admin review of self-registered clients)
+    // ═════════════════════════════════════════════════════════
+
+    // ── LIST registrations (filter by ?status=) ──────────────
+    Route::get('/client-registrations', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+        $query = \App\Models\ClientRegistration::orderByDesc('created_at');
+        if ($request->status) $query->where('status', $request->status);
+        return response()->json(['registrations' => $query->get()]);
+    });
+
+    // ── Pending count, for the notification bell ─────────────
+    Route::get('/client-registrations/pending-count', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+        return response()->json(['count' => \App\Models\ClientRegistration::where('status', 'pending')->count()]);
+    });
+
+    // ── Single registration (used to prefill Add Client) ─────
+    Route::get('/client-registrations/{id}', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+        $reg = \App\Models\ClientRegistration::find($id);
+        if (!$reg) return response()->json(['message' => 'Not found'], 404);
+        return response()->json(['registration' => $reg]);
+    });
+
+    // ── Reject a registration ─────────────────────────────────
+    Route::post('/client-registrations/{id}/reject', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+        $reg = \App\Models\ClientRegistration::find($id);
+        if (!$reg) return response()->json(['message' => 'Not found'], 404);
+        $reg->update(['status' => 'rejected']);
+        return response()->json(['message' => 'Registration rejected']);
+    });
+
+    // ═════════════════════════════════════════════════════════
     // CASES ROUTES
     // ═════════════════════════════════════════════════════════
 
     // ── CREATE CASE ──────────────────────────────────────────
-   Route::post('/cases', function (Request $request) {
-    $request->validate([
-        'candidate_name'  => 'required|string|max:255',
-        'candidate_email' => 'required|email',
-        'candidate_dob'   => 'required|date',          // ← add this
-        'client_name'     => 'required|string|max:255',
-        'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
-        'checks'          => 'required|array|min:1',
-        'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
-    ]);
+    Route::post('/cases', function (Request $request) {
+        $request->validate([
+            'candidate_name'  => 'required|string|max:255',
+            'candidate_email' => 'required|email',
+            'candidate_dob'   => 'required|date',
+            'client_name'     => 'required|string|max:255',
+            'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+            'checks'          => 'required|array|min:1',
+            'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
+        ]);
 
-    $case = BGVCase::create([
-        'case_id'          => BGVCase::generateCaseId(),
-        'candidate_name'   => $request->candidate_name,
-        'candidate_email'  => $request->candidate_email,
-        'candidate_mobile' => $request->candidate_mobile,
-        'candidate_dob'    => $request->candidate_dob,   // ← add this
-        'position'         => $request->position,
-        'client_name'      => $request->client_name,
-        'client_id'        => $request->client_id,
-        'checks'           => $request->checks,
-        'priority'         => $request->priority ?? 'normal',
-        'billing_mode'     => $request->billing_mode,
-        'payment_timing'   => $request->payment_timing,
-        'invoice_cycle'    => $request->invoice_cycle,
-        'po_number'        => $request->po_number,
-        'total_amount'     => $request->total_amount ?? 0,
-        'payment_link'     => $request->payment_link,
-        'status'           => 'pending',
-        'notes'            => $request->notes,
-        'created_by'       => $request->user()->id,
-    ]);
+        $case = BGVCase::create([
+            'case_id'          => BGVCase::generateCaseId(),
+            'candidate_name'   => $request->candidate_name,
+            'candidate_email'  => $request->candidate_email,
+            'candidate_mobile' => $request->candidate_mobile,
+            'candidate_dob'    => $request->candidate_dob,
+            'position'         => $request->position,
+            'client_name'      => $request->client_name,
+            'client_id'        => $request->client_id,
+            'checks'           => $request->checks,
+            'priority'         => $request->priority ?? 'normal',
+            'billing_mode'     => $request->billing_mode,
+            'payment_timing'   => $request->payment_timing,
+            'invoice_cycle'    => $request->invoice_cycle,
+            'po_number'        => $request->po_number,
+            'total_amount'     => $request->total_amount ?? 0,
+            'payment_link'     => $request->payment_link,
+            'status'           => 'pending',
+            'notes'            => $request->notes,
+            'created_by'       => $request->user()->id,
+        ]);
 
-    \App\Models\CaseEvent::log(
-        $case->case_id,
-        'created',
-        'Case created',
-        "Case opened for {$case->candidate_name}",
-        ['checks' => $case->checks, 'billing_mode' => $case->billing_mode],
-        $request->user()
-    );
+        \App\Models\CaseEvent::log(
+            $case->case_id,
+            'created',
+            'Case created',
+            "Case opened for {$case->candidate_name}",
+            ['checks' => $case->checks, 'billing_mode' => $case->billing_mode],
+            $request->user()
+        );
 
-    return response()->json(['case' => $case], 201);
-});
+        return response()->json(['case' => $case], 201);
+    });
 
-    // ── LIST CASES (Fixed Visibility) ────────────────────────
+    // ── LIST CASES ────────────────────────────────────────────
     Route::get('/cases', function (Request $request) {
         $user = $request->user();
         $query = BGVCase::orderByDesc('created_at');
 
         if ($user->role === 'client') {
-            // Clients see ONLY their own cases
             $query->where(function ($q) use ($user) {
                 $q->where('created_by', $user->id)
                   ->orWhere('client_name', 'LIKE', "%{$user->name}%")
                   ->orWhere('candidate_email', $user->email);
             });
         }
-        // Admins see ALL cases (no filter)
 
-        // Search
         if ($request->search) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
@@ -645,31 +622,18 @@ Route::middleware('auth:sanctum')->group(function () {
             });
         }
 
-        // Status filter
         if ($request->status && $request->status !== 'all') {
             $query->where('status', $request->status);
         }
 
         $cases = $query->get()->map(function ($c) {
-            $checkLabels = collect($c->checks ?? [])->map(function ($ch) {
-                $map = [
-                    'employment' => 'EMP', 'education' => 'EDU', 'address' => 'ADDR',
-                    'database'   => 'DB',  'criminal'  => 'CRI', 'drug'    => 'DRUG',
-                    'court'      => 'CRT',
-                ];
-                return $map[$ch] ?? strtoupper(substr($ch, 0, 3));
-            })->implode('·');
-
             return [
                 'id'            => $c->id,
                 'case_id'       => $c->case_id,
                 'candidate'     => $c->candidate_name,
                 'client'        => $c->client_name,
                 'checks'        => $c->checks,
-                'check_details' => $c->check_details, // ADDED: exposes per-check fields/documents to the
-                                                        // list response — Client.jsx's per-check status
-                                                        // badges and Intake.jsx's document downloads both
-                                                        // read this and previously always got null/undefined.
+                'check_details' => $c->check_details,
                 'status'        => $c->status,
                 'priority'      => $c->priority,
                 'billing_mode'  => $c->billing_mode,
@@ -681,6 +645,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['cases' => $cases]);
     });
+
     // ── GET SINGLE CASE (for edit prefill) ───────────────────
     Route::get('/cases/{caseId}', function (Request $request, $caseId) {
         $case = BGVCase::where('case_id', $caseId)->first();
@@ -710,8 +675,6 @@ Route::middleware('auth:sanctum')->group(function () {
             if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // Editing fields is blocked once verification has moved past "pending" —
-        // matches the note flagged in AddCase.jsx's edit flow.
         if ($case->status !== 'pending' && $user->role === 'client') {
             return response()->json(['message' => 'This case can no longer be edited — verification is already in progress.'], 422);
         }
@@ -764,7 +727,6 @@ Route::middleware('auth:sanctum')->group(function () {
         $user  = $request->user();
         $query = BGVCase::query();
 
-        // Client: stats only for their own cases
         if ($user->role === 'client') {
             $query->where(function ($q) use ($user) {
                 $q->where('created_by', $user->id)
@@ -781,7 +743,6 @@ Route::middleware('auth:sanctum')->group(function () {
         $clients    = BGVCase::distinct('client_name')->count('client_name');
         $clearRate  = $total > 0 ? round(($completed / $total) * 100) : 0;
 
-        // Avg TAT for completed cases (SQLite — swap for PostgreSQL version on Render)
         $avgTat = BGVCase::where('status', 'completed')
             ->selectRaw('AVG(JULIANDAY(updated_at) - JULIANDAY(created_at)) as avg_days')
             ->value('avg_days');
@@ -863,6 +824,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['message' => 'Check result saved', 'check_results' => $results]);
     });
+
     // ── SAVE CHECK FIELDS (client/staff — from CheckDetailForm) ──
     Route::patch('/cases/{caseId}/checks/{checkKey}', function (Request $request, $caseId, $checkKey) {
         $request->validate(['fields' => 'required|array']);
@@ -900,7 +862,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['message' => 'Saved', 'check_details' => $details]);
     });
 
-    // ── UPLOAD CHECK DOCUMENT (client/staff — from CheckDetailForm) ──
+    // ── UPLOAD CHECK DOCUMENT (client/staff) ──
     Route::post('/cases/{caseId}/checks/{checkKey}/documents', function (Request $request, $caseId, $checkKey) {
         $request->validate([
             'document_key' => 'required|string',
@@ -1012,7 +974,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // CANDIDATE LINKS (Candidate Portal — Link Generator)
     // ═════════════════════════════════════════════════════════
 
-    // ── LIST LINKS (client sees only their own; admin sees all) ──
     Route::get('/candidate-links', function (Request $request) {
         $user  = $request->user();
         $query = \App\Models\CandidateLink::orderByDesc('created_at');
@@ -1039,7 +1000,6 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['links' => $links]);
     });
 
-    // ── CREATE SINGLE LINK ────────────────────────────────────
     Route::post('/candidate-links', function (Request $request) {
         $request->validate([
             'candidateName' => 'required|string|max:255',
@@ -1083,7 +1043,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ], 201);
     });
 
-    // ── CREATE BULK LINKS (CSV upload) ────────────────────────
     Route::post('/candidate-links/bulk', function (Request $request) {
         $request->validate([
             'rows'                 => 'required|array|min:1',
@@ -1134,7 +1093,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ], 201);
     });
 
-    // ── SEND LINK (SMS/Email — stub) ──────────────────────────
     Route::post('/candidate-links/{id}/send', function (Request $request, $id) {
         $request->validate(['method' => 'required|in:SMS,Email']);
 
@@ -1157,7 +1115,6 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['message' => "{$request->method} sent to " . ($request->method === 'SMS' ? $link->mobile : $link->email)]);
     });
 
-    // ── REVOKE / DELETE LINK ───────────────────────────────────
     Route::delete('/candidate-links/{id}', function (Request $request, $id) {
         $link = \App\Models\CandidateLink::find($id);
         if (!$link) return response()->json(['message' => 'Link not found'], 404);
@@ -1174,21 +1131,18 @@ Route::middleware('auth:sanctum')->group(function () {
     // INSTITUTIONS & COMPANIES
     // ═════════════════════════════════════════════════════════
 
-    // ── LIST INSTITUTIONS ─────────────────────────────────────
     Route::get('/institutions', function (Request $request) {
         $query = \App\Models\Institution::query();
 
         if ($request->type && $request->type !== 'all') {
             $query->where('type', $request->type);
         }
-          if ($request->scope) {                                    // ← add
-        $query->where('scope', strtolower($request->scope));  // ← add
-    }
-
+        if ($request->scope) {
+            $query->where('scope', strtolower($request->scope));
+        }
         if (!$request->boolean('include_inactive')) {
             $query->where('status', '!=', 'inactive');
         }
-
         if ($request->search) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
@@ -1198,12 +1152,9 @@ Route::middleware('auth:sanctum')->group(function () {
             });
         }
 
-        return response()->json([
-            'institutions' => $query->orderBy('name')->get(),
-        ]);
+        return response()->json(['institutions' => $query->orderBy('name')->get()]);
     });
 
-    // ── CREATE INSTITUTION (admin only) ──────────────────────
     Route::post('/institutions', function (Request $request) {
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
@@ -1219,7 +1170,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'aicte'      => 'nullable|string|max:50',
             'accredited' => 'nullable|boolean',
             'level'      => 'nullable|string|max:50',
-            'scope'      => 'nullable|in:national,international',   
+            'scope'      => 'nullable|in:national,international',
         ]);
 
         $institution = \App\Models\Institution::create([
@@ -1232,13 +1183,12 @@ Route::middleware('auth:sanctum')->group(function () {
             'aicte'      => $request->aicte,
             'accredited' => $request->boolean('accredited'),
             'level'      => $request->level,
-            'scope'      => $request->scope,                        
+            'scope'      => $request->scope,
         ]);
 
         return response()->json(['institution' => $institution], 201);
     });
 
-    // ── BULK IMPORT INSTITUTIONS (admin only) ─────────────────
     Route::post('/institutions/bulk', function (Request $request) {
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
@@ -1251,7 +1201,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'rows.*.code'    => 'nullable|string|max:20',
             'rows.*.state'   => 'nullable|string|max:100',
             'rows.*.website' => 'nullable|string|max:255',
-            'rows.*.scope' => 'nullable|in:national,international',
+            'rows.*.scope'   => 'nullable|in:national,international',
         ]);
 
         $created = [];
@@ -1266,7 +1216,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 'aicte'      => $row['aicte'] ?? null,
                 'accredited' => filter_var($row['accredited'] ?? false, FILTER_VALIDATE_BOOLEAN),
                 'level'      => $row['level'] ?? null,
-                'scope' => $row['scope'] ?? null,
+                'scope'      => $row['scope'] ?? null,
             ]);
         }
 
@@ -1276,7 +1226,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ], 201);
     });
 
-    // ── REMOVE INSTITUTION (admin only — soft delete) ─────────
     Route::delete('/institutions/{id}', function (Request $request, $id) {
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
@@ -1296,17 +1245,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // COMPANIES
     // ═════════════════════════════════════════════════════════
 
-    // ── LIST COMPANIES ────────────────────────────────────────
     Route::get('/companies', function (Request $request) {
         $query = \App\Models\Company::query();
 
         if (!$request->boolean('include_inactive')) {
             $query->where('status', '!=', 'inactive');
         }
-            if ($request->scope) {                                    // ← add
-        $query->where('scope', strtolower($request->scope));  // ← add
-    }
-
+        if ($request->scope) {
+            $query->where('scope', strtolower($request->scope));
+        }
         if ($request->search) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
@@ -1316,12 +1263,9 @@ Route::middleware('auth:sanctum')->group(function () {
             });
         }
 
-        return response()->json([
-            'companies' => $query->orderBy('name')->get(),
-        ]);
+        return response()->json(['companies' => $query->orderBy('name')->get()]);
     });
 
-    // ── CREATE COMPANY (admin only) ───────────────────────────
     Route::post('/companies', function (Request $request) {
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
@@ -1341,7 +1285,6 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['company' => $company], 201);
     });
 
-    // ── BULK IMPORT COMPANIES (admin only) ────────────────────
     Route::post('/companies/bulk', function (Request $request) {
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
@@ -1375,7 +1318,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ], 201);
     });
 
-    // ── REMOVE COMPANY (admin only — soft delete) ─────────────
     Route::delete('/companies/{id}', function (Request $request, $id) {
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
