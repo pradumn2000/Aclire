@@ -1075,6 +1075,12 @@ export default function Clientportal() {
   const pending = links.filter((l) => l.status === "Pending").length;
   const submitted = links.filter((l) => l.status === "Submitted").length;
 
+    // Calculate pagination
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filtered.length / usersPerPage);
+
   return (
     <>
       <Sidebar />

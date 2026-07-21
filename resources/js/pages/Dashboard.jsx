@@ -578,10 +578,18 @@ export default function Dashboard() {
 
   const chartCases = cases.filter(c => isInRange(c.created_at));
 
+    // Calculate pagination
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filtered.length / usersPerPage);
+
   const vsText = (() => {
     const label = DATE_FILTERS.find(d => d.key === dateFilter)?.label;
     return `Showing ${chartCases.length} cases — ${label}`;
   })();
+
+
 
   return (
     <>

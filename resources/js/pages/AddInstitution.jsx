@@ -1039,6 +1039,12 @@ export default function AddInstitution() {
     }
   };
 
+    // Calculate pagination
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filtered.length / usersPerPage);
+
   const activeCount = institutions.filter(
     (i) => i.status !== "inactive" && i.type === "university"
   ).length;

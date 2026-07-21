@@ -47,6 +47,12 @@ export default function AllCases() {
     return matchTab && matchSearch;
   });
 
+    // Calculate pagination
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filtered.length / usersPerPage);
+
   const countFor = (status) =>
     status === "all" ? cases.length : cases.filter(c => c.status === status).length;
 

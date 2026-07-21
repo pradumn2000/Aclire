@@ -382,7 +382,18 @@ export default function CompanyManagement() {
     }
   };
 
+    // Calculate pagination
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filtered.length / usersPerPage);
+
+  
   const industryCount = [...new Set(companies.filter(c => c.status !== "inactive").map(c => c.industry).filter(Boolean))].length;
+
+ 
+
+ 
 
   return (
     <>
@@ -581,7 +592,7 @@ export default function CompanyManagement() {
                   <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} style={{ padding: "5px 10px" }}>»</button>
                 </div>
               )}
-              
+
                   <div style={{ padding: "8px 16px", fontSize: "12px", color: "#94a3b8", borderTop: "1px solid #f1f5f9" }}>
                     Showing {filtered.length} of {companies.filter(c => c.status !== "inactive").length} companies
                   </div>
