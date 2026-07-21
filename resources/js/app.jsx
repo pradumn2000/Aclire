@@ -254,7 +254,7 @@ import ClientBilling from "./pages/ClientBilling";
 import ClientOnboardingForm from "./pages/Clientonbordingform";
 import AddClient from "./pages/AddClient";
 import PendingRegistrations from "./pages/PendingRegistrations";
-import AllClients from "./pages/AllClients";
+import AllClients from "./pages/Allclients";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -432,7 +432,7 @@ function App() {
   <PrivateRoute role="admin"><AddClient /></PrivateRoute>
 } />
 <Route path="/AllClients" element={
-  <PrivateRoute role="admin"><AllClients /></PrivateRoute>
+  <PrivateRoute role="admin"><Allclients /></PrivateRoute>
 } />
 <Route path="/PendingRegistrations" element={
   <PrivateRoute role="admin"><PendingRegistrations /></PrivateRoute>
