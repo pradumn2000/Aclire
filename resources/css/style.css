@@ -1154,10 +1154,13 @@ input:checked+.slider:before {
 .dash-upper-head .right{
   display: flex;
   gap: 10px;
+  margin-left: auto;
 }
 .dash-upper-head {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 .date-wrapper {
     position: relative;
