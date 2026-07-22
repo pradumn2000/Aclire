@@ -5797,7 +5797,7 @@ button.btn.btn-request {
  .down-table {
     height: 100%;
     max-height: 460px;
-    overflow-y: auto;
+    overflow: auto;
 }
 .tat-custom-class{
  
