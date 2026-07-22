@@ -254,7 +254,7 @@ export default function Header() {
   };
 
   return (
-    <nav style={{ position: "relative" }}>
+    <nav>
       <div className="nav-toggle">
         <div className="bx bx-menu">
           <img src="images/sidebar/sidebar-collapse.svg" alt="" />
