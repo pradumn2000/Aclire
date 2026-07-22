@@ -1570,7 +1570,7 @@ export default function AllCases() {
                                     </span>
                                   </td>
                                   <td style={{ fontSize: "13px", whiteSpace: "nowrap" }}>
-  <div className="tat-custom-class">
+  <div className="tat-custom-class green"> <span className="tat-label-dot green"></span>
     {row.tat}
   </div>
 </td>
