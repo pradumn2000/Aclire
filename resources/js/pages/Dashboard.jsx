@@ -955,7 +955,9 @@ export default function Dashboard() {
                             <td>{row.client}</td>
                             <td>{row.checks}</td>
                             <td><span className={`status ${row.status}`}>{statusLabel(row.status)}</span></td>
-                            <td>{row.tat || "—"}</td>
+                            <td><div className="tat-custom-class green"> <span className="tat-label-dot green"></span>
+    {row.tat || "—"}
+  </div></td>
                             <td>
                               <button className="view-cta" onClick={() => navigate("/AllCases")}>View</button>
                             </td>
