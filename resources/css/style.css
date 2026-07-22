@@ -5796,5 +5796,12 @@ button.btn.btn-request {
     max-height: 460px;
     overflow-y: auto;
 }
-
+.tat-custom-class{
+  background-color: #f1f5f9;
+  color: #475569;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
 

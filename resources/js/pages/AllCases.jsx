@@ -1569,7 +1569,7 @@ export default function AllCases() {
                                       {row.priority ? row.priority.charAt(0).toUpperCase() + row.priority.slice(1) : "—"}
                                     </span>
                                   </td>
-                                  <td style={{ fontSize: "13px", whiteSpace: "nowrap" }}>{row.tat}</td>
+                                  <td className="tat-custom-class" style={{ fontSize: "13px", whiteSpace: "nowrap" }}>{row.tat}</td>
                                   <td style={{ fontSize: "12px", color: "#94a3b8", whiteSpace: "nowrap" }}>{row.created_at}</td>
                                   <td>
                                     <div style={{ display: "flex", gap: "8px" }}>
