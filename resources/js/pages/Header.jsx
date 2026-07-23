@@ -362,7 +362,7 @@ export default function Header() {
     Close
   </button>
 
-  <a href="alerts.html" className="primary-btn">
+  <a href="alerts.html" className="secondary-cta">
     View All
   </a>
 </div>

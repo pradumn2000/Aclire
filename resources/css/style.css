@@ -5840,7 +5840,7 @@ span.tat-label-dot.orange {
 }
 .notification-wrp{
   height: auto;
-    max-height: 400px;
+    max-height: 550px;
     /* padding: 15px; */
     padding-bottom: 0;
     overflow-y: auto;
@@ -5872,7 +5872,7 @@ span.tat-label-dot.orange {
     background-size: 14px;
 }
 .notification-dropdown-footer {
-    padding: 25px 15px;
+    padding: 15px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -5887,4 +5887,7 @@ span.tat-label-dot.orange {
     font-weight: 500;
     border-radius: 8px;
     color: #61616180;
+}
+.notification-body {
+    padding: 20px;
 }
