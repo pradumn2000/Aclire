@@ -355,16 +355,19 @@ export default function Header() {
             )}
            </div>
             <div className="notification-dropdown-footer">
-  <button
+  {/* <button
     type="button"
     className="close-dropdown"
   >
     Close
-  </button>
+  </button> */}
 
-  <a href="alerts.html" className="secondary-cta">
-    View All
-  </a>
+  
+
+
+
+  <a href="#" className="primary-cta">Mark as Read</a>
+  <a href="#" className="secondary-cta view">Clear All</a>
 </div>
           </div>
         )}
