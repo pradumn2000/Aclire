@@ -288,7 +288,7 @@ export default function Header() {
         {/* Enhanced Notification Dropdown */}
         {showNotifications && (
           <div className="notification-wrp" style={{
-            position: "absolute", top: "55px", right: "240px", width: "400px",
+            position: "absolute", top: "55px", right: "240px",
             background: "#fff", boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
             borderRadius: "12px", zIndex: 1000, color: "#1e2937"
           }}>
