@@ -290,7 +290,7 @@ export default function Header() {
           <div className="notification-wrp" style={{
             position: "absolute", top: "55px", right: "240px", width: "400px",
             background: "#fff", boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
-            borderRadius: "12px", padding: "18px", zIndex: 1000, color: "#1e2937"
+            borderRadius: "12px", zIndex: 1000, color: "#1e2937"
           }}>
 
           <div className="notification-dropdown-header">
@@ -301,13 +301,14 @@ export default function Header() {
 
   <button
     type="button"
-    className="btn-close close-dropdown"
+    className="btn-close close-dropdown " data-bs-dismiss="dropdown" aria-label="Close"
   ></button>
 </div>
             {/* <h4 style={{ margin: "0 0 14px 0", color:"#000000", fontWeight: 600 }}>Notifications</h4> */}
 
             {/* Pending Self-Registrations */}
-            <div style={{ marginBottom: "20px" }}>
+           <div className="notification-body">
+             <div style={{ marginBottom: "20px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                 <strong>Pending Self-Registrations ({pendingRegs.length})</strong>
                 <span 
@@ -352,6 +353,7 @@ export default function Header() {
                 No new notifications
               </p>
             )}
+           </div>
             <div className="notification-dropdown-footer">
   <button
     type="button"
