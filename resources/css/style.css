@@ -5840,7 +5840,8 @@ span.tat-label-dot.orange {
 }
 .notification-wrp{
   height: auto;
-    max-height: 550px;
+    max-height: 400px;
+    width:550px
     /* padding: 15px; */
     padding-bottom: 0;
     overflow-y: auto;
