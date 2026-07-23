@@ -288,11 +288,23 @@ export default function Header() {
         {/* Enhanced Notification Dropdown */}
         {showNotifications && (
           <div className="notification-wrp" style={{
-            position: "absolute", top: "55px", right: "216px", width: "400px",
+            position: "absolute", top: "55px", right: "240px", width: "400px",
             background: "#fff", boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
             borderRadius: "12px", padding: "18px", zIndex: 1000, color: "#1e2937"
           }}>
-            <h4 style={{ margin: "0 0 14px 0", color:"#000000", fontWeight: 600 }}>Notifications</h4>
+
+          <div className="notification-dropdown-header">
+  <h4>
+    Notifications <br />
+    <span>Today</span>
+  </h4>
+
+  <button
+    type="button"
+    className="btn-close close-dropdown"
+  ></button>
+</div>
+            {/* <h4 style={{ margin: "0 0 14px 0", color:"#000000", fontWeight: 600 }}>Notifications</h4> */}
 
             {/* Pending Self-Registrations */}
             <div style={{ marginBottom: "20px" }}>
@@ -306,7 +318,7 @@ export default function Header() {
                 </span>
               </div>
               {pendingRegs.length === 0 ? (
-                <p style={{ color: "#64748b", fontSize: "13.5px" }}>No pending registrations at the moment.</p>
+                <p className="text-para-nitification">No pending registrations at the moment.</p>
               ) : (
                 pendingRegs.slice(0, 5).map(r => (
                   <div key={r.id} style={{ padding: "9px 0", borderBottom: "1px solid #f1f5f9" }}>
@@ -340,6 +352,18 @@ export default function Header() {
                 No new notifications
               </p>
             )}
+            <div className="notification-dropdown-footer">
+  <button
+    type="button"
+    className="close-dropdown"
+  >
+    Close
+  </button>
+
+  <a href="alerts.html" className="primary-btn">
+    View All
+  </a>
+</div>
           </div>
         )}
 
