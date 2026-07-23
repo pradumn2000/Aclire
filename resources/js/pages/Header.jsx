@@ -366,7 +366,7 @@ export default function Header() {
 
 
 
-  <a href="#" className="primary-cta">Mark as Read</a>
+  <a href="#" className="primary-cta read">Mark as Read</a>
   <a href="#" className="secondary-cta view">Clear All</a>
 </div>
           </div>
