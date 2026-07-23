@@ -287,12 +287,12 @@ export default function Header() {
 
         {/* Enhanced Notification Dropdown */}
         {showNotifications && (
-          <div style={{
-            position: "absolute", top: "55px", right: "90px", width: "400px",
+          <div className="notification-wrp" style={{
+            position: "absolute", top: "55px", right: "216px", width: "400px",
             background: "#fff", boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
             borderRadius: "12px", padding: "18px", zIndex: 1000, color: "#1e2937"
           }}>
-            <h4 style={{ margin: "0 0 14px 0", fontWeight: 600 }}>Notifications</h4>
+            <h4 style={{ margin: "0 0 14px 0", color:"#000000", fontWeight: 600 }}>Notifications</h4>
 
             {/* Pending Self-Registrations */}
             <div style={{ marginBottom: "20px" }}>

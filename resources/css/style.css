@@ -5838,3 +5838,10 @@ span.tat-label-dot.yellow {
 span.tat-label-dot.orange {
     background: #ea580c;
 }
+.notification-wrp{
+  height: auto;
+    max-height: 400px;
+    padding: 15px;
+    padding-bottom: 0;
+    overflow-y: auto;
+}
