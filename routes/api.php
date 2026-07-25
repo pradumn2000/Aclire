@@ -1439,4 +1439,117 @@ Route::post('/client-registrations/{id}/reject', function (Request $request, $id
         return response()->json(['message' => 'Company removed']);
     });
 
+    // ═════════════════════════════════════════════════════════
+    // CLIENTS (User records with role = 'client')
+    // ═════════════════════════════════════════════════════════
+
+    // ── LIST CLIENTS ──────────────────────────────────────────
+    Route::get('/clients', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $clients = \App\Models\User::where('role', 'client')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($u) {
+                return [
+                    'id'            => $u->id,
+                    'company_name'  => $u->name,
+                    'name'          => $u->primary_contact,
+                    'contact_email' => $u->email,
+                    'contact_phone' => $u->contact_phone,
+                    'gstin'         => $u->gstin,
+                    'billing_mode'  => $u->billing_mode,
+                    'created_at'    => $u->created_at,
+                ];
+            });
+
+        return response()->json(['clients' => $clients]);
+    });
+
+    // ── GET SINGLE CLIENT (for view / edit prefill) ──────────
+    Route::get('/clients/{id}', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $client = \App\Models\User::where('role', 'client')->find($id);
+        if (!$client) return response()->json(['message' => 'Client not found'], 404);
+
+        return response()->json(['client' => [
+            'id'              => $client->id,
+            'company_name'    => $client->name,
+            'address'         => $client->address,
+            'gstin'           => $client->gstin,
+            'primary_contact' => $client->primary_contact,
+            'contact_phone'   => $client->contact_phone,
+            'contact_email'   => $client->email,
+            'priority'        => $client->priority,
+            'billing_mode'    => $client->billing_mode,
+            'agreed_checks'   => $client->agreed_checks,
+            'check_rates'     => $client->check_rates,
+            'check_tat'       => $client->check_tat,
+            'notes'           => $client->notes,
+            'created_at'      => $client->created_at,
+        ]]);
+    });
+
+    // ── UPDATE CLIENT ─────────────────────────────────────────
+    Route::put('/clients/{id}', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $client = \App\Models\User::where('role', 'client')->find($id);
+        if (!$client) return response()->json(['message' => 'Client not found'], 404);
+
+ $request->validate([
+    'companyName'    => 'required|string|max:255',
+    'address'        => 'nullable|string|max:1000',
+    'gstin'          => 'nullable|string|max:15',
+    'primaryContact' => 'nullable|string|max:255',
+    'contactPhone'   => 'nullable|string|max:20',
+    'contactEmail'   => 'required|email|unique:users,email,' . $client->id,
+    'priority'       => 'nullable|in:normal,high,urgent',   // ← add this line
+    'billingMode'    => 'nullable|in:prepaid_client,prepaid_candidate,postpaid_client',
+    'agreedChecks'   => 'nullable|array',
+    'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug,court',
+    'checkRates'     => 'nullable|array',
+    'checkTat'       => 'nullable|array',
+    'notes'          => 'nullable|string',
+]);
+
+$client->update([
+    'name'            => $request->companyName,
+    'email'           => $request->contactEmail,
+    'address'         => $request->address,
+    'gstin'           => $request->gstin,
+    'primary_contact' => $request->primaryContact,
+    'contact_phone'   => $request->contactPhone,
+    'priority'        => $request->priority ?? $client->priority,   // ← add this line
+    'billing_mode'    => $request->billingMode,
+    'agreed_checks'   => $request->agreedChecks ?? $client->agreed_checks,
+    'check_rates'     => $request->checkRates ?? $client->check_rates,
+    'check_tat'       => $request->checkTat ?? $client->check_tat,
+    'notes'           => $request->notes,
+]);
+
+        return response()->json(['message' => 'Client updated', 'client' => $client]);
+    });
+
+    // ── DELETE / REMOVE CLIENT ────────────────────────────────
+    Route::delete('/clients/{id}', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $client = \App\Models\User::where('role', 'client')->find($id);
+        if (!$client) return response()->json(['message' => 'Client not found'], 404);
+
+        $client->delete();
+
+        return response()->json(['message' => 'Client removed successfully']);
+    });
+
 });
