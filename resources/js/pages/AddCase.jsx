@@ -866,7 +866,7 @@ export default function AddCase() {
                     </div>
                   </div>
 
-                  <div className="ac-checks-grid">
+                  {/* <div className="ac-checks-grid">
                     {CHECK_TYPES.map(ct => {
                       const active = form.checks.includes(ct.key);
                       return (
@@ -942,8 +942,115 @@ export default function AddCase() {
                         </div>
                       );
                     })}
-                  </div>
+                  </div> */}
+                  <div className="ac-checks-table-container">
+  <table className="ac-checks-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+    <thead>
+      <tr>
+        <th style={{ textAlign: 'left', padding: '12px' }}>Check Type</th>
+        <th style={{ textAlign: 'left', padding: '12px' }}>Amount</th>
+        <th style={{ textAlign: 'left', padding: '12px' }}>TAT</th>
+      </tr>
+    </thead>
+    <tbody>
+      {CHECK_TYPES.map(ct => {
+        const active = form.checks.includes(ct.key);
+        const tatValue = Number(tats[ct.key]) || 0;
 
+        // TAT color logic based on reference image
+        const getTatIndicator = (days) => {
+          if (days <= 1) return { color: '#2ecc71', label: `${days} Day` }; // Green
+          if (days <= 3) return { color: '#f1c40f', label: `${days} Days` }; // Yellow
+          return { color: '#e74c3c', label: `${days} Days` }; // Red/Orange
+        };
+
+        const tatDetails = getTatIndicator(tatValue);
+
+        return (
+          <tr 
+            key={ct.key} 
+            className={active ? "ac-check-active" : ""}
+            style={{ borderBottom: '1px solid #eaeaea', cursor: 'pointer' }}
+            onClick={() => toggleCheck(ct.key)}
+          >
+            {/* Check Type Column (Checkbox + Name) */}
+            <td style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <input 
+                type="checkbox" 
+                checked={active} 
+                onChange={() => toggleCheck(ct.key)}
+                onClick={(e) => e.stopPropagation()}
+              />
+              <span className="ac-check-dot" />
+              <span>{ct.label}</span>
+            </td>
+
+            {/* Amount Column (Editable for Admin / Display for Client based on your logic) */}
+            <td style={{ padding: '12px' }} onClick={(e) => e.stopPropagation()}>
+              {isAdminUser ? (
+                <div className="ac-check-rate-edit" title="Rate">
+                  <span className="ac-rate-prefix">₹</span>
+                  <input
+                    type="number"
+                    min="0"
+                    className="ac-rate-input"
+                    value={rates[ct.key]}
+                    onChange={(e) => setRate(ct.key, e.target.value)}
+                  />
+                </div>
+              ) : (
+                <div className="ac-check-rate-display" title="Configured rate">
+                  <span className="ac-rate-prefix">₹</span>
+                  <span className="ac-rate-value">{rates[ct.key]}</span>
+                </div>
+              )}
+            </td>
+
+            {/* TAT Column (Colored dot indicator + days) */}
+            <td style={{ padding: '12px' }} onClick={(e) => e.stopPropagation()}>
+              {isAdminUser || !isClientUser ? (
+                <div className="ac-check-rate-edit" title="Turnaround time (days)" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span 
+                    style={{ 
+                      height: '10px', 
+                      width: '10px', 
+                      backgroundColor: tatDetails.color, 
+                      borderRadius: '50%', 
+                      display: 'inline-block' 
+                    }} 
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    className="ac-rate-input ac-tat-input"
+                    value={tats[ct.key]}
+                    onChange={(e) => setTat(ct.key, e.target.value)}
+                    style={{ width: '60px' }}
+                  />
+                  <span className="ac-rate-suffix">d</span>
+                </div>
+              ) : (
+                <div className="ac-check-rate-display" title="Turnaround time" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span 
+                    style={{ 
+                      height: '10px', 
+                      width: '10px', 
+                      backgroundColor: tatDetails.color, 
+                      borderRadius: '50%', 
+                      display: 'inline-block' 
+                    }} 
+                  />
+                  <span className="ac-rate-value">{tats[ct.key]}</span>
+                  <span className="ac-rate-suffix">d</span>
+                </div>
+              )}
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
                   <div className="ac-amount-bar">
                     <span>{form.checks.length} of {CHECK_TYPES.length} selected</span>
                     <span className="ac-tat-bar-item">
