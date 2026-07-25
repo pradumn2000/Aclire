@@ -2111,7 +2111,7 @@ export default function AddCase() {
                                   onClick={(e) => e.stopPropagation()}
                                   onChange={(e) => setTat(ct.key, e.target.value)}
                                 />
-                                <span className="ac-rate-suffix">d</span>
+                                <span className="ac-rate-suffix">days</span>
                               </div>
                             </div>
                           ) : !isClientUser ? (
