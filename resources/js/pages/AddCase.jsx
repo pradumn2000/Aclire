@@ -2175,19 +2175,13 @@ export default function AddCase() {
             style={{ borderBottom: '1px solid #eaeaea', cursor: 'pointer' }}
             onClick={() => toggleCheck(ct.key)}
           >
-            {/* Check Type Column (Checkbox + Name) */}
+            {/* Check Type Column (Name with dot indicator) */}
             <td style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <input 
-                type="checkbox" 
-                checked={active} 
-                onChange={() => toggleCheck(ct.key)}
-                onClick={(e) => e.stopPropagation()}
-              />
               <span className="ac-check-dot" />
               <span>{ct.label}</span>
             </td>
 
-            {/* Amount Column (Editable for Admin / Display for Client based on your logic) */}
+            {/* Amount Column */}
             <td style={{ padding: '12px' }} onClick={(e) => e.stopPropagation()}>
               {isAdminUser ? (
                 <div className="ac-check-rate-edit" title="Rate">
@@ -2208,7 +2202,7 @@ export default function AddCase() {
               )}
             </td>
 
-            {/* TAT Column (Colored dot indicator + days) */}
+            {/* TAT Column */}
             <td style={{ padding: '12px' }} onClick={(e) => e.stopPropagation()}>
               {isAdminUser || !isClientUser ? (
                 <div className="ac-check-rate-edit" title="Turnaround time (days)" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
