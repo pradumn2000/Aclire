@@ -2892,7 +2892,7 @@ export default function AddClient() {
                                       }}
                                     />
                                     <span className="ac-rate-value">{tats[ct.key] || "—"}</span>
-                                    <span className="ac-rate-suffix">d</span>
+                                    <span className="ac-rate-suffix">days</span>
                                   </div>
                                 ) : (
                                   <div className="ac-check-rate-edit" title="Turnaround time (days)" style={{ display: "flex", alignItems: "center", gap: "8px" }}>

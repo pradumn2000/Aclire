@@ -3447,7 +3447,7 @@ export default function AddCase() {
                     onChange={(e) => setTat(ct.key, e.target.value)}
                     style={{ width: '60px' }}
                   />
-                  <span className="ac-rate-suffix">d</span>
+                  <span className="ac-rate-suffix">days</span>
                 </div>
               ) : (
                 <div className="ac-check-rate-display" title="Turnaround time" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
