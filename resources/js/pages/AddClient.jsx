@@ -4026,7 +4026,6 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { API_URL } from "../src/config";
 
-// ── Same check catalogue as AddCase.jsx ──────────────────────────────────
 const DEFAULT_CHECK_RATES = {
   employment: 0, education: 0, address: 0,
   database: 0, criminal: 0, drug: 0, court: 0,
@@ -4053,7 +4052,6 @@ const BILLING_MODES = [
   { key: "postpaid_client", label: "Postpaid — Client", desc: "Case created now. Client invoiced at month end.", color: "#7c3aed" },
 ];
 
-// ── TAT color: green ≤1 day, yellow ≤3 days, red beyond ─────────────────
 function getTatIndicator(days) {
   if (days <= 1) return { color: "#2ecc71", label: `${days} Day` };
   if (days <= 3) return { color: "#f1c40f", label: `${days} Days` };
@@ -4175,7 +4173,9 @@ export default function AddClient() {
         if (c.check_tat && typeof c.check_tat === "object") {
           setTats((prev) => ({ ...prev, ...c.check_tat }));
         }
-        if (c.agreement_url) setExistingAgreementUrl(c.agreement_url);
+        if (c.agreement_url || c.agreementUrl) {
+          setExistingAgreementUrl(c.agreement_url || c.agreementUrl);
+        }
       })
       .catch((err) => {
         if (!cancelled) setLoadError(err.message || "Failed to load client details.");
@@ -4212,7 +4212,7 @@ export default function AddClient() {
   const clearAll = () => setForm((p) => ({ ...p, checks: [] }));
 
   const handleAgreementFileChange = (e) => {
-    setAgreementFile(e.target.files[0] || null);
+    setAgreementFile(e.target.files?.[0] || null);
   };
 
   const totalAmount = form.checks.reduce((s, k) => s + (rates[k] || 0), 0);
@@ -4255,56 +4255,91 @@ export default function AddClient() {
         : `${API_URL}/api/clients/register`;
       const method = isEditMode ? "PUT" : "POST";
 
-      const payload = {
-        // snake_case (Laravel)
-        company_name: form.clientName.trim(),
-        address: form.address.trim(),
-        gstin: form.gstin.trim(),
-        primary_contact: form.contactName.trim(),
-        contact_phone: form.contactPhone.trim(),
-        contact_email: form.email.trim(),
-        billing_mode: form.billingMode,
-        agreed_checks: form.checks,
-        check_rates: rates,
-        check_tat: tats,
-        notes: form.notes || "",
-        // camelCase fallback
-        companyName: form.clientName.trim(),
-        primaryContact: form.contactName.trim(),
-        contactPhone: form.contactPhone.trim(),
-        contactEmail: form.email.trim(),
-        billingMode: form.billingMode,
-        agreedChecks: form.checks,
-        checkRates: rates,
-        checkTat: tats,
+      const headers = {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       };
 
-      if (!isEditMode) {
-        payload.password = form.password;
-      }
-      if (registrationId) {
-        payload.registration_id = registrationId;
-        payload.registrationId = registrationId;
-      }
-      if (form.agreementStartDate) {
-        payload.agreement_start_date = form.agreementStartDate;
-        payload.agreementStartDate = form.agreementStartDate;
-      }
-      if (form.agreementEndDate) {
-        payload.agreement_end_date = form.agreementEndDate;
-        payload.agreementEndDate = form.agreementEndDate;
+      let body;
+
+      if (agreementFile) {
+        // Multipart when uploading agreement PDF/file — do NOT set Content-Type
+        const fd = new FormData();
+        fd.append("company_name", form.clientName.trim());
+        fd.append("companyName", form.clientName.trim());
+        fd.append("address", form.address.trim());
+        fd.append("gstin", form.gstin.trim());
+        fd.append("primary_contact", form.contactName.trim());
+        fd.append("primaryContact", form.contactName.trim());
+        fd.append("contact_phone", form.contactPhone.trim());
+        fd.append("contactPhone", form.contactPhone.trim());
+        fd.append("contact_email", form.email.trim());
+        fd.append("contactEmail", form.email.trim());
+        fd.append("billing_mode", form.billingMode);
+        fd.append("billingMode", form.billingMode);
+        fd.append("agreed_checks", JSON.stringify(form.checks));
+        fd.append("agreedChecks", JSON.stringify(form.checks));
+        fd.append("check_rates", JSON.stringify(rates));
+        fd.append("checkRates", JSON.stringify(rates));
+        fd.append("check_tat", JSON.stringify(tats));
+        fd.append("checkTat", JSON.stringify(tats));
+        fd.append("notes", form.notes || "");
+        if (!isEditMode) fd.append("password", form.password);
+        if (registrationId) {
+          fd.append("registration_id", registrationId);
+          fd.append("registrationId", registrationId);
+        }
+        if (form.agreementStartDate) {
+          fd.append("agreement_start_date", form.agreementStartDate);
+          fd.append("agreementStartDate", form.agreementStartDate);
+        }
+        if (form.agreementEndDate) {
+          fd.append("agreement_end_date", form.agreementEndDate);
+          fd.append("agreementEndDate", form.agreementEndDate);
+        }
+        fd.append("agreement", agreementFile);
+        fd.append("agreement_file", agreementFile);
+        body = fd;
+      } else {
+        headers["Content-Type"] = "application/json";
+        const payload = {
+          company_name: form.clientName.trim(),
+          companyName: form.clientName.trim(),
+          address: form.address.trim(),
+          gstin: form.gstin.trim(),
+          primary_contact: form.contactName.trim(),
+          primaryContact: form.contactName.trim(),
+          contact_phone: form.contactPhone.trim(),
+          contactPhone: form.contactPhone.trim(),
+          contact_email: form.email.trim(),
+          contactEmail: form.email.trim(),
+          billing_mode: form.billingMode,
+          billingMode: form.billingMode,
+          agreed_checks: form.checks,
+          agreedChecks: form.checks,
+          check_rates: rates,
+          checkRates: rates,
+          check_tat: tats,
+          checkTat: tats,
+          notes: form.notes || "",
+        };
+        if (!isEditMode) payload.password = form.password;
+        if (registrationId) {
+          payload.registration_id = registrationId;
+          payload.registrationId = registrationId;
+        }
+        if (form.agreementStartDate) {
+          payload.agreement_start_date = form.agreementStartDate;
+          payload.agreementStartDate = form.agreementStartDate;
+        }
+        if (form.agreementEndDate) {
+          payload.agreement_end_date = form.agreementEndDate;
+          payload.agreementEndDate = form.agreementEndDate;
+        }
+        body = JSON.stringify(payload);
       }
 
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
+      const res = await fetch(url, { method, headers, body });
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
@@ -4321,9 +4356,7 @@ export default function AddClient() {
       }
 
       setClientId(isEditMode ? editClientId : data.user?.id ?? data.client?.id ?? null);
-      if (!isEditMode) {
-        setSharePassword(form.password);
-      }
+      if (!isEditMode) setSharePassword(form.password);
       setSubmitted(true);
     } catch {
       setError("Server error. Please try again.");
@@ -4344,7 +4377,6 @@ export default function AddClient() {
     setError("");
   };
 
-  // ── Loading ────────────────────────────────────────────────────────────
   if (isEditMode && fetchingClient) {
     return (
       <>
@@ -4353,14 +4385,7 @@ export default function AddClient() {
           <Header />
           <main>
             <div className="dash-wrper">
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: "50vh",
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "50vh" }}>
                 <p style={{ color: "#94a3b8", fontSize: "14px" }}>Loading client details…</p>
               </div>
             </div>
@@ -4371,7 +4396,6 @@ export default function AddClient() {
     );
   }
 
-  // ── Load error ─────────────────────────────────────────────────────────
   if (isEditMode && loadError) {
     return (
       <>
@@ -4381,9 +4405,7 @@ export default function AddClient() {
           <main>
             <div className="dash-wrper">
               <div style={{ textAlign: "center", padding: "80px 20px" }}>
-                <p style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px" }}>
-                  {loadError}
-                </p>
+                <p style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px" }}>{loadError}</p>
                 <button className="primary-cta" onClick={() => navigate("/AllClients")}>
                   ← Back to Clients
                 </button>
@@ -4396,18 +4418,15 @@ export default function AddClient() {
     );
   }
 
-  // ── Success Screen (with share login details) ──────────────────────────
   if (submitted) {
     const loginUrl = `${window.location.origin}/login`;
-    const loginEmail = form.email;
     const canShareCredentials = !isEditMode && Boolean(sharePassword);
-
     const shareText = canShareCredentials
       ? [
           "Your AuthBridge client account is ready.",
           "",
           `Login URL: ${loginUrl}`,
-          `Email: ${loginEmail}`,
+          `Email: ${form.email}`,
           `Password: ${sharePassword}`,
           "",
           "Please log in and change your password after first sign-in.",
@@ -4440,29 +4459,22 @@ export default function AddClient() {
 
                   <div className="ac-success-meta">
                     <div className="ac-success-meta-row">
-                      <span>Client Name</span>
-                      <strong>{form.clientName}</strong>
+                      <span>Client Name</span><strong>{form.clientName}</strong>
                     </div>
                     <div className="ac-success-meta-row">
-                      <span>GSTIN</span>
-                      <strong>{form.gstin}</strong>
+                      <span>GSTIN</span><strong>{form.gstin}</strong>
                     </div>
                     <div className="ac-success-meta-row">
-                      <span>Contact</span>
-                      <strong>{form.contactName}</strong>
+                      <span>Contact</span><strong>{form.contactName}</strong>
                     </div>
                     <div className="ac-success-meta-row">
                       <span>Billing</span>
-                      <strong style={{ color: activeBilling?.color }}>
-                        {activeBilling?.label}
-                      </strong>
+                      <strong style={{ color: activeBilling?.color }}>{activeBilling?.label}</strong>
                     </div>
                     <div className="ac-success-meta-row">
                       <span>Estimated TAT</span>
                       <strong>
-                        {overallTat > 0
-                          ? `${overallTat} day${overallTat > 1 ? "s" : ""}`
-                          : "—"}
+                        {overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}
                       </strong>
                     </div>
                     {(form.agreementStartDate || form.agreementEndDate) && (
@@ -4498,7 +4510,6 @@ export default function AddClient() {
                       >
                         Share with client — login details
                       </div>
-
                       <div style={{ fontSize: "0.85rem", color: "#14532d", lineHeight: 1.7 }}>
                         <div>
                           <span style={{ color: "#64748b" }}>Login URL: </span>
@@ -4506,32 +4517,19 @@ export default function AddClient() {
                         </div>
                         <div>
                           <span style={{ color: "#64748b" }}>Email: </span>
-                          <strong>{loginEmail}</strong>
+                          <strong>{form.email}</strong>
                         </div>
                         <div>
                           <span style={{ color: "#64748b" }}>Password: </span>
-                          <strong
-                            style={{
-                              fontFamily: "ui-monospace, monospace",
-                              letterSpacing: "0.08em",
-                            }}
-                          >
+                          <strong style={{ fontFamily: "ui-monospace, monospace", letterSpacing: "0.08em" }}>
                             {sharePassword}
                           </strong>
                         </div>
                       </div>
-
-                      <p
-                        style={{
-                          fontSize: "0.75rem",
-                          color: "#64748b",
-                          margin: "10px 0 12px",
-                        }}
-                      >
+                      <p style={{ fontSize: "0.75rem", color: "#64748b", margin: "10px 0 12px" }}>
                         Send these details to the client so they can log in and raise cases.
                         Password is shown only once here.
                       </p>
-
                       <button
                         type="button"
                         className="primary-cta"
@@ -4571,7 +4569,6 @@ export default function AddClient() {
     );
   }
 
-  // ── Main Form ──────────────────────────────────────────────────────────
   return (
     <>
       <Sidebar />
@@ -4618,8 +4615,7 @@ export default function AddClient() {
                   margin: "12px 0",
                 }}
               >
-                Editing client <strong>{editClientId}</strong>. Your changes will be saved to this
-                client.
+                Editing client <strong>{editClientId}</strong>. Your changes will be saved to this client.
               </div>
             )}
 
@@ -4635,8 +4631,7 @@ export default function AddClient() {
                   margin: "12px 0",
                 }}
               >
-                Viewing client <strong>{editClientId}</strong> in read-only mode. Click Edit to make
-                changes.
+                Viewing client <strong>{editClientId}</strong> in read-only mode. Click Edit to make changes.
               </div>
             )}
 
@@ -4652,8 +4647,8 @@ export default function AddClient() {
                   margin: "12px 0",
                 }}
               >
-                Reviewing a client self-registration. Company details are pre-filled — set a
-                password and confirm billing/checks/TAT below to approve.
+                Reviewing a client self-registration. Company details are pre-filled — set a password
+                and confirm billing/checks/TAT below to approve.
               </div>
             )}
 
@@ -4674,9 +4669,9 @@ export default function AddClient() {
             )}
 
             <div className="ac-layout">
-              {/* ══ LEFT COLUMN ══ */}
+              {/* LEFT */}
               <div className="ac-left">
-                {/* 01 — Client Information */}
+                {/* 01 Client Information */}
                 <div className="ac-card">
                   <div className="ac-card-header">
                     <span className="ac-num">01</span>
@@ -4786,7 +4781,7 @@ export default function AddClient() {
                   </div>
                 </div>
 
-                {/* 02 — Billing Mode */}
+                {/* 02 Billing Mode */}
                 <div className="ac-card">
                   <div className="ac-card-header">
                     <span className="ac-num">02</span>
@@ -4831,9 +4826,7 @@ export default function AddClient() {
                     <div className="ac-billing-section">
                       <div className="ac-billing-info-row">
                         <span className="ac-billing-info-icon">ℹ</span>
-                        <span>
-                          Client will prepay a balance which future cases are deducted from.
-                        </span>
+                        <span>Client will prepay a balance which future cases are deducted from.</span>
                       </div>
                     </div>
                   )}
@@ -4842,8 +4835,7 @@ export default function AddClient() {
                       <div className="ac-billing-info-row">
                         <span className="ac-billing-info-icon">ℹ</span>
                         <span>
-                          Candidates will pay directly via payment link for cases raised by this
-                          client.
+                          Candidates will pay directly via payment link for cases raised by this client.
                         </span>
                       </div>
                     </div>
@@ -4857,11 +4849,90 @@ export default function AddClient() {
                     </div>
                   )}
                 </div>
+
+                {/* 05 Agreement — dates + upload */}
+                <div className="ac-card">
+                  <div className="ac-card-header">
+                    <span className="ac-num">05</span>
+                    <h3>Agreement</h3>
+                  </div>
+                  <div className="ac-fields">
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                      <div className="ac-field">
+                        <label className="ac-label">Start Date</label>
+                        <input
+                          className="ac-input"
+                          type="date"
+                          disabled={isViewMode}
+                          value={form.agreementStartDate}
+                          onChange={(e) => set("agreementStartDate", e.target.value)}
+                        />
+                      </div>
+                      <div className="ac-field">
+                        <label className="ac-label">End Date</label>
+                        <input
+                          className="ac-input"
+                          type="date"
+                          disabled={isViewMode}
+                          value={form.agreementEndDate}
+                          onChange={(e) => set("agreementEndDate", e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="ac-field">
+                      <label className="ac-label">Agreement Document</label>
+                      {isViewMode ? (
+                        existingAgreementUrl ? (
+                          <a
+                            href={existingAgreementUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ fontSize: "0.875rem", color: "#2b3b8c", fontWeight: 600 }}
+                          >
+                            View uploaded agreement →
+                          </a>
+                        ) : (
+                          <span style={{ fontSize: "0.85rem", color: "#94a3b8" }}>No file uploaded</span>
+                        )
+                      ) : (
+                        <>
+                          <input
+                            className="ac-input"
+                            type="file"
+                            accept=".pdf,.doc,.docx,image/*"
+                            onChange={handleAgreementFileChange}
+                          />
+                          {agreementFile && (
+                            <span style={{ fontSize: "0.78rem", color: "#0d9488", marginTop: "4px" }}>
+                              Selected: {agreementFile.name}
+                            </span>
+                          )}
+                          {!agreementFile && existingAgreementUrl && (
+                            <a
+                              href={existingAgreementUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                fontSize: "0.78rem",
+                                color: "#2b3b8c",
+                                marginTop: "4px",
+                                display: "inline-block",
+                              }}
+                            >
+                              Current file on record →
+                            </a>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* ══ RIGHT COLUMN ══ */}
+              {/* RIGHT */}
               <div className="ac-right">
-                {/* 03 — Check Types (same as AddCase) */}
+                {/* 03 Check Types */}
                 <div className="ac-card">
                   <div className="ac-card-header">
                     <span className="ac-num">03</span>
@@ -4919,17 +4990,14 @@ export default function AddClient() {
                                 <span className="ac-check-dot" />
                                 <span>{ct.label}</span>
                               </td>
-
                               <td style={{ padding: "12px" }} onClick={(e) => e.stopPropagation()}>
                                 {isViewMode ? (
-                                  <div className="ac-check-rate-display" title="Configured rate">
+                                  <div className="ac-check-rate-display">
                                     <span className="ac-rate-prefix">₹</span>
-                                    <span className="ac-rate-value">
-                                      {rates[ct.key] || "—"}
-                                    </span>
+                                    <span className="ac-rate-value">{rates[ct.key] || "—"}</span>
                                   </div>
                                 ) : (
-                                  <div className="ac-check-rate-edit" title="Rate">
+                                  <div className="ac-check-rate-edit">
                                     <span className="ac-rate-prefix">₹</span>
                                     <input
                                       type="number"
@@ -4943,12 +5011,10 @@ export default function AddClient() {
                                   </div>
                                 )}
                               </td>
-
                               <td style={{ padding: "12px" }} onClick={(e) => e.stopPropagation()}>
                                 {isViewMode ? (
                                   <div
                                     className="ac-check-rate-display"
-                                    title="Turnaround time"
                                     style={{ display: "flex", alignItems: "center", gap: "8px" }}
                                   >
                                     <span
@@ -4960,15 +5026,12 @@ export default function AddClient() {
                                         display: "inline-block",
                                       }}
                                     />
-                                    <span className="ac-rate-value">
-                                      {tats[ct.key] || "—"}
-                                    </span>
+                                    <span className="ac-rate-value">{tats[ct.key] || "—"}</span>
                                     <span className="ac-rate-suffix">days</span>
                                   </div>
                                 ) : (
                                   <div
                                     className="ac-check-rate-edit"
-                                    title="Turnaround time (days)"
                                     style={{ display: "flex", alignItems: "center", gap: "8px" }}
                                   >
                                     <span
@@ -5008,18 +5071,14 @@ export default function AddClient() {
                     <span className="ac-tat-bar-item">
                       Est. TAT:{" "}
                       <strong>
-                        {overallTat > 0
-                          ? `${overallTat} day${overallTat > 1 ? "s" : ""}`
-                          : "—"}
+                        {overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}
                       </strong>
                     </span>
-                    <span className="ac-total-amt">
-                      Total: ₹{totalAmount.toLocaleString()}
-                    </span>
+                    <span className="ac-total-amt">Total: ₹{totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
 
-                {/* 04 — Internal Notes */}
+                {/* 04 Internal Notes */}
                 <div className="ac-card">
                   <div className="ac-card-header">
                     <span className="ac-num">04</span>
@@ -5045,9 +5104,7 @@ export default function AddClient() {
                   >
                     <div className="ac-summary-row">
                       <span>Billing</span>
-                      <strong style={{ color: activeBilling?.color }}>
-                        {activeBilling?.label}
-                      </strong>
+                      <strong style={{ color: activeBilling?.color }}>{activeBilling?.label}</strong>
                     </div>
                     <div className="ac-summary-row">
                       <span>Checks</span>
@@ -5056,9 +5113,7 @@ export default function AddClient() {
                     <div className="ac-summary-row">
                       <span>Estimated TAT</span>
                       <strong>
-                        {overallTat > 0
-                          ? `${overallTat} day${overallTat > 1 ? "s" : ""}`
-                          : "—"}
+                        {overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}
                       </strong>
                     </div>
                     <div className="ac-summary-row">
