@@ -16,13 +16,20 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'address',
         'gstin',
         'primary_contact',
         'contact_phone',
+        'priority',
         'billing_mode',
         'agreed_checks',
         'check_rates',
         'check_tat',
+        'total_amount',
+        'notes',
+        'agreement_start_date',
+        'agreement_end_date',
+        'agreement_url',
     ];
 
     protected $hidden = [
@@ -31,10 +38,12 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
-        'agreed_checks'     => 'array',
-        'check_rates'       => 'array',
-        'check_tat' => 'array',
+        'email_verified_at'    => 'datetime',
+        'password'             => 'hashed',
+        'agreed_checks'        => 'array',
+        'check_rates'          => 'array',
+        'check_tat'            => 'array',
+        'agreement_start_date' => 'date',
+        'agreement_end_date'   => 'date',
     ];
 }

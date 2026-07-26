@@ -41,50 +41,8 @@ Route::post('/login', function (Request $request) {
 });
 
 // ─────────────────────────────────────────
-// CLIENT SELF-REGISTRATION (pending, no account yet)
-// ─────────────────────────────────────────
-// Route::post('/client-registrations', function (Request $request) {
-//     $request->validate([
-//         'companyName'    => 'required|string|max:255',
-//         'address'        => 'required|string|max:1000',
-//         'gstin'          => 'required|string|max:15',
-//         'primaryContact' => 'required|string|max:255',
-//         'contactPhone'   => 'nullable|string|max:20',
-//         'contactEmail'   => 'required|email|unique:users,email|unique:client_registrations,contact_email',
-//         'billingMode'    => 'nullable|in:prepaid_client,prepaid_candidate,postpaid_client',
-//         'agreedChecks'   => 'required|array|min:1',
-//         'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug,court',
-//         'notes'          => 'nullable|string',
-//     ]);
-
-//     $reg = \App\Models\ClientRegistration::create([
-//         'company_name'    => $request->companyName,
-//         'address'         => $request->address,
-//         'gstin'           => $request->gstin,
-//         'primary_contact' => $request->primaryContact,
-//         'contact_phone'   => $request->contactPhone,
-//         'contact_email'   => $request->contactEmail,
-//         'billing_mode'    => $request->billingMode,
-//         'agreed_checks'   => $request->agreedChecks,
-//         'notes'           => $request->notes,
-//         'status'          => 'pending',
-//     ]);
-
-//     $adminEmails = User::where('role', 'admin')->pluck('email');
-//     if ($adminEmails->isNotEmpty()) {
-//         Mail::raw(
-//             "New client registration from {$reg->company_name} ({$reg->contact_email}). Review it under Pending Registrations in the admin portal.",
-//             fn($m) => $m->to($adminEmails->all())->subject('New Client Registration — ' . $reg->company_name)
-//         );
-//     }
-
-//     return response()->json([
-//         'message'      => 'Registration submitted. An admin will review your account shortly.',
-//         'registration' => ['id' => $reg->id, 'status' => $reg->status],
-//     ], 201);
-// });
-// ─────────────────────────────────────────
 // CLIENT SELF-REGISTRATION (pending approval)
+// ─────────────────────────────────────────
 Route::post('/client-registrations', function (Request $request) {
     $request->validate([
         'companyName'    => 'required|string|max:255',
@@ -126,6 +84,7 @@ Route::post('/client-registrations', function (Request $request) {
         'registration' => ['id' => $reg->id, 'status' => $reg->status],
     ], 201);
 });
+
 // ─────────────────────────────────────────
 // REGISTER (individual user — unrelated to client company registration)
 // ─────────────────────────────────────────
@@ -515,14 +474,22 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ── GET LOGGED-IN USER ───────────────────────────────────
+    // Returns the same profile fields /login sends (billingMode,
+    // agreedChecks, checkRates, checkTat) so a client landing here via
+    // a share link — instead of a normal password login — still gets
+    // everything AddCase.jsx needs to prefill their form.
     Route::get('/me', function (Request $request) {
         $user = $request->user();
         return response()->json([
             'user' => [
-                'id'    => $user->id,
-                'name'  => $user->name,
-                'email' => $user->email,
-                'role'  => $user->role,
+                'id'           => $user->id,
+                'name'         => $user->name,
+                'email'        => $user->email,
+                'role'         => $user->role,
+                'billingMode'  => $user->billing_mode,
+                'agreedChecks' => $user->agreed_checks,
+                'checkRates'   => $user->check_rates,
+                'checkTat'     => $user->check_tat,
             ],
         ]);
     });
@@ -590,89 +557,47 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ═════════════════════════════════════════════════════════
-    // CLIENT REGISTRATIONS (admin review of self-registered clients)
+    // CLIENT REGISTRATIONS (admin review)
     // ═════════════════════════════════════════════════════════
 
-    // ── LIST registrations (filter by ?status=) ──────────────
-    // Route::get('/client-registrations', function (Request $request) {
-    //     if ($request->user()->role !== 'admin') {
-    //         return response()->json(['message' => 'Unauthorized.'], 403);
-    //     }
-    //     $query = \App\Models\ClientRegistration::orderByDesc('created_at');
-    //     if ($request->status) $query->where('status', $request->status);
-    //     return response()->json(['registrations' => $query->get()]);
-    // });
+    Route::get('/client-registrations', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
 
-    // // ── Pending count, for the notification bell ─────────────
-    // Route::get('/client-registrations/pending-count', function (Request $request) {
-    //     if ($request->user()->role !== 'admin') {
-    //         return response()->json(['message' => 'Unauthorized.'], 403);
-    //     }
-    //     return response()->json(['count' => \App\Models\ClientRegistration::where('status', 'pending')->count()]);
-    // });
+        $query = \App\Models\ClientRegistration::orderByDesc('created_at');
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
 
-    // // ── Single registration (used to prefill Add Client) ─────
-    // Route::get('/client-registrations/{id}', function (Request $request, $id) {
-    //     if ($request->user()->role !== 'admin') {
-    //         return response()->json(['message' => 'Unauthorized.'], 403);
-    //     }
-    //     $reg = \App\Models\ClientRegistration::find($id);
-    //     if (!$reg) return response()->json(['message' => 'Not found'], 404);
-    //     return response()->json(['registration' => $reg]);
-    // });
+        return response()->json(['registrations' => $query->get()]);
+    });
 
-    // // ── Reject a registration ─────────────────────────────────
-    // Route::post('/client-registrations/{id}/reject', function (Request $request, $id) {
-    //     if ($request->user()->role !== 'admin') {
-    //         return response()->json(['message' => 'Unauthorized.'], 403);
-    //     }
-    //     $reg = \App\Models\ClientRegistration::find($id);
-    //     if (!$reg) return response()->json(['message' => 'Not found'], 404);
-    //     $reg->update(['status' => 'rejected']);
-    //     return response()->json(['message' => 'Registration rejected']);
-    // });
-    // ═════════════════════════════════════════════════════════
-// CLIENT REGISTRATIONS (admin review)
-// ═════════════════════════════════════════════════════════
+    Route::get('/client-registrations/pending-count', function (Request $request) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+        return response()->json(['count' => \App\Models\ClientRegistration::where('status', 'pending')->count()]);
+    });
 
-Route::get('/client-registrations', function (Request $request) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized.'], 403);
-    }
+    Route::get('/client-registrations/{id}', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+        $reg = \App\Models\ClientRegistration::find($id);
+        if (!$reg) return response()->json(['message' => 'Not found'], 404);
+        return response()->json(['registration' => $reg]);
+    });
 
-    $query = \App\Models\ClientRegistration::orderByDesc('created_at');
-    if ($request->status) {
-        $query->where('status', $request->status);
-    }
-
-    return response()->json(['registrations' => $query->get()]);
-});
-
-Route::get('/client-registrations/pending-count', function (Request $request) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized.'], 403);
-    }
-    return response()->json(['count' => \App\Models\ClientRegistration::where('status', 'pending')->count()]);
-});
-
-Route::get('/client-registrations/{id}', function (Request $request, $id) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized.'], 403);
-    }
-    $reg = \App\Models\ClientRegistration::find($id);
-    if (!$reg) return response()->json(['message' => 'Not found'], 404);
-    return response()->json(['registration' => $reg]);
-});
-
-Route::post('/client-registrations/{id}/reject', function (Request $request, $id) {
-    if ($request->user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized.'], 403);
-    }
-    $reg = \App\Models\ClientRegistration::find($id);
-    if (!$reg) return response()->json(['message' => 'Not found'], 404);
-    $reg->update(['status' => 'rejected']);
-    return response()->json(['message' => 'Registration rejected']);
-});
+    Route::post('/client-registrations/{id}/reject', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+        $reg = \App\Models\ClientRegistration::find($id);
+        if (!$reg) return response()->json(['message' => 'Not found'], 404);
+        $reg->update(['status' => 'rejected']);
+        return response()->json(['message' => 'Registration rejected']);
+    });
 
     // ═════════════════════════════════════════════════════════
     // CASES ROUTES
@@ -1496,22 +1421,6 @@ Route::post('/client-registrations/{id}/reject', function (Request $request, $id
         if (!$client) return response()->json(['message' => 'Client not found'], 404);
 
         return response()->json(['client' => [
-<<<<<<< HEAD
-            'id'              => $client->id,
-            'company_name'    => $client->name,
-            'address'         => $client->address,
-            'gstin'           => $client->gstin,
-            'primary_contact' => $client->primary_contact,
-            'contact_phone'   => $client->contact_phone,
-            'contact_email'   => $client->email,
-            'priority'        => $client->priority,
-            'billing_mode'    => $client->billing_mode,
-            'agreed_checks'   => $client->agreed_checks,
-            'check_rates'     => $client->check_rates,
-            'check_tat'       => $client->check_tat,
-            'notes'           => $client->notes,
-            'created_at'      => $client->created_at,
-=======
             'id'                   => $client->id,
             'company_name'         => $client->name,
             'address'              => $client->address,
@@ -1530,7 +1439,6 @@ Route::post('/client-registrations/{id}/reject', function (Request $request, $id
                 ? \Illuminate\Support\Facades\Storage::disk('public')->url($client->agreement_path)
                 : null,
             'created_at'           => $client->created_at,
->>>>>>> 33a29ea5142f024e23ef84e2b9c2ba96c2ba96bd
         ]]);
     });
 
@@ -1543,38 +1451,6 @@ Route::post('/client-registrations/{id}/reject', function (Request $request, $id
         $client = \App\Models\User::where('role', 'client')->find($id);
         if (!$client) return response()->json(['message' => 'Client not found'], 404);
 
-<<<<<<< HEAD
- $request->validate([
-    'companyName'    => 'required|string|max:255',
-    'address'        => 'nullable|string|max:1000',
-    'gstin'          => 'nullable|string|max:15',
-    'primaryContact' => 'nullable|string|max:255',
-    'contactPhone'   => 'nullable|string|max:20',
-    'contactEmail'   => 'required|email|unique:users,email,' . $client->id,
-    'priority'       => 'nullable|in:normal,high,urgent',   // ← add this line
-    'billingMode'    => 'nullable|in:prepaid_client,prepaid_candidate,postpaid_client',
-    'agreedChecks'   => 'nullable|array',
-    'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug,court',
-    'checkRates'     => 'nullable|array',
-    'checkTat'       => 'nullable|array',
-    'notes'          => 'nullable|string',
-]);
-
-$client->update([
-    'name'            => $request->companyName,
-    'email'           => $request->contactEmail,
-    'address'         => $request->address,
-    'gstin'           => $request->gstin,
-    'primary_contact' => $request->primaryContact,
-    'contact_phone'   => $request->contactPhone,
-    'priority'        => $request->priority ?? $client->priority,   // ← add this line
-    'billing_mode'    => $request->billingMode,
-    'agreed_checks'   => $request->agreedChecks ?? $client->agreed_checks,
-    'check_rates'     => $request->checkRates ?? $client->check_rates,
-    'check_tat'       => $request->checkTat ?? $client->check_tat,
-    'notes'           => $request->notes,
-]);
-=======
         // FormData sends checks/rates/tat as JSON strings — decode them
         // back into arrays before validating.
         foreach (['agreedChecks', 'checkRates', 'checkTat'] as $jsonField) {
@@ -1626,7 +1502,6 @@ $client->update([
             'agreement_start_date' => $request->agreementStartDate ?? $client->agreement_start_date,
             'agreement_end_date'   => $request->agreementEndDate ?? $client->agreement_end_date,
         ]);
->>>>>>> 33a29ea5142f024e23ef84e2b9c2ba96c2ba96bd
 
         return response()->json(['message' => 'Client updated', 'client' => $client]);
     });
@@ -1643,6 +1518,33 @@ $client->update([
         $client->delete();
 
         return response()->json(['message' => 'Client removed successfully']);
+    });
+
+    // ── GENERATE CLIENT SHARE LINK (admin → client, for case upload) ──
+    // Mints a fresh Sanctum token for the client and hands it back so
+    // the frontend can build a magic link. Any previously issued
+    // share-link token for this client is revoked first, so only the
+    // most recently generated link is valid.
+    Route::post('/clients/{id}/share-link', function (Request $request, $id) {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        }
+
+        $client = \App\Models\User::where('role', 'client')->find($id);
+        if (!$client) return response()->json(['message' => 'Client not found'], 404);
+
+        $client->tokens()->where('name', 'client-share-link')->delete();
+
+        $token = $client->createToken('client-share-link')->plainTextToken;
+
+        return response()->json([
+            'token'  => $token,
+            'client' => [
+                'id'    => $client->id,
+                'name'  => $client->name,
+                'email' => $client->email,
+            ],
+        ]);
     });
 
 });
