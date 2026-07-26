@@ -3303,7 +3303,7 @@ export default function AddClient() {
     return null;
   };
 
-  const handleSubmit = async () => {
+   const handleSubmit = async () => {
     const err = validate();
     if (err) { setError(err); return; }
     setError("");
@@ -3315,50 +3315,59 @@ export default function AddClient() {
         : `${API_URL}/api/clients/register`;
       const method = isEditMode ? "PUT" : "POST";
 
-      // snake_case payload to match Laravel / API response shape
+      // Must match Laravel field names (snake_case)
       const payload = {
-        company_name: form.clientName,
-        address: form.address,
-        gstin: form.gstin,
-        primary_contact: form.contactName,
-        contact_phone: form.contactPhone,
-        contact_email: form.email,
-        password: form.password,
+        company_name: form.clientName.trim(),
+        address: form.address.trim(),
+        gstin: form.gstin.trim(),
+        primary_contact: form.contactName.trim(),
+        contact_phone: form.contactPhone.trim(),
+        contact_email: form.email.trim(),
         billing_mode: form.billingMode,
         agreed_checks: form.checks,
         check_rates: rates,
         check_tat: tats,
-        notes: form.notes,
-        registration_id: registrationId || undefined,
-        agreement_start_date: form.agreementStartDate || undefined,
-        agreement_end_date: form.agreementEndDate || undefined,
+        notes: form.notes || "",
       };
 
-      // Don't send blank password on edit
-      if (isEditMode && !form.password) {
-        delete payload.password;
+      // Password only on create
+      if (!isEditMode) {
+        payload.password = form.password;
+      }
+
+      if (registrationId) {
+        payload.registration_id = registrationId;
+      }
+      if (form.agreementStartDate) {
+        payload.agreement_start_date = form.agreementStartDate;
+      }
+      if (form.agreementEndDate) {
+        payload.agreement_end_date = form.agreementEndDate;
       }
 
       const res = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json",   // ← required so Laravel reads the body
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        if (data.errors) {
+        // Show first Laravel validation error if present
+        if (data.errors && typeof data.errors === "object") {
           const first = Object.values(data.errors).flat()[0];
-          setError(first || data.message || (isEditMode ? "Failed to update client." : "Failed to register client."));
+          setError(first || data.message || "Validation failed.");
         } else {
           setError(data.message || (isEditMode ? "Failed to update client." : "Failed to register client."));
         }
         return;
       }
+
       setClientId(isEditMode ? editClientId : (data.user?.id ?? data.client?.id ?? null));
       setSubmitted(true);
     } catch {
