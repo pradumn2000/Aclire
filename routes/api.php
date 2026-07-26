@@ -154,24 +154,35 @@ Route::post('/register', function (Request $request) {
 // Also used to approve a pending self-registration (pass registrationId).
 // ─────────────────────────────────────────
 Route::post('/clients/register', function (Request $request) {
+    // FormData sends checks/rates/tat as JSON strings (nested objects can't
+    // ride in multipart form fields directly) — decode them back into
+    // arrays before validating.
+    foreach (['agreedChecks', 'checkRates', 'checkTat'] as $jsonField) {
+        if (is_string($request->input($jsonField))) {
+            $request->merge([$jsonField => json_decode($request->input($jsonField), true) ?? []]);
+        }
+    }
+
     $request->validate([
-        'companyName'    => 'required|string|max:255',
-        'address'        => 'required|string|max:1000',
-        'gstin'          => 'required|string|max:15',
-        'primaryContact' => 'required|string|max:255',
-        'contactPhone'   => 'nullable|string|max:20',
-        'contactEmail'   => 'required|email|unique:users,email',
-        'password'       => 'required|digits:8',
-        'priority'       => 'nullable|in:normal,high,urgent',
-        'billingMode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
-        'agreedChecks'   => 'required|array|min:1',
-        'agreedChecks.*' => 'in:employment,education,address,database,criminal,drug,court',
-        'checkRates'     => 'nullable|array',
-        'checkRates.*'   => 'numeric|min:0',
-        'checkTat'       => 'nullable|array',
-        'checkTat.*'     => 'numeric|min:0',
-        'notes'          => 'nullable|string',
-        'registrationId' => 'nullable|integer|exists:client_registrations,id',
+        'companyName'        => 'required|string|max:255',
+        'address'            => 'required|string|max:1000',
+        'gstin'              => 'required|string|max:15',
+        'primaryContact'     => 'required|string|max:255',
+        'contactPhone'       => 'nullable|string|max:20',
+        'contactEmail'       => 'required|email|unique:users,email',
+        'password'           => 'required|digits:8',
+        'billingMode'        => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
+        'agreedChecks'       => 'required|array|min:1',
+        'agreedChecks.*'     => 'in:employment,education,address,database,criminal,drug,court',
+        'checkRates'         => 'nullable|array',
+        'checkRates.*'       => 'numeric|min:0',
+        'checkTat'           => 'nullable|array',
+        'checkTat.*'         => 'numeric|min:0',
+        'notes'              => 'nullable|string',
+        'registrationId'     => 'nullable|integer|exists:client_registrations,id',
+        'agreementStartDate' => 'nullable|date',
+        'agreementEndDate'   => 'nullable|date|after_or_equal:agreementStartDate',
+        'agreement'          => 'nullable|file|max:10240|mimes:pdf,doc,docx,jpg,jpeg,png',
     ]);
 
     // Calculate total amount from selected checks
@@ -181,22 +192,29 @@ Route::post('/clients/register', function (Request $request) {
         $totalAmount += $rate;
     }
 
+    $agreementPath = null;
+    if ($request->hasFile('agreement')) {
+        $agreementPath = $request->file('agreement')->store('agreements', 'public');
+    }
+
     $user = User::create([
-        'name'            => $request->companyName,
-        'email'           => $request->contactEmail,
-        'password'        => Hash::make($request->password),
-        'role'            => 'client',
-        'address'         => $request->address,
-        'gstin'           => $request->gstin,
-        'primary_contact' => $request->primaryContact,
-        'contact_phone'   => $request->contactPhone,
-        'priority'        => $request->priority ?? 'normal',
-        'billing_mode'    => $request->billingMode,
-        'agreed_checks'   => $request->agreedChecks,
-        'check_rates'     => $request->checkRates ?? [],
-        'check_tat'       => $request->checkTat ?? [],
-        'total_amount'    => $totalAmount,
-        'notes'           => $request->notes,
+        'name'                 => $request->companyName,
+        'email'                => $request->contactEmail,
+        'password'             => Hash::make($request->password),
+        'role'                 => 'client',
+        'address'              => $request->address,
+        'gstin'                => $request->gstin,
+        'primary_contact'      => $request->primaryContact,
+        'contact_phone'        => $request->contactPhone,
+        'billing_mode'         => $request->billingMode,
+        'agreed_checks'        => $request->agreedChecks,
+        'check_rates'          => $request->checkRates ?? [],
+        'check_tat'            => $request->checkTat ?? [],
+        'total_amount'         => $totalAmount,
+        'notes'                => $request->notes,
+        'agreement_path'       => $agreementPath,
+        'agreement_start_date' => $request->agreementStartDate,
+        'agreement_end_date'   => $request->agreementEndDate,
     ]);
 
     if ($request->registrationId) {
@@ -1478,6 +1496,7 @@ Route::post('/client-registrations/{id}/reject', function (Request $request, $id
         if (!$client) return response()->json(['message' => 'Client not found'], 404);
 
         return response()->json(['client' => [
+<<<<<<< HEAD
             'id'              => $client->id,
             'company_name'    => $client->name,
             'address'         => $client->address,
@@ -1492,6 +1511,26 @@ Route::post('/client-registrations/{id}/reject', function (Request $request, $id
             'check_tat'       => $client->check_tat,
             'notes'           => $client->notes,
             'created_at'      => $client->created_at,
+=======
+            'id'                   => $client->id,
+            'company_name'         => $client->name,
+            'address'              => $client->address,
+            'gstin'                => $client->gstin,
+            'primary_contact'      => $client->primary_contact,
+            'contact_phone'        => $client->contact_phone,
+            'contact_email'        => $client->email,
+            'billing_mode'         => $client->billing_mode,
+            'agreed_checks'        => $client->agreed_checks,
+            'check_rates'          => $client->check_rates,
+            'check_tat'            => $client->check_tat,
+            'notes'                => $client->notes,
+            'agreement_start_date' => $client->agreement_start_date,
+            'agreement_end_date'   => $client->agreement_end_date,
+            'agreement_url'        => $client->agreement_path
+                ? \Illuminate\Support\Facades\Storage::disk('public')->url($client->agreement_path)
+                : null,
+            'created_at'           => $client->created_at,
+>>>>>>> 33a29ea5142f024e23ef84e2b9c2ba96c2ba96bd
         ]]);
     });
 
@@ -1504,6 +1543,7 @@ Route::post('/client-registrations/{id}/reject', function (Request $request, $id
         $client = \App\Models\User::where('role', 'client')->find($id);
         if (!$client) return response()->json(['message' => 'Client not found'], 404);
 
+<<<<<<< HEAD
  $request->validate([
     'companyName'    => 'required|string|max:255',
     'address'        => 'nullable|string|max:1000',
@@ -1534,6 +1574,59 @@ $client->update([
     'check_tat'       => $request->checkTat ?? $client->check_tat,
     'notes'           => $request->notes,
 ]);
+=======
+        // FormData sends checks/rates/tat as JSON strings — decode them
+        // back into arrays before validating.
+        foreach (['agreedChecks', 'checkRates', 'checkTat'] as $jsonField) {
+            if (is_string($request->input($jsonField))) {
+                $request->merge([$jsonField => json_decode($request->input($jsonField), true) ?? []]);
+            }
+        }
+
+        $request->validate([
+            'companyName'        => 'required|string|max:255',
+            'address'            => 'nullable|string|max:1000',
+            'gstin'              => 'nullable|string|max:15',
+            'primaryContact'     => 'nullable|string|max:255',
+            'contactPhone'       => 'nullable|string|max:20',
+            'contactEmail'       => 'required|email|unique:users,email,' . $client->id,
+            'billingMode'        => 'nullable|in:prepaid_client,prepaid_candidate,postpaid_client',
+            'agreedChecks'       => 'nullable|array',
+            'agreedChecks.*'     => 'in:employment,education,address,database,criminal,drug,court',
+            'checkRates'         => 'nullable|array',
+            'checkTat'           => 'nullable|array',
+            'notes'              => 'nullable|string',
+            'agreementStartDate' => 'nullable|date',
+            'agreementEndDate'   => 'nullable|date|after_or_equal:agreementStartDate',
+            'agreement'          => 'nullable|file|max:10240|mimes:pdf,doc,docx,jpg,jpeg,png',
+        ]);
+
+        $agreementPath = $client->agreement_path;
+        if ($request->hasFile('agreement')) {
+            // Replace the old file, if any
+            if ($agreementPath) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($agreementPath);
+            }
+            $agreementPath = $request->file('agreement')->store('agreements', 'public');
+        }
+
+        $client->update([
+            'name'                 => $request->companyName,
+            'email'                => $request->contactEmail,
+            'address'              => $request->address,
+            'gstin'                => $request->gstin,
+            'primary_contact'      => $request->primaryContact,
+            'contact_phone'        => $request->contactPhone,
+            'billing_mode'         => $request->billingMode,
+            'agreed_checks'        => $request->agreedChecks ?? $client->agreed_checks,
+            'check_rates'          => $request->checkRates ?? $client->check_rates,
+            'check_tat'            => $request->checkTat ?? $client->check_tat,
+            'notes'                => $request->notes,
+            'agreement_path'       => $agreementPath,
+            'agreement_start_date' => $request->agreementStartDate ?? $client->agreement_start_date,
+            'agreement_end_date'   => $request->agreementEndDate ?? $client->agreement_end_date,
+        ]);
+>>>>>>> 33a29ea5142f024e23ef84e2b9c2ba96c2ba96bd
 
         return response()->json(['message' => 'Client updated', 'client' => $client]);
     });
