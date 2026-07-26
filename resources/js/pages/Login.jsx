@@ -681,7 +681,7 @@ export default function Login() {
                 </div> */}
               
 
-<div className="ac-switch" style={{
+{/* <div className="ac-switch" style={{
   marginTop: "20px", textAlign: "center",
   fontSize: "0.85rem", color: "#64748b",
 }}>
@@ -689,7 +689,7 @@ export default function Login() {
   <a href="/client-register" style={{ color: "#02c39a", fontWeight: 700, textDecoration: "underline" }}>
     Register as Company
   </a>
-</div>
+</div> */}
 
               </div>
             </div>
