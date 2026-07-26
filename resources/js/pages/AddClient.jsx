@@ -3303,7 +3303,7 @@ export default function AddClient() {
     return null;
   };
 
-   const handleSubmit = async () => {
+  const handleSubmit = async () => {
     const err = validate();
     if (err) { setError(err); return; }
     setError("");
@@ -3315,8 +3315,8 @@ export default function AddClient() {
         : `${API_URL}/api/clients/register`;
       const method = isEditMode ? "PUT" : "POST";
 
-      // Must match Laravel field names (snake_case)
       const payload = {
+        // snake_case (Laravel default)
         company_name: form.clientName.trim(),
         address: form.address.trim(),
         gstin: form.gstin.trim(),
@@ -3328,27 +3328,37 @@ export default function AddClient() {
         check_rates: rates,
         check_tat: tats,
         notes: form.notes || "",
+        // also send camelCase in case the API expects it
+        companyName: form.clientName.trim(),
+        primaryContact: form.contactName.trim(),
+        contactPhone: form.contactPhone.trim(),
+        contactEmail: form.email.trim(),
+        billingMode: form.billingMode,
+        agreedChecks: form.checks,
+        checkRates: rates,
+        checkTat: tats,
       };
 
-      // Password only on create
       if (!isEditMode) {
         payload.password = form.password;
       }
-
       if (registrationId) {
         payload.registration_id = registrationId;
+        payload.registrationId = registrationId;
       }
       if (form.agreementStartDate) {
         payload.agreement_start_date = form.agreementStartDate;
+        payload.agreementStartDate = form.agreementStartDate;
       }
       if (form.agreementEndDate) {
         payload.agreement_end_date = form.agreementEndDate;
+        payload.agreementEndDate = form.agreementEndDate;
       }
 
       const res = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",   // ← required so Laravel reads the body
+          "Content-Type": "application/json", // ← REQUIRED for JSON body
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
@@ -3358,17 +3368,21 @@ export default function AddClient() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        // Show first Laravel validation error if present
         if (data.errors && typeof data.errors === "object") {
           const first = Object.values(data.errors).flat()[0];
           setError(first || data.message || "Validation failed.");
         } else {
-          setError(data.message || (isEditMode ? "Failed to update client." : "Failed to register client."));
+          setError(
+            data.message ||
+              (isEditMode ? "Failed to update client." : "Failed to register client.")
+          );
         }
         return;
       }
 
-      setClientId(isEditMode ? editClientId : (data.user?.id ?? data.client?.id ?? null));
+      setClientId(
+        isEditMode ? editClientId : (data.user?.id ?? data.client?.id ?? null)
+      );
       setSubmitted(true);
     } catch {
       setError("Server error. Please try again.");
