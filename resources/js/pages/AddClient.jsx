@@ -2502,39 +2502,57 @@ export default function AddClient() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const url = isEditMode ? `${API_URL}/api/clients/${encodeURIComponent(editClientId)}` : `${API_URL}/api/clients/register`;
+      const url = isEditMode
+        ? `${API_URL}/api/clients/${encodeURIComponent(editClientId)}`
+        : `${API_URL}/api/clients/register`;
       const method = isEditMode ? "PUT" : "POST";
+
+      // Payload uses snake_case to match Laravel / API response shape
+      const payload = {
+        company_name: form.clientName,
+        address: form.address,
+        gstin: form.gstin,
+        primary_contact: form.contactName,
+        contact_phone: form.contactPhone,
+        contact_email: form.email,
+        password: form.password,
+        billing_mode: form.billingMode,
+        agreed_checks: form.checks,
+        check_rates: rates,
+        check_tat: tats,
+        notes: form.notes,
+        registration_id: registrationId || undefined,
+        agreement_start_date: form.agreementStartDate || undefined,
+        agreement_end_date: form.agreementEndDate || undefined,
+      };
+
+      // Drop empty password on edit (backend may reject blank password)
+      if (isEditMode && !form.password) {
+        delete payload.password;
+      }
+
       const res = await fetch(url, {
         method,
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
-          // NOTE: deliberately no Content-Type header — the browser sets
-          // the multipart boundary itself. Setting it manually breaks
-          // file uploads.
         },
-        body: JSON.stringify({
-          companyName: form.clientName,
-          address: form.address,
-          gstin: form.gstin,
-          primaryContact: form.contactName,
-          contactPhone: form.contactPhone,
-          contactEmail: form.email,
-          password: form.password,
-          billingMode: form.billingMode,
-          agreedChecks: form.checks,
-          checkRates: rates,
-          checkTat: tats,
-          notes: form.notes,
-          registrationId: registrationId || undefined,
-        }),
+        body: JSON.stringify(payload),
       });
+
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message || (isEditMode ? "Failed to update client." : "Failed to register client."));
+        // Surface Laravel-style validation messages if present
+        if (data.errors) {
+          const first = Object.values(data.errors).flat()[0];
+          setError(first || data.message || (isEditMode ? "Failed to update client." : "Failed to register client."));
+        } else {
+          setError(data.message || (isEditMode ? "Failed to update client." : "Failed to register client."));
+        }
         return;
       }
-      setClientId(isEditMode ? editClientId : (data.user?.id ?? null));
+      setClientId(isEditMode ? editClientId : (data.user?.id ?? data.client?.id ?? null));
       setSubmitted(true);
     } catch {
       setError("Server error. Please try again.");
