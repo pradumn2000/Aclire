@@ -2524,15 +2524,15 @@ const MOCK_CLIENTS = [
 ];
 
 const DEFAULT_CHECK_RATES = {
-  employment: 0, education: 0, address: 0,
-  database: 0,  criminal: 0,  drug: 0, court: 0,
+  employment: '', education: '', address: '',
+  database: '',  criminal: '',  drug: '', court: '',
 };
 
 // ── Default turnaround time (in days) per check type — starts at 0,
 //    admin fills in the actual TAT per case.
 const DEFAULT_CHECK_TAT = {
-  employment: 0, education: 0, address: 0,
-  database: 0,  criminal: 0,  drug: 0, court: 0,
+  employment: '', education: '', address: '',
+  database: '',  criminal: '',  drug: '', court: '',
 };
 
 const CHECK_TYPES = [
