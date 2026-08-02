@@ -2821,6 +2821,16 @@ export default function AddCase() {
   // (not the sum) so that aggregate stays meaningful.
   const overallTat = overallTatValues.length > 0 ? Math.max(...overallTatValues) : 0;
 
+  // ── TAT payload actually sent to the API — scoped to selected checks only.
+  //    `tats` state always carries all 7 keys (empty string default for
+  //    anything the user hasn't touched), so sending the raw object as-is
+  //    pushes empty strings for unselected checks and trips the backend's
+  //    "must be a number" validation. Only the checks in form.checks are
+  //    relevant, and everything in there gets coerced to a real number.
+  const checkTatPayload = Object.fromEntries(
+    form.checks.map(k => [k, Number(tats[k]) || 0])
+  );
+
   // Only used by admin/allocator — clients have a locked clientId/clientName.
   // NOTE: billing_mode field name is a guess (billing_mode / billingMode /
   // billingDefault) until I can see the actual /api/clients response shape —
@@ -2895,7 +2905,7 @@ export default function AddCase() {
           invoice_cycle:    form.invoiceCycle,
           po_number:        form.poNumber,
           total_amount:     totalAmount,
-          check_tat:        tats,
+          check_tat:        checkTatPayload,
           overall_tat:      overallTat,
           payment_link:     generatedLink || null,
           notes:            form.notes,
