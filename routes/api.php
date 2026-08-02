@@ -613,6 +613,9 @@ Route::middleware('auth:sanctum')->group(function () {
             'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
             'checks'          => 'required|array|min:1',
             'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
+            'check_tat'       => 'nullable|array',
+            'check_tat.*'     => 'numeric|min:0',
+            'overall_tat'     => 'nullable|numeric|min:0',
         ]);
 
         $case = BGVCase::create([
@@ -625,6 +628,8 @@ Route::middleware('auth:sanctum')->group(function () {
             'client_name'      => $request->client_name,
             'client_id'        => $request->client_id,
             'checks'           => $request->checks,
+            'check_tat'        => $request->check_tat ?? [],
+            'overall_tat'      => $request->overall_tat ?? 0,
             'priority'         => $request->priority ?? 'normal',
             'billing_mode'     => $request->billing_mode,
             'payment_timing'   => $request->payment_timing,
@@ -656,9 +661,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         if ($user->role === 'client') {
             $query->where(function ($q) use ($user) {
-                $q->where('created_by', $user->id)
-                  ->orWhere('client_name', 'LIKE', "%{$user->name}%")
-                  ->orWhere('candidate_email', $user->email);
+                $q->where('client_id', $user->id)
+                  ->orWhere('created_by', $user->id);
             });
         }
 
@@ -681,13 +685,19 @@ Route::middleware('auth:sanctum')->group(function () {
                 'case_id'       => $c->case_id,
                 'candidate'     => $c->candidate_name,
                 'client'        => $c->client_name,
+                'client_id'     => $c->client_id,
                 'checks'        => $c->checks,
                 'check_details' => $c->check_details,
+                'check_tat'     => $c->check_tat,
+                'overall_tat'   => $c->overall_tat,
                 'status'        => $c->status,
                 'priority'      => $c->priority,
                 'billing_mode'  => $c->billing_mode,
                 'total_amount'  => $c->total_amount,
                 'created_at'    => $c->created_at?->format('d M Y'),
+                // Legacy fallback only, for cases saved before check_tat/overall_tat
+                // existed — the frontend prefers overall_tat above and only
+                // drops to this (case age, not real TAT) when that's empty.
                 'tat'           => $c->created_at?->diffInDays(now()) . 'd',
             ];
         });
@@ -702,10 +712,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         $user = $request->user();
         if ($user->role === 'client') {
-            $owns = $case->created_by === $user->id
-                || $case->candidate_email === $user->email
-                || stripos($case->client_name, $user->name) !== false;
-            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+            $owns = (int) $case->client_id === (int) $user->id
+                || (int) $case->created_by === (int) $user->id;
+            if (!$owns) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
         }
 
         return response()->json(['case' => $case]);
@@ -718,10 +729,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         $user = $request->user();
         if ($user->role === 'client') {
-            $owns = $case->created_by === $user->id
-                || $case->candidate_email === $user->email
-                || stripos($case->client_name, $user->name) !== false;
-            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+            $owns = (int) $case->client_id === (int) $user->id
+                || (int) $case->created_by === (int) $user->id;
+            if (!$owns) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
         }
 
         if ($case->status !== 'pending' && $user->role === 'client') {
@@ -736,6 +748,9 @@ Route::middleware('auth:sanctum')->group(function () {
             'billing_mode'    => 'required|in:prepaid_client,prepaid_candidate,postpaid_client',
             'checks'          => 'required|array|min:1',
             'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
+            'check_tat'       => 'nullable|array',
+            'check_tat.*'     => 'numeric|min:0',
+            'overall_tat'     => 'nullable|numeric|min:0',
         ]);
 
         $before = $case->toArray();
@@ -749,6 +764,8 @@ Route::middleware('auth:sanctum')->group(function () {
             'client_name'      => $request->client_name,
             'client_id'        => $request->client_id,
             'checks'           => $request->checks,
+            'check_tat'        => $request->check_tat ?? $case->check_tat,
+            'overall_tat'      => $request->overall_tat ?? $case->overall_tat,
             'priority'         => $request->priority ?? $case->priority,
             'billing_mode'     => $request->billing_mode,
             'payment_timing'   => $request->payment_timing,
@@ -778,9 +795,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         if ($user->role === 'client') {
             $query->where(function ($q) use ($user) {
-                $q->where('created_by', $user->id)
-                  ->orWhere('candidate_email', $user->email)
-                  ->orWhere('client_name', 'like', "%{$user->name}%");
+                $q->where('client_id', $user->id)
+                  ->orWhere('created_by', $user->id);
             });
         }
 
@@ -883,10 +899,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         $user = $request->user();
         if ($user->role === 'client') {
-            $owns = $case->created_by === $user->id
-                || $case->candidate_email === $user->email
-                || stripos($case->client_name, $user->name) !== false;
-            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+            $owns = (int) $case->client_id === (int) $user->id
+                || (int) $case->created_by === (int) $user->id;
+            if (!$owns) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
         }
 
         if (!in_array($checkKey, $case->checks ?? [])) {
@@ -923,10 +940,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         $user = $request->user();
         if ($user->role === 'client') {
-            $owns = $case->created_by === $user->id
-                || $case->candidate_email === $user->email
-                || stripos($case->client_name, $user->name) !== false;
-            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+            $owns = (int) $case->client_id === (int) $user->id
+                || (int) $case->created_by === (int) $user->id;
+            if (!$owns) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
         }
 
         if (!in_array($checkKey, $case->checks ?? [])) {
@@ -958,10 +976,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         $user = $request->user();
         if ($user->role === 'client') {
-            $owns = $case->created_by === $user->id
-                || $case->candidate_email === $user->email
-                || stripos($case->client_name, $user->name) !== false;
-            if (!$owns) return response()->json(['message' => 'Unauthorized'], 403);
+            $owns = (int) $case->client_id === (int) $user->id
+                || (int) $case->created_by === (int) $user->id;
+            if (!$owns) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
         }
 
         if (!in_array($checkKey, $case->checks ?? [])) {
@@ -995,9 +1014,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         $user = $request->user();
         if ($user->role === 'client') {
-            $owns = $case->created_by === $user->id
-                || $case->candidate_email === $user->email
-                || stripos($case->client_name, $user->name) !== false;
+            $owns = (int) $case->client_id === (int) $user->id
+                || (int) $case->created_by === (int) $user->id;
             if (!$owns) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
@@ -1388,12 +1406,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── LIST CLIENTS ──────────────────────────────────────────
     Route::get('/clients', function (Request $request) {
-        if ($request->user()->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+        if (!in_array($request->user()->role, ['admin', 'allocator'])) {
+            return response()->json(['message' => 'Unauthorized. Admin or allocator access required.'], 403);
         }
 
         $clients = \App\Models\User::where('role', 'client')
-            ->orderByDesc('created_at')
+            ->orderBy('name')
             ->get()
             ->map(function ($u) {
                 return [
@@ -1404,6 +1422,9 @@ Route::middleware('auth:sanctum')->group(function () {
                     'contact_phone' => $u->contact_phone,
                     'gstin'         => $u->gstin,
                     'billing_mode'  => $u->billing_mode,
+                    'agreed_checks' => $u->agreed_checks,
+                    'check_rates'   => $u->check_rates,
+                    'check_tat'     => $u->check_tat,
                     'created_at'    => $u->created_at,
                 ];
             });

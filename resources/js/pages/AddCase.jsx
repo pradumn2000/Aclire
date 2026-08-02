@@ -668,20 +668,6 @@
 // //                         </select>
 // //                       )}
 // //                     </div>
-
-// //                     <div className="ac-field">
-// //                       <label className="ac-label">Priority</label>
-// //                       <div className="ac-priority-row">
-// //                         {["normal", "high", "urgent"].map(p => (
-// //                           <button key={p} type="button"
-// //                             className={`ac-priority-btn ${form.priority === p ? `ac-pri-active-${p}` : ""}`}
-// //                             onClick={() => set("priority", p)}>
-// //                             {p === "urgent" ? "🔴 " : p === "high" ? "🟡 " : "🟢 "}
-// //                             {p.charAt(0).toUpperCase() + p.slice(1)}
-// //                           </button>
-// //                         ))}
-// //                       </div>
-// //                     </div>
 // //                   </div>
 // //                 </div>
 
@@ -866,7 +852,7 @@
 // //                     </div>
 // //                   </div>
 
-// //                   <div className="ac-checks-grid">
+// //                   {/* <div className="ac-checks-grid">
 // //                     {CHECK_TYPES.map(ct => {
 // //                       const active = form.checks.includes(ct.key);
 // //                       return (
@@ -896,7 +882,8 @@
 // //                                   type="number"
 // //                                   min="0"
 // //                                   className="ac-rate-input"
-// //                                   value={rates[ct.key]}
+// //                                   value={rates[ct.key] || ""}
+// //                                   placeholder="0"
 // //                                   onClick={(e) => e.stopPropagation()}
 // //                                   onChange={(e) => setRate(ct.key, e.target.value)}
 // //                                 />
@@ -906,11 +893,12 @@
 // //                                   type="number"
 // //                                   min="0"
 // //                                   className="ac-rate-input ac-tat-input"
-// //                                   value={tats[ct.key]}
+// //                                   value={tats[ct.key] || ""}
+// //                                   placeholder="0"
 // //                                   onClick={(e) => e.stopPropagation()}
 // //                                   onChange={(e) => setTat(ct.key, e.target.value)}
 // //                                 />
-// //                                 <span className="ac-rate-suffix">d</span>
+// //                                 <span className="ac-rate-suffix">days</span>
 // //                               </div>
 // //                             </div>
 // //                           ) : !isClientUser ? (
@@ -920,7 +908,8 @@
 // //                                   type="number"
 // //                                   min="0"
 // //                                   className="ac-rate-input ac-tat-input"
-// //                                   value={tats[ct.key]}
+// //                                   value={tats[ct.key] || ""}
+// //                                   placeholder="0"
 // //                                   onClick={(e) => e.stopPropagation()}
 // //                                   onChange={(e) => setTat(ct.key, e.target.value)}
 // //                                 />
@@ -931,10 +920,10 @@
 // //   <div className="ac-check-side">
 // //     <div className="ac-check-rate-display" title="Configured rate">
 // //       <span className="ac-rate-prefix">₹</span>
-// //       <span className="ac-rate-value">{rates[ct.key]}</span>
+// //       <span className="ac-rate-value">{rates[ct.key] || "—"}</span>
 // //     </div>
 // //     <div className="ac-check-rate-display" title="Turnaround time (days)">
-// //       <span className="ac-rate-value">{tats[ct.key]}</span>
+// //       <span className="ac-rate-value">{tats[ct.key] || "—"}</span>
 // //       <span className="ac-rate-suffix">d</span>
 // //     </div>
 // //   </div>
@@ -942,8 +931,109 @@
 // //                         </div>
 // //                       );
 // //                     })}
-// //                   </div>
+// //                   </div> */}
+// //                   <div className="ac-checks-table-container">
+// //   <table className="ac-checks-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+// //     <thead>
+// //       <tr>
+// //         <th style={{ textAlign: 'left', padding: '12px' }}>Check Type</th>
+// //         <th style={{ textAlign: 'left', padding: '12px' }}>Amount</th>
+// //         <th style={{ textAlign: 'left', padding: '12px' }}>TAT</th>
+// //       </tr>
+// //     </thead>
+// //     <tbody>
+// //       {CHECK_TYPES.map(ct => {
+// //         const active = form.checks.includes(ct.key);
+// //         const tatValue = Number(tats[ct.key]) || 0;
 
+// //         // TAT color logic based on reference image
+// //         const getTatIndicator = (days) => {
+// //           if (days <= 1) return { color: '#2ecc71', label: `${days} Day` }; // Green
+// //           if (days <= 3) return { color: '#f1c40f', label: `${days} Days` }; // Yellow
+// //           return { color: '#e74c3c', label: `${days} Days` }; // Red/Orange
+// //         };
+
+// //         const tatDetails = getTatIndicator(tatValue);
+
+// //         return (
+// //           <tr 
+// //             key={ct.key} 
+// //             className={active ? "ac-check-active" : ""}
+// //             style={{ borderBottom: '1px solid #eaeaea', cursor: 'pointer' }}
+// //             onClick={() => toggleCheck(ct.key)}
+// //           >
+// //             {/* Check Type Column (Name with dot indicator) */}
+// //             <td style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+// //               <span className="ac-check-dot" />
+// //               <span>{ct.label}</span>
+// //             </td>
+
+// //             {/* Amount Column */}
+// //             <td style={{ padding: '12px' }} onClick={(e) => e.stopPropagation()}>
+// //               {isAdminUser ? (
+// //                 <div className="ac-check-rate-edit" title="Rate">
+// //                   <span className="ac-rate-prefix">₹</span>
+// //                   <input
+// //                     type="number"
+// //                     min="0"
+// //                     className="ac-rate-input"
+// //                     value={rates[ct.key]}
+// //                     onChange={(e) => setRate(ct.key, e.target.value)}
+// //                   />
+// //                 </div>
+// //               ) : (
+// //                 <div className="ac-check-rate-display" title="Configured rate">
+// //                   <span className="ac-rate-prefix">₹</span>
+// //                   <span className="ac-rate-value">{rates[ct.key]}</span>
+// //                 </div>
+// //               )}
+// //             </td>
+
+// //             {/* TAT Column */}
+// //             <td style={{ padding: '12px' }} onClick={(e) => e.stopPropagation()}>
+// //               {isAdminUser || !isClientUser ? (
+// //                 <div className="ac-check-rate-edit" title="Turnaround time (days)" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+// //                   <span 
+// //                     style={{ 
+// //                       height: '10px', 
+// //                       width: '10px', 
+// //                       backgroundColor: tatDetails.color, 
+// //                       borderRadius: '50%', 
+// //                       display: 'inline-block' 
+// //                     }} 
+// //                   />
+// //                   <input
+// //                     type="number"
+// //                     min="0"
+// //                     className="ac-rate-input ac-tat-input"
+// //                     value={tats[ct.key]}
+// //                     onChange={(e) => setTat(ct.key, e.target.value)}
+// //                     style={{ width: '60px' }}
+// //                   />
+// //                   <span className="ac-rate-suffix">d</span>
+// //                 </div>
+// //               ) : (
+// //                 <div className="ac-check-rate-display" title="Turnaround time" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+// //                   <span 
+// //                     style={{ 
+// //                       height: '10px', 
+// //                       width: '10px', 
+// //                       backgroundColor: tatDetails.color, 
+// //                       borderRadius: '50%', 
+// //                       display: 'inline-block' 
+// //                     }} 
+// //                   />
+// //                   <span className="ac-rate-value">{tats[ct.key]}</span>
+// //                   <span className="ac-rate-suffix">d</span>
+// //                 </div>
+// //               )}
+// //             </td>
+// //           </tr>
+// //         );
+// //       })}
+// //     </tbody>
+// //   </table>
+// // </div>
 // //                   <div className="ac-amount-bar">
 // //                     <span>{form.checks.length} of {CHECK_TYPES.length} selected</span>
 // //                     <span className="ac-tat-bar-item">
@@ -1136,11 +1226,6 @@
 // //   .ac-input:focus { border-color: #2b3b8c; background: #fff; }
 // //   .ac-input-readonly { display: flex; align-items: center; background: #eef1fb; border: 1.5px solid #c7d2fe; color: #2b3b8c; font-weight: 700; cursor: default; }
 // //   .ac-select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%232b3b8c' stroke-width='2' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
-// //   .ac-priority-row { display: flex; gap: 8px; }
-// //   .ac-priority-btn { flex: 1; padding: 8px 4px; border: 1.5px solid #e2e8f0; border-radius: 8px; background: #f8fafc; font-size: 0.75rem; font-weight: 600; color: #64748b; cursor: pointer; transition: all 0.15s; }
-// //   .ac-pri-active-normal { border-color: #2b3b8c; background: #eef1fb; color: #2b3b8c; }
-// //   .ac-pri-active-high { border-color: #f59e0b; background: #fffbeb; color: #b45309; }
-// //   .ac-pri-active-urgent { border-color: #eb4d4b; background: #fff5f5; color: #eb4d4b; }
 // //   .ac-billing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
 // //   @media (max-width: 700px) { .ac-billing-grid { grid-template-columns: 1fr; } }
 // //   .ac-billing-tile { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; cursor: pointer; text-align: left; transition: all 0.18s; }
@@ -1226,15 +1311,15 @@
 // ];
 
 // const DEFAULT_CHECK_RATES = {
-//   employment: 0, education: 0, address: 0,
-//   database: 0,  criminal: 0,  drug: 0, court: 0,
+//   employment: '', education: '', address: '',
+//   database: '',  criminal: '',  drug: '', court: '',
 // };
 
 // // ── Default turnaround time (in days) per check type — starts at 0,
 // //    admin fills in the actual TAT per case.
 // const DEFAULT_CHECK_TAT = {
-//   employment: 0, education: 0, address: 0,
-//   database: 0,  criminal: 0,  drug: 0, court: 0,
+//   employment: '', education: '', address: '',
+//   database: '',  criminal: '',  drug: '', court: '',
 // };
 
 // const CHECK_TYPES = [
@@ -1479,12 +1564,18 @@
 
 //   const totalAmount = form.checks.reduce((s, k) => s + (rates[k] || 0), 0);
 
-//   // ── Overall TAT for the case = the longest TAT among the selected checks
-//   //    (checks generally run in parallel, so the case is only as fast as its
-//   //    slowest check).
-//   const overallTat = form.checks.length > 0
-//     ? Math.max(...form.checks.map(k => tats[k] || 0))
-//     : 0;
+//   // ── Per-check TAT display — shows each selected check's day count
+//   //    individually (e.g. "5, 6, 7") instead of summing them. A sum
+//   //    overstates the real timeline since checks typically run in
+//   //    parallel, not back-to-back.
+//   const overallTatValues  = form.checks.map(k => Number(tats[k]) || 0);
+//   const overallTatDisplay = overallTatValues.length > 0 ? overallTatValues.join(", ") : "";
+
+//   // Kept as a single number for anything that still needs one — e.g.
+//   // AllClients.jsx's per-client average-TAT aggregate reads this field via
+//   // Number(c.overall_tat ?? c.tat). Using the longest single check here
+//   // (not the sum) so that aggregate stays meaningful.
+//   const overallTat = overallTatValues.length > 0 ? Math.max(...overallTatValues) : 0;
 
 //   // Only used by admin/allocator — clients have a locked clientId/clientName
 //   const handleClientChange = (clientId) => {
@@ -1713,7 +1804,7 @@
 //                     </div>
 //                     <div className="ac-success-meta-row">
 //                       <span>Estimated TAT</span>
-//                       <strong>{overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}</strong>
+//                       <strong>{overallTatDisplay ? `${overallTatDisplay} days` : "—"}</strong>
 //                     </div>
 //                     {form.billingMode === "postpaid_client" && (
 //                       <div className="ac-success-meta-row">
@@ -2065,86 +2156,6 @@
 //                     </div>
 //                   </div>
 
-//                   {/* <div className="ac-checks-grid">
-//                     {CHECK_TYPES.map(ct => {
-//                       const active = form.checks.includes(ct.key);
-//                       return (
-//                         <div
-//                           key={ct.key}
-//                           role="button"
-//                           tabIndex={0}
-//                           className={`ac-check-tile ${active ? "ac-check-active" : ""}`}
-//                           onClick={() => toggleCheck(ct.key)}
-//                           onKeyDown={(e) => {
-//                             if (e.key === "Enter" || e.key === " ") {
-//                               e.preventDefault();
-//                               toggleCheck(ct.key);
-//                             }
-//                           }}
-//                         >
-//                           <div className="ac-check-tile-top">
-//                             <span className="ac-check-dot" />
-//                             <span>{ct.label}</span>
-//                           </div>
-
-//                           {isAdminUser ? (
-//                             <div className="ac-check-side" onClick={(e) => e.stopPropagation()}>
-//                               <div className="ac-check-rate-edit" title="Rate">
-//                                 <span className="ac-rate-prefix">₹</span>
-//                                 <input
-//                                   type="number"
-//                                   min="0"
-//                                   className="ac-rate-input"
-//                                   value={rates[ct.key] || ""}
-//                                   placeholder="0"
-//                                   onClick={(e) => e.stopPropagation()}
-//                                   onChange={(e) => setRate(ct.key, e.target.value)}
-//                                 />
-//                               </div>
-//                               <div className="ac-check-rate-edit" title="Turnaround time (days)">
-//                                 <input
-//                                   type="number"
-//                                   min="0"
-//                                   className="ac-rate-input ac-tat-input"
-//                                   value={tats[ct.key] || ""}
-//                                   placeholder="0"
-//                                   onClick={(e) => e.stopPropagation()}
-//                                   onChange={(e) => setTat(ct.key, e.target.value)}
-//                                 />
-//                                 <span className="ac-rate-suffix">days</span>
-//                               </div>
-//                             </div>
-//                           ) : !isClientUser ? (
-//                             <div className="ac-check-side" onClick={(e) => e.stopPropagation()}>
-//                               <div className="ac-check-rate-edit" title="Turnaround time (days)">
-//                                 <input
-//                                   type="number"
-//                                   min="0"
-//                                   className="ac-rate-input ac-tat-input"
-//                                   value={tats[ct.key] || ""}
-//                                   placeholder="0"
-//                                   onClick={(e) => e.stopPropagation()}
-//                                   onChange={(e) => setTat(ct.key, e.target.value)}
-//                                 />
-//                                 <span className="ac-rate-suffix">d</span>
-//                               </div>
-//                             </div>
-//                           ) : (
-//   <div className="ac-check-side">
-//     <div className="ac-check-rate-display" title="Configured rate">
-//       <span className="ac-rate-prefix">₹</span>
-//       <span className="ac-rate-value">{rates[ct.key] || "—"}</span>
-//     </div>
-//     <div className="ac-check-rate-display" title="Turnaround time (days)">
-//       <span className="ac-rate-value">{tats[ct.key] || "—"}</span>
-//       <span className="ac-rate-suffix">d</span>
-//     </div>
-//   </div>
-// )}
-//                         </div>
-//                       );
-//                     })}
-//                   </div> */}
 //                   <div className="ac-checks-table-container">
 //   <table className="ac-checks-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
 //     <thead>
@@ -2223,7 +2234,7 @@
 //                     onChange={(e) => setTat(ct.key, e.target.value)}
 //                     style={{ width: '60px' }}
 //                   />
-//                   <span className="ac-rate-suffix">d</span>
+//                   <span className="ac-rate-suffix">days</span>
 //                 </div>
 //               ) : (
 //                 <div className="ac-check-rate-display" title="Turnaround time" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -2250,7 +2261,7 @@
 //                   <div className="ac-amount-bar">
 //                     <span>{form.checks.length} of {CHECK_TYPES.length} selected</span>
 //                     <span className="ac-tat-bar-item">
-//                       Est. TAT: <strong>{overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}</strong>
+//                       Est. TAT: <strong>{overallTatDisplay ? `${overallTatDisplay} days` : "—"}</strong>
 //                     </span>
 //                     {isAdminUser && (
 //                       <span className="ac-total-amt">Total: ₹{totalAmount.toLocaleString()}</span>
@@ -2283,7 +2294,7 @@
 //                     </div>
 //                     <div className="ac-summary-row">
 //                       <span>Estimated TAT</span>
-//                       <strong>{overallTat > 0 ? `${overallTat} day${overallTat > 1 ? "s" : ""}` : "—"}</strong>
+//                       <strong>{overallTatDisplay ? `${overallTatDisplay} days` : "—"}</strong>
 //                     </div>
 //                     {form.billingMode === "prepaid_candidate" && (
 //                       <div className="ac-summary-row">
@@ -2516,13 +2527,6 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { API_URL } from "../src/config";
 
-const MOCK_CLIENTS = [
-  { id: 1, name: "Gaurav Technologies Pvt Ltd",  billingDefault: "postpaid_client" },
-  { id: 2, name: "Deloitte India Pvt Ltd",        billingDefault: "prepaid_client" },
-  { id: 3, name: "Wipro Limited",                 billingDefault: "prepaid_candidate" },
-  { id: 4, name: "Infosys BPM",                   billingDefault: "postpaid_client" },
-];
-
 const DEFAULT_CHECK_RATES = {
   employment: '', education: '', address: '',
   database: '',  criminal: '',  drug: '', court: '',
@@ -2689,6 +2693,33 @@ export default function AddCase() {
   const [fetchingCase, setFetchingCase] = useState(isEditMode);
   const [loadError, setLoadError]       = useState("");
 
+  // ── Real client list for the dropdown — client-role users have their
+  //    own clientId/clientName locked already (getEmptyForm), so this only
+  //    needs to run for admin/allocator users who are picking a client.
+  const [clients, setClients]             = useState([]);
+  const [clientsLoading, setClientsLoading] = useState(!isClientUser);
+  const [clientsError, setClientsError]   = useState("");
+
+  useEffect(() => {
+    if (isClientUser) return;
+
+    let cancelled = false;
+    const token = localStorage.getItem("token");
+
+    setClientsLoading(true);
+    setClientsError("");
+
+    fetch(`${API_URL}/api/clients`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+    })
+      .then(r => r.json())
+      .then(data => { if (!cancelled) setClients(data.clients || []); })
+      .catch(() => { if (!cancelled) setClientsError("Failed to load clients."); })
+      .finally(() => { if (!cancelled) setClientsLoading(false); });
+
+    return () => { cancelled = true; };
+  }, [isClientUser]);
+
   useEffect(() => {
     if (!isEditMode) return;
 
@@ -2790,14 +2821,17 @@ export default function AddCase() {
   // (not the sum) so that aggregate stays meaningful.
   const overallTat = overallTatValues.length > 0 ? Math.max(...overallTatValues) : 0;
 
-  // Only used by admin/allocator — clients have a locked clientId/clientName
+  // Only used by admin/allocator — clients have a locked clientId/clientName.
+  // NOTE: billing_mode field name is a guess (billing_mode / billingMode /
+  // billingDefault) until I can see the actual /api/clients response shape —
+  // worth double-checking once the backend files are shared.
   const handleClientChange = (clientId) => {
-    const client = MOCK_CLIENTS.find(c => String(c.id) === clientId);
+    const client = clients.find(c => String(c.id) === clientId);
     setForm(p => ({
       ...p,
       clientId,
-      clientName:  client?.name || "",
-      billingMode: client?.billingDefault || p.billingMode,
+      clientName:  client?.company_name || client?.name || "",
+      billingMode: client?.billing_mode || client?.billingMode || client?.billingDefault || p.billingMode,
     }));
   };
 
@@ -3176,13 +3210,29 @@ export default function AddCase() {
                       {isClientUser ? (
                         <div className="ac-input ac-input-readonly">{form.clientName || user.name}</div>
                       ) : (
-                        <select className="ac-input ac-select" value={form.clientId}
-                          onChange={e => handleClientChange(e.target.value)}>
-                          <option value="">— Select Client —</option>
-                          {MOCK_CLIENTS.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                          ))}
-                        </select>
+                        <>
+                          <select className="ac-input ac-select" value={form.clientId}
+                            onChange={e => handleClientChange(e.target.value)}
+                            disabled={clientsLoading}>
+                            <option value="">
+                              {clientsLoading
+                                ? "Loading clients…"
+                                : clientsError
+                                ? "Failed to load clients"
+                                : clients.length === 0
+                                ? "No clients found"
+                                : "— Select Client —"}
+                            </option>
+                            {clients.map(c => (
+                              <option key={c.id} value={c.id}>{c.company_name || c.name}</option>
+                            ))}
+                          </select>
+                          {clientsError && (
+                            <span style={{ fontSize: "0.72rem", color: "#dc2626" }}>
+                              {clientsError} — check your connection and reload.
+                            </span>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
