@@ -615,8 +615,8 @@ Route::middleware('auth:sanctum')->group(function () {
             'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
             'check_tat'       => 'nullable|array',
             'check_tat.*'     => 'numeric|min:0',
-            'check_rates'     => 'nullable|array',
-            'check_rates.*'   => 'numeric|min:0',
+            'check_rates'     => 'nullable|array',   
+'check_rates.*'   => 'numeric|min:0',       
             'overall_tat'     => 'nullable|numeric|min:0',
         ]);
 
@@ -631,7 +631,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'client_id'        => $request->client_id,
             'checks'           => $request->checks,
             'check_tat'        => $request->check_tat ?? [],
-            'check_rates'      => $request->check_rates ?? [],
+            'check_rates'      => $request->check_rates ?? [], 
             'overall_tat'      => $request->overall_tat ?? 0,
             'priority'         => $request->priority ?? 'normal',
             'billing_mode'     => $request->billing_mode,

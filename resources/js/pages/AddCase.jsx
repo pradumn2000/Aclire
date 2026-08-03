@@ -4128,6 +4128,9 @@ export default function AddCase() {
   const checkTatPayload = Object.fromEntries(
     form.checks.map(k => [k, Number(tats[k]) || 0])
   );
+  const checkRatesPayload = Object.fromEntries(
+  form.checks.map(k => [k, Number(rates[k]) || 0])
+);
 
   // Only used by admin/allocator — clients have a locked clientId/clientName.
   // NOTE: billing_mode field name is a guess (billing_mode / billingMode /
@@ -4204,6 +4207,7 @@ export default function AddCase() {
           po_number:        form.poNumber,
           total_amount:     totalAmount,
           check_tat:        checkTatPayload,
+          check_rates:      checkRatesPayload, 
           overall_tat:      overallTat,
           payment_link:     generatedLink || null,
           notes:            form.notes,
