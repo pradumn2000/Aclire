@@ -2339,28 +2339,28 @@ export default function Allocator() {
             <div
               id="toast"
               className={`cab-toast ${showToast ? "" : "cab-hidden"}`}
-          style={{
-            position: "fixed",
-            bottom: showToast ? "28px" : "-100px",
-            right: "28px",
-            left: "auto",        // ← new: cancels the stylesheet's left: 50%
-            transform: "none",   // ← new: cancels the stylesheet's translateY(100px) hidden-state
-            display: showToast ? "flex" : "none",
-            alignItems: "center",
-            gap: "10px",
-            padding: "14px 22px",
-            borderRadius: "10px",
-            background: toastError ? "#fff5f5" : "#f0fdf4",
-            border: `1.5px solid ${toastError ? "#fca5a5" : "#86efac"}`,
-            color: toastError ? "#dc2626" : "#15803d",
-            fontSize: "13px",
-            fontWeight: 700,
-            boxShadow: "0 12px 32px rgba(0,0,0,0.18)",
-            zIndex: 999999,
-            opacity: showToast ? 1 : 0,
-            transition: "bottom 0.3s ease, opacity 0.3s ease",
-            pointerEvents: "none",
-            }}
+              style={{
+                position: "fixed",
+                bottom: showToast ? "28px" : "-100px",
+                right: "28px",
+                left: "auto",
+                transform: "none", 
+                display: showToast ? "flex" : "none",
+                alignItems: "center",
+                gap: "10px",
+                padding: "14px 22px",
+                borderRadius: "10px",
+                background: toastError ? "#fff5f5" : "#f0fdf4",
+                border: `1.5px solid ${toastError ? "#fca5a5" : "#86efac"}`,
+                color: toastError ? "#dc2626" : "#15803d",
+                fontSize: "13px",
+                fontWeight: 700,
+                boxShadow: "0 12px 32px rgba(0,0,0,0.18)",
+                zIndex: 999999,
+                opacity: showToast ? 1 : 0,
+                transition: "bottom 0.3s ease, opacity 0.3s ease",
+                pointerEvents: "none",
+              }}
             >
               <i
                 className={`fa-solid ${toastError ? "fa-circle-exclamation" : "fa-circle-check"} cab-toast-icon`}
