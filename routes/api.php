@@ -615,6 +615,8 @@ Route::middleware('auth:sanctum')->group(function () {
             'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
             'check_tat'       => 'nullable|array',
             'check_tat.*'     => 'numeric|min:0',
+            'check_rates'     => 'nullable|array',
+            'check_rates.*'   => 'numeric|min:0',
             'overall_tat'     => 'nullable|numeric|min:0',
         ]);
 
@@ -629,6 +631,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'client_id'        => $request->client_id,
             'checks'           => $request->checks,
             'check_tat'        => $request->check_tat ?? [],
+            'check_rates'      => $request->check_rates ?? [],
             'overall_tat'      => $request->overall_tat ?? 0,
             'priority'         => $request->priority ?? 'normal',
             'billing_mode'     => $request->billing_mode,
@@ -689,6 +692,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 'checks'        => $c->checks,
                 'check_details' => $c->check_details,
                 'check_tat'     => $c->check_tat,
+                'check_rates'   => $c->check_rates,
                 'overall_tat'   => $c->overall_tat,
                 'status'        => $c->status,
                 'priority'      => $c->priority,
@@ -750,6 +754,8 @@ Route::middleware('auth:sanctum')->group(function () {
             'checks.*'        => 'in:employment,education,address,database,criminal,drug,court',
             'check_tat'       => 'nullable|array',
             'check_tat.*'     => 'numeric|min:0',
+            'check_rates'     => 'nullable|array',
+            'check_rates.*'   => 'numeric|min:0',
             'overall_tat'     => 'nullable|numeric|min:0',
         ]);
 
@@ -765,6 +771,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'client_id'        => $request->client_id,
             'checks'           => $request->checks,
             'check_tat'        => $request->check_tat ?? $case->check_tat,
+            'check_rates'      => $request->check_rates ?? $case->check_rates,
             'overall_tat'      => $request->overall_tat ?? $case->overall_tat,
             'priority'         => $request->priority ?? $case->priority,
             'billing_mode'     => $request->billing_mode,
@@ -891,8 +898,16 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ── SAVE CHECK FIELDS (client/staff — from CheckDetailForm) ──
+    // Also accepts an admin-only `amount` — this is the ONLY write path for
+    // a case's per-check amount. It lands in check_rates (never in
+    // check_details/fields), and only ever moves if the caller is admin —
+    // this is a server-side check, independent of the frontend disabling
+    // the input for non-admins.
     Route::patch('/cases/{caseId}/checks/{checkKey}', function (Request $request, $caseId, $checkKey) {
-        $request->validate(['fields' => 'required|array']);
+        $request->validate([
+            'fields' => 'required|array',
+            'amount' => 'nullable|numeric|min:0',
+        ]);
 
         $case = BGVCase::where('case_id', $caseId)->first();
         if (!$case) return response()->json(['message' => 'Case not found'], 404);
@@ -914,6 +929,13 @@ Route::middleware('auth:sanctum')->group(function () {
         $details[$checkKey]['fields']    = $request->fields;
         $details[$checkKey]['documents'] = $details[$checkKey]['documents'] ?? [];
         $case->check_details = $details;
+
+        if ($user->role === 'admin' && $request->filled('amount')) {
+            $rates = $case->check_rates ?? [];
+            $rates[$checkKey] = $request->amount;
+            $case->check_rates = $rates;
+        }
+
         $case->save();
 
         \App\Models\CaseEvent::log(
@@ -925,7 +947,11 @@ Route::middleware('auth:sanctum')->group(function () {
             $user
         );
 
-        return response()->json(['message' => 'Saved', 'check_details' => $details]);
+        return response()->json([
+            'message'       => 'Saved',
+            'check_details' => $details,
+            'check_rates'   => $case->check_rates,
+        ]);
     });
 
     // ── UPLOAD CHECK DOCUMENT (client/staff) ──
