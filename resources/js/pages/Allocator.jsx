@@ -1774,7 +1774,7 @@ const CHECK_TYPES = [
   { key: "criminal",   label: "Criminal",   accent: "#0d8390", bgAccent: "rgba(13, 131, 144, 0.08)" },
   { key: "drug",       label: "Drug Test",  accent: "#2b3b8c", bgAccent: "rgba(43, 59, 140, 0.08)" },
   { key: "court",      label: "Courtroom",  accent: "#0d8390", bgAccent: "rgba(13, 131, 144, 0.08)" },
-];x
+];
 
 // Maps each Kanban column's check type to the dedicated verifier role
 // created in User Management, so each column's dropdown only shows the
