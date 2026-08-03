@@ -28,7 +28,9 @@ class BGVCase extends Model
         'po_number',
         'total_amount',
         'tat',          // ← added: case-level TAT (days)
-        'check_tat',    // ← added: per-check TAT breakdown
+        'check_tat',    // ← added: per-check 
+        // TAT breakdown
+        'check_rates',
         'payment_link',
         'status',
         'check_results',
@@ -42,6 +44,7 @@ class BGVCase extends Model
         'check_results'  => 'array',
         'check_details'  => 'array',
         'check_tat'      => 'array',   // ← added
+        'check_rates'    => 'array',
         'total_amount'   => 'float',
         'tat'            => 'float',   // ← added
         'candidate_dob'  => 'date',
