@@ -10,6 +10,7 @@ class Company extends Model
         'name',
         'code',
         'industry',
+        'scope',
         'state',
         'website',
         'verified',

@@ -1231,8 +1231,11 @@ Route::middleware('auth:sanctum')->group(function () {
             $query->where('type', $request->type);
         }
         if ($request->scope) {
-            $query->where('scope', strtolower($request->scope));
-        }
+    $scope = strtolower($request->scope);
+    $query->where(function ($q) use ($scope) {
+        $q->where('scope', $scope)->orWhereNull('scope');
+    });
+}
         if (!$request->boolean('include_inactive')) {
             $query->where('status', '!=', 'inactive');
         }
@@ -1344,9 +1347,12 @@ Route::middleware('auth:sanctum')->group(function () {
         if (!$request->boolean('include_inactive')) {
             $query->where('status', '!=', 'inactive');
         }
-        if ($request->scope) {
-            $query->where('scope', strtolower($request->scope));
-        }
+       if ($request->scope) {
+    $scope = strtolower($request->scope);
+    $query->where(function ($q) use ($scope) {
+        $q->where('scope', $scope)->orWhereNull('scope');
+    });
+}
         if ($request->search) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {

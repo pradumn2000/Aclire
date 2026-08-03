@@ -8,6 +8,7 @@ class Institution extends Model
 {
     protected $fillable = [
         'type',
+        'scope',
         'name',
         'code',
         'state',
