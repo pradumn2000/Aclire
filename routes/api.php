@@ -288,14 +288,14 @@ Route::post('/reset-password', function (Request $request) {
 // ─────────────────────────────────────────
 Route::get('/create-admin', function () {
     $user = \App\Models\User::updateOrCreate(
-        ['email' => 'admin@satyapan.com'],
+        ['email' => 'admin@aclire.com'],
         ['name' => 'Admin', 'password' => Hash::make('Admin@123'), 'role' => 'admin']
     );
     return response()->json(['message' => 'Admin created', 'user' => $user]);
 });
 
 Route::get('/test-password', function () {
-    $user = \App\Models\User::where('email', 'admin@satyapan.com')->first();
+    $user = \App\Models\User::where('email', 'admin@aclire.com')->first();
     if (!$user) return response()->json(['message' => 'Admin user not found']);
     return response()->json([
         'exists'         => true,
